@@ -10,6 +10,7 @@ export const NavbarContainer = styled.nav`
   height: 55px;
   background-color: #FFFFFF;
   display: flex;
+  position: fixed;
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
