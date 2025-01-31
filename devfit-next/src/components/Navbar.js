@@ -17,6 +17,7 @@ export const NavbarContainer = styled.nav`
   top: 0;
   left: 0;
   border-bottom: 2px solid #796AD9;
+  z-index: 1000;
 `;
 
 export const LogoContainer = styled.div`

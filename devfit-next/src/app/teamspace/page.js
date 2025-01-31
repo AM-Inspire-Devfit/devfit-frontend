@@ -2,7 +2,7 @@
 
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
-import { LayoutContainer } from './teamspace_s';
+import TeamSpace from './teamspace';
 
 
 export default function TeamSpacePage(){
@@ -10,7 +10,7 @@ export default function TeamSpacePage(){
         <>
         <Navbar />
         <Sidebar />
-
+        <TeamSpace/>
         </>
         
     )

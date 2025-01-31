@@ -16,6 +16,7 @@ export const SidebarContainer = styled.nav`
   display: flex;
   flex-direction: column;
   padding: 20px;
+  z-index: 1000;
 `;
 
 export const NavLinks = styled.div`
