@@ -2,15 +2,15 @@
 
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
-import TeamSpace from './teamspace';
+import Team from './team';
 
 
-export default function TeamSpacePage(){
+export default function TeamPage(){
     return(
         <>
         <Navbar />
         <Sidebar />
-        <TeamSpace/>
+        <Team/>
         </>
         
     )

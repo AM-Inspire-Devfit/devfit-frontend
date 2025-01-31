@@ -12,11 +12,11 @@ import {
     TeamContainer,
     Button,
     ProjectBox
-} from './teamspace_s'
+} from './team_s'
 
 import Image from "next/image";
 
-export default function TeamSpace() {
+export default function Team() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState("SideEffect");
