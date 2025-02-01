@@ -28,7 +28,15 @@ export const TitleRow = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size:${(props) => (!!props.small ? "24px" : "27px")};
+  font-size:27px;
+  font-weight: bold;
+  color: #432CA4;
+  margin-bottom: 5px; 
+  margin-left: 10px;
+`;
+
+export const Title2 = styled.h1`
+  font-size: 23px;
   font-weight: bold;
   color: #432CA4;
   margin-bottom: 5px; 

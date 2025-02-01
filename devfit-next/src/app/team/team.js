@@ -6,6 +6,7 @@ import {
     TitleContainer,
     TitleRow,
     Title,
+    Title2,
     Divider,
     Subtitle,
     StyledInput,
@@ -72,7 +73,7 @@ export default function Team() {
 
             <TeamContainer>
                 <TitleRow>
-                    <Title small={true}>팀원</Title>
+                    <Title2>팀원</Title2>
                     <Button>초대하기</Button>
                 </TitleRow>
                 <Divider />
@@ -81,7 +82,7 @@ export default function Team() {
 
             <TeamContainer>
                 <TitleRow>
-                    <Title small={true}>프로젝트</Title>
+                    <Title2>프로젝트</Title2>
                     <Button>추가하기</Button>
                 </TitleRow>
                 <Divider />
