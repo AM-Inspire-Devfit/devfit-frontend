@@ -1,4 +1,3 @@
-// login_s.js
 import styled from 'styled-components';
 
 export const LoginContainer = styled.div`
@@ -23,28 +22,6 @@ export const Title = styled.h1`
   text-align: center;
 `;
 
-// export const FormGroup = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   width: 100%;
-//   margin-bottom: 15px;
-// `;
-
-// export const Button = styled.button`
-//   width: 100%;
-//   background-color: #3498db;
-//   color: white;
-//   font-weight: bold;
-//   border: none;
-//   border-radius: 4px;
-//   padding: 12px;
-//   cursor: pointer;
-//   transition: background-color 0.3s ease;
-
-//   &:hover {
-//     background-color: #2980b9;
-//   }
-// `;
 export const OauthButton = styled.button`
   display: flex;
   align-items: center;
