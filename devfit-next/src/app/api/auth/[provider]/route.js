@@ -1,5 +1,5 @@
 export async function GET(req, { params }) {
-    const { provider } = params;
+    const{ provider } = await params;
   
     let oauthUrl = "";
     

@@ -17,7 +17,7 @@ export default function Login() {
       console.log(process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID)
       const res = await axios.get(`/api/auth/${provider}`);
       window.location.href = res.data.url; // OAuth 인증 페이지 redirect
-      // window.open(res.data.url, "_blank", "width=500,height=700,noopener,noreferrer");
+      console.log(res.data)
     } catch (error) {
       console.error("로그인 요청 실패:", error.response ? error.response.data : error.message);
     }

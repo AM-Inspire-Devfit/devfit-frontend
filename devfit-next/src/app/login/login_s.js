@@ -8,7 +8,7 @@ export const LoginContainer = styled.div`
   width: 400px;
   height: 500px;
   margin: 0 auto;
-  margin-top: 100px;
+  margin-top: 150px;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
