@@ -1,9 +1,9 @@
-// login.js
 
 "use client";
 
 import React, { useState } from 'react';
 import Image from "next/image";
+import axios from 'axios';
 import {
   LoginContainer,
   Title,
@@ -11,25 +11,27 @@ import {
 } from './login_s';
 
 export default function Login() {
-  const handleGoogleLogin = () => {
-    window.location.href = "https://accounts.google.com/o/oauth2/v2/auth?..."; 
+
+  const handleLogin = async (provider) => {
+    try {
+      console.log(process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID)
+      const res = await axios.get(`/api/auth/${provider}`);
+      window.location.href = res.data.url; // OAuth 인증 페이지 redirect
+      console.log(res.data)
+    } catch (error) {
+      console.error("로그인 요청 실패:", error.response ? error.response.data : error.message);
+    }
   };
-
-  const handleKakaoLogin = () => {
-    window.location.href = "https://kauth.kakao.com/oauth/authorize?...";
-  };
-
-
 
   return (
     <LoginContainer>
      
       <div style={{ textAlign: "center", marginBottom: "50px"}}>
       <Image
-        src="/img/devfit-logo.png" // public/img/logo.png
+        src="/img/devfit-logo.png" 
         alt="Logo"
-        width={200} // 이미지의 가로 크기
-        height={100} // 이미지의 세로 크기
+        width={200} 
+        height={100} 
         priority
       />
       </div>
@@ -38,7 +40,7 @@ export default function Login() {
       <OauthButton
       $bgColor ="#FEE500"
       $textColor="#000"
-      onClick={handleKakaoLogin}
+      onClick={()=>handleLogin("kakao")}
       >
         <Image
           src="/img/kakao-icon.png"
@@ -46,13 +48,13 @@ export default function Login() {
           width={24}
           height={24}
         />
-        카카오톡 아이디로 로그인
+        카카오톡 ID로 로그인
       </OauthButton>
 
       <OauthButton
         $bgColor="#4285F4"
         $textColor="#fff"
-        onClick={handleGoogleLogin}
+        onClick={()=>handleLogin("google")}
       >
         <Image
           src="/img/google-icon.png"
@@ -60,7 +62,7 @@ export default function Login() {
           width={24}
           height={24}
         />
-        Google 아이디로 로그인
+        Google ID로 로그인
       </OauthButton>
     </div>
     </LoginContainer>
