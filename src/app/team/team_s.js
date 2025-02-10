@@ -2,9 +2,10 @@ import styled from 'styled-components';
 
 export const ContentContainer = styled.div`
   position: absolute;
-  top: 130px; /* Navbar 높이 제외 */
-  left: 200px; /* Sidebar 너비 제외 */
-  width: calc(100vw - 200px); /* 전체 너비에서 Sidebar(200px) 제외 */
+  top: 230px; /* Navbar 높이 제외 */
+  left: 50%;
+  transform: translate(-50%, -50%); /* 화면 정중앙 정렬 */
+  width: 100%
   height: 900px; 
   display: flex;
   flex-direction: column;
@@ -15,9 +16,9 @@ export const ContentContainer = styled.div`
 
 export const TitleContainer = styled.div`
   display: flex;
-  flex-direction: column; 
-  align-items: flex-start; 
-  width: 90%;
+  align-items: center;
+  width: 800px;
+  gap: 20px; 
 `;
 
 export const TitleRow = styled.div`
@@ -25,37 +26,81 @@ export const TitleRow = styled.div`
   align-items: center;
   justify-content: space-between; 
   width: 100%;
+  gap: 20px;
+`;
+
+export const TitleLeft = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px; 
+  height: 80px;
+`;
+
+export const EmojiBox = styled.div`
+  width: 80px;
+  height: 80px;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #796AD9;
+  border-radius: 10px;
+  padding: 5px;
+  position: relative;
+
+  img {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    object-fit: contain; 
+  }
+`;
+
+export const EmojiPickerContainer = styled.div`
+  position: absolute;
+  top: 60px; 
+  left: 0;
+  width: 300px;
+  height: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 200; 
+`;
+
+export const TitleRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
 `;
 
 export const Title = styled.h1`
-  font-size:27px;
+  font-size: 27px;
   font-weight: bold;
   color: #432CA4;
-  margin-bottom: 5px; 
-  margin-left: 10px;
+  margin-bottom: 5px;
+  margin-left: 5px;
 `;
 
-export const Title2 = styled.h1`
-  font-size: 23px;
-  font-weight: bold;
-  color: #432CA4;
-  margin-bottom: 5px; 
-  margin-left: 10px;
-`;
 
 export const Divider = styled.hr`
   width: 100%;
   border: none;
-  border-top: 2px solid #432CA4; 
+  border-top: 2px solid #796AD9; 
   margin: 10px 0;
   
 `;
 
 export const Subtitle = styled.p`
-  font-size: 17px;
-  color: #432CA4;
+  font-size: 15px;
+  color: #796AD9;
   margin-top: 5px;
-  margin-left: 15px;
+  margin-left: 10px;
 `;
 
 export const EditIcon = styled.img`
@@ -68,21 +113,13 @@ export const EditIcon = styled.img`
 `;
 
 export const StyledInput = styled.input`
-  font-size: 20px;
+  font-size: 15px;
   color: #432CA4;
   border: 1px #432CA4;
   padding: 5px;
   border-radius: 3px;
   outline: none;
   width: 60%;
-`;
-
-export const TeamContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 90%;
-  margin-top: 90px; 
 `;
 
 export const Button = styled.button`
@@ -102,14 +139,3 @@ export const Button = styled.button`
   }
 `;
 
-export const ProjectBox = styled.div`
-  width: 100%;
-  height: 200px;
-  background-color: #f8f6ff; 
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-`;

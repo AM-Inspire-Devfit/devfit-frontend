@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     ContentContainer,
     TitleContainer,
     TitleRow,
+    TitleLeft,
+    TitleRight,
+    EmojiBox,
+    EmojiPickerContainer,
     Title,
-    Title2,
     Divider,
     Subtitle,
     StyledInput,
@@ -16,12 +19,17 @@ import {
 } from './team_s'
 
 import Image from "next/image";
+import EmojiPicker from "emoji-picker-react";
 
 export default function Team() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState("SideEffect");
     const [subtitle, setSubtitle] = useState("Lg CNS AM Inspire Camp 1기 스터디그룹 2조");
+
+    const [chosenEmoji, setChosenEmoji] = useState("🍇"); // sideEffect 디폴트 이모지
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const emojiPickerRef = useRef(null);
 
     const handleEditClick = () => {
         setIsEditing((prev) => !prev); 
@@ -33,61 +41,76 @@ export default function Team() {
         }
     };
 
+    const onEmojiClick = (emojiData) => {
+        setChosenEmoji(emojiData.emoji);
+        setShowEmojiPicker(false);
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+                setShowEmojiPicker(false);
+            }
+        }
+
+        // 화면 전체에서 클릭 이벤트 감지
+        window.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            window.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
 
         <ContentContainer>
             <TitleContainer>
-                <TitleRow>
-                    {isEditing ? (
-                        <StyledInput
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            autoFocus
+                <TitleLeft>
+                        <EmojiBox onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                            {chosenEmoji}
+                            <Image src="/img/emoji_edit.png" alt="Edit" width={35} height={35} />
+                        </EmojiBox>
+                        {showEmojiPicker && (
+                            <EmojiPickerContainer ref={emojiPickerRef}>
+                                <EmojiPicker onEmojiClick={onEmojiClick} />
+                            </EmojiPickerContainer>
+                        )}
+                    </TitleLeft>
+                    
+                    <TitleRight>
+                        <TitleRow>
+                        {isEditing ? (
+                            <StyledInput
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                autoFocus
+                            />
+                        ) : (
+                            <Title>{title}</Title>
+                        )}
+                        <Image
+                            src="/img/edit.png"
+                            alt="Edit"
+                            width={20}
+                            height={20}
+                            onClick={handleEditClick}
+                            style={{ cursor: "pointer", marginLeft: "10px" }}
                         />
-                    ) : (
-                        <Title>{title}</Title>
-                    )}
-                    <Image
-                        src="/img/edit.png"
-                        alt="Edit"
-                        width={30}
-                        height={30}
-                        onClick={handleEditClick}
-                        style={{ cursor: "pointer" }}
-                    />
-                </TitleRow>
-                <Divider />
-                {isEditing ? (
-                    <StyledInput
-                        type="text"
-                        value={subtitle}
-                        onChange={(e) => setSubtitle(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
-                ) : (
-                    <Subtitle>{subtitle}</Subtitle>
-                )}
+                        </TitleRow>
+                        <Divider />
+                        {isEditing ? (
+                            <StyledInput
+                                type="text"
+                                value={subtitle}
+                                onChange={(e) => setSubtitle(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                            />
+                        ) : (
+                            <Subtitle>{subtitle}</Subtitle>
+                        )}
+                    </TitleRight>
             </TitleContainer>
-
-            <TeamContainer>
-                <TitleRow>
-                    <Title2>팀원</Title2>
-                    <Button>초대하기</Button>
-                </TitleRow>
-                <Divider />
-            </TeamContainer>
-
-
-            <TeamContainer>
-                <TitleRow>
-                    <Title2>프로젝트</Title2>
-                    <Button>추가하기</Button>
-                </TitleRow>
-                <Divider />
-                <ProjectBox/>
-            </TeamContainer>
         </ContentContainer>
     );
 
