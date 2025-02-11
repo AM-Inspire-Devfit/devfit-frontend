@@ -76,6 +76,7 @@ export const MemberDetail = styled.div`
   border-radius: 50%;
   position: relative; 
   margin-left: 10px; 
+  cursor: pointer;
 
   display: flex;
   align-items: center;
@@ -104,6 +105,7 @@ export const ToggleMemberList = styled.div.withConfig({
   transform: translateX(-50%); 
   z-index: 20;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
 `;
 
 export const Divider2 = styled.hr`
@@ -112,4 +114,72 @@ export const Divider2 = styled.hr`
   border-top: 2px solid #796AD9; 
   margin: 0;
   
+`;
+
+
+export const ProjectBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 720px;
+  padding: 20px;
+  border: 2px solid #796AD9;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 30px auto 10px auto;
+`;
+
+export const ProjectInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-left: 70px;
+`;
+
+export const ProjectTitle = styled.h2`
+  font-size: 32px;
+  font-weight: bold;
+  color: #796AD9;
+  min-width: 170px;
+  margin-left: 10px;
+`;
+
+export const ProjectDescription = styled.p`
+  font-size: 14px;
+  color: #432CA4;
+  margin-top: 5px;
+  margin-left: 0px;  
+  flex-grow: 1; 
+`;
+
+export const ProjectContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;  /* 왼쪽 정렬 */
+  width: 100%;
+`;
+
+export const ProjectDivider = styled.div`
+  width: 1px;
+  height: 80px;
+  background-color: #796AD9;
+  margin: 0 20px;
+`;
+
+export const ProjectHButton = styled.button`
+  font-size: 12px;
+  font-weight: bold;
+  color: #432ca4;
+  background: white;
+  border: 2px solid #796ad9;
+  border-radius: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  min-width: 85px;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    background: #cec4fe;
+  }
 `;

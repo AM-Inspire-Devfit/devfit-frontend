@@ -28,8 +28,22 @@ import {
     MemberName,
     MemberDetail,
     ToggleMemberList,
-    Divider2
+    Divider2,
+    ProjectBox,
+    ProjectInfo,
+    ProjectTitle,
+    ProjectDescription,
+    ProjectContent,
+    ProjectDivider,
+    ProjectHButton
 } from './section_s'
+
+import {
+    ModalOverlay,
+    ModalContent,
+    ModalButton
+
+} from '@/components/modal_s';
 
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
@@ -44,6 +58,10 @@ export default function Team() {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const emojiPickerRef = useRef(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [pendingProjects, setPendingProjects] = useState({});
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedProject, setSelectedProject] = useState(null);
 
     const [members, setMembers] = useState([
         {
@@ -78,6 +96,46 @@ export default function Team() {
         }
     ]);
 
+    const [projects, setProjects] = useState([
+        {
+            project_id: 1,
+            title: "SideEffect",
+            description: "개발자들을 위한 협업 도구 제공 프로젝트",
+            my_project: true,
+        },
+        {
+            project_id: 2,
+            title: "AWS",
+            description: "클라우드 기반 웹서비스 구축 프로젝트",
+            my_project: true,
+        },
+        {
+            project_id: 3,
+            title: "KING",
+            description: "유니티 기반 게임 개발 동아리",
+            my_project: false,
+        },
+        {
+            project_id: 4,
+            title: "CodeSync",
+            description: "실시간 코드 공유 및 협업을 위한 플랫폼",
+            my_project: false,
+        },
+        {
+            project_id: 5,
+            title: "AI Scholar",
+            description: "AI를 활용한 맞춤형 장학금 추천 서비스",
+            my_project: true,
+        },
+        {
+            project_id: 6,
+            title: "DevMatch",
+            description: "개발자 매칭 및 협업을 지원하는 플랫폼",
+            my_project: false,
+        }
+    ]);
+
+
     const leaders = members.filter(member => member.role === "leader");
     const teamMembers = members.filter(member => member.role === "member");
     const allMembers = [...leaders, ...teamMembers];
@@ -86,6 +144,10 @@ export default function Team() {
     const randomMembers = teamMembers.length >= 3 
         ? [...teamMembers].sort(() => Math.random() - 0.5).slice(0, 3) 
         : teamMembers;  
+
+    // 내 프로젝트 / 타 프로젝트
+    const myProjects = projects.filter(project => project.my_project);
+    const otherProjects = projects.filter(project => !project.my_project);
 
     const handleEditClick = () => {
         setIsEditing((prev) => !prev); 
@@ -102,7 +164,19 @@ export default function Team() {
         setShowEmojiPicker(false);
     };
 
+    // 나의 프로젝트 나가기 모달
+    const handleLeaveClick = (project) => {
+        setSelectedProject(project);
+        setShowModal(true);
+    };
 
+    // 타 프로젝트 가입 신청 -> 승인 대기
+    const handleClick = (projectId) => {
+        setPendingProjects((prev) => ({
+            ...prev,
+            [projectId]: true, // 해당 project_id만 true로 설정
+        }));
+    };
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -261,6 +335,42 @@ export default function Team() {
                 <Button>추가하기</Button>
             </SectionHeaderWrapper>
             <Divider2 />
+
+            {/* 프로젝트 박스 */}
+            {myProjects.map((project) => (
+                <ProjectBox key={project.project_id}>
+                    <ProjectContent>
+                    <ProjectTitle>{project.title}</ProjectTitle>
+                    <ProjectInfo>
+                        <ProjectDescription>
+                            {project.description}
+                        </ProjectDescription>
+                    </ProjectInfo>
+                    </ProjectContent>
+                    <ProjectDivider />
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                    <ProjectHButton>프로젝트 홈</ProjectHButton>
+                    <button style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: "white",
+                        background: "#796AD9",
+                        border: "2px solid #796AD9",
+                        borderRadius: "12px",
+                        padding: "6px 12px",
+                        cursor: "pointer",
+                        minWidth: "85px",
+                        transition: "0.2s ease-in-out"
+                    }}
+                    onMouseOver={(e) => e.target.style.background = "#5a46c6"}
+                    onMouseOut={(e) => e.target.style.background = "#796AD9"}
+                    onClick={() => handleLeaveClick(project)}
+                    >
+                    나가기
+                    </button>
+                    </div>
+                </ProjectBox>
+                ))}
             </SectionContainer>
 
 
@@ -271,8 +381,58 @@ export default function Team() {
                 </SectionHeaderContainer>
             </SectionHeaderWrapper>
             <Divider2 />
-            </SectionContainer>
-
+                {otherProjects.map((project) => (
+                <ProjectBox key={project.project_id}>
+                    <ProjectTitle>{project.title}</ProjectTitle>
+                    <ProjectInfo>
+                        <ProjectDescription>
+                            {project.description}
+                        </ProjectDescription>
+                    </ProjectInfo>
+                    <ProjectDivider />
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                    <ProjectHButton>프로젝트 홈</ProjectHButton>
+                    <button
+                        style={{
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            color: "white",
+                            background: pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9",
+                            border: `2px solid ${pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9"}`,
+                            borderRadius: "12px",
+                            padding: "6px 12px",
+                            cursor: pendingProjects[project.project_id] ? "not-allowed" : "pointer",
+                            minWidth: "85px",
+                            transition: "0.2s ease-in-out"
+                        }}
+                        onMouseOver={(e) => {
+                            if (!pendingProjects[project.project_id]) e.target.style.background = "#5a46c6";
+                        }}
+                        onMouseOut={(e) => {
+                            if (!pendingProjects[project.project_id]) e.target.style.background = "#796AD9";
+                        }}
+                        onClick={() => handleClick(project.project_id)}
+                        disabled={pendingProjects[project.project_id]}
+                    >
+                        {pendingProjects[project.project_id] ? "승인대기" : "가입신청"}
+                    </button>
+                    </div>
+                </ProjectBox>
+            ))}
+        </SectionContainer>
+        <Space />
+        {/* 프로젝트 나가기 modal */}
+        {showModal && selectedProject && (
+            <ModalOverlay>
+                <ModalContent>
+                    <h2>{selectedProject.title} 프로젝트를 나가시겠습니까?</h2>
+                    <div style={{ marginTop: "60px", display: "flex", gap: "60px", justifyContent: "center" }}> 
+                        <ModalButton onClick={() => setShowModal(false)}>예</ModalButton>
+                        <ModalButton onClick={() => setShowModal(false)}>아니오</ModalButton>
+                    </div>
+                </ModalContent>
+            </ModalOverlay>
+        )}
         </ContentContainer>
     );
 

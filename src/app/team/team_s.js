@@ -139,6 +139,6 @@ export const Button = styled.button`
 `;
 
 export const Space = styled.div`
-  height: ${({ height }) => height || "10px"}; 
+    margin-top: 90px;
 `;
 
