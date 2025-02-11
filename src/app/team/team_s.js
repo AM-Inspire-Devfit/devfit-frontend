@@ -1,23 +1,19 @@
 import styled from 'styled-components';
 
 export const ContentContainer = styled.div`
-  position: absolute;
-  top: 230px; /* Navbar 높이 제외 */
-  left: 50%;
-  transform: translate(-50%, -50%); /* 화면 정중앙 정렬 */
-  width: 100%
-  height: 900px; 
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start; 
-  align-items: center; /* 세로 중앙 정렬 */
-  z-index: 100;
+  flex-direction: column; 
+  align-items: center;
+  width: 100%;
+  padding-top: 150px; /* Navbar 높이만큼 여백 */
+  min-height: 100vh; 
+  box-sizing: border-box;
 `;
 
 export const TitleContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 800px;
+  width: 750px;
   gap: 20px; 
 `;
 
@@ -62,15 +58,18 @@ export const EmojiBox = styled.div`
 
 export const EmojiPickerContainer = styled.div`
   position: absolute;
-  top: 60px; 
-  left: 0;
-  width: 300px;
-  height: auto;
+  top: 100%; 
+  left: 50%; 
+  transform: translateX(-50%);
+  width: 370px;
+  height: 480px;
   background: white;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 200; 
+  padding: 10px;
 `;
+
 
 export const TitleRight = styled.div`
   display: flex;
@@ -88,7 +87,7 @@ export const Title = styled.h1`
 `;
 
 
-export const Divider = styled.hr`
+export const Divider1 = styled.hr`
   width: 100%;
   border: none;
   border-top: 2px solid #796AD9; 
@@ -137,5 +136,9 @@ export const Button = styled.button`
     background: #432CA4;
     color: white;
   }
+`;
+
+export const Space = styled.div`
+  height: ${({ height }) => height || "10px"}; 
 `;
 
