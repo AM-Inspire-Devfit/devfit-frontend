@@ -438,8 +438,15 @@ export default function Team() {
         {showModal && selectedProject && (
             <ModalOverlay>
                 <ModalContent>
-                    <h2>{selectedProject.title} 프로젝트를 나가시겠습니까?</h2>
-                    <div style={{ marginTop: "60px", display: "flex", gap: "60px", justifyContent: "center" }}> 
+                    <div style={{ marginTop: "20px", textAlign: "center" }}>
+                        <p style={{ fontSize: "25px", marginBottom: "5px" }}>
+                            <strong>{selectedProject.title}</strong> 프로젝트를
+                        </p>
+                        <p style={{ fontSize: "25px", fontWeight: "normal" }}>
+                            나가시겠습니까?
+                        </p>
+                    </div>
+                    <div style={{ marginTop: "20px", display: "flex", gap: "60px", justifyContent: "center" }}> 
                         <ModalButton onClick={() => setShowModal(false)}>예</ModalButton>
                         <ModalButton onClick={() => setShowModal(false)}>아니오</ModalButton>
                     </div>
