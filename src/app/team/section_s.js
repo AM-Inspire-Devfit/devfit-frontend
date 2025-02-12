@@ -53,17 +53,21 @@ export const MemberItem = styled.div`
   text-align: center;
 `;
 
-export const MemberProfile = styled.div`
+export const MemberProfile = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== "isLeader"
+})`
   width: 50px;
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #796AD9;
+  border: ${({ isLeader }) => (isLeader ? "4px solid #796AD9" : "2px solid #A294F9")};
 `;
 
-export const MemberName = styled.p`
+export const MemberName = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== "isLeader"
+})`
   font-size: 14px;
-  color: #432CA4;
+  color: ${({ isLeader }) => (isLeader ? "#796AD9" : "#A294F9")}; 
   margin-top: 5px;
   font-weight: bold;
 `;
@@ -71,8 +75,8 @@ export const MemberName = styled.p`
 export const MemberDetail = styled.div`
   width: 50px; 
   height: 50px;
-  background-color: #ede8fe;
-  border: 3px solid #796AD9; 
+  background-color: #ffffff;
+  border: 2px solid #796AD9;
   border-radius: 50%;
   position: relative; 
   margin-left: 10px; 
@@ -81,7 +85,7 @@ export const MemberDetail = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 10px;
   color: #796AD9;
   font-weight: 900;
 `;

@@ -140,10 +140,22 @@ export default function Team() {
     const teamMembers = members.filter(member => member.role === "member");
     const allMembers = [...leaders, ...teamMembers];
 
-    // 팀원 수가 3명 미만이면 전체 팀원 표시
-    const randomMembers = teamMembers.length >= 3 
-        ? [...teamMembers].sort(() => Math.random() - 0.5).slice(0, 3) 
-        : teamMembers;  
+    const [randomMembers, setRandomMembers] = useState(() => {
+        return teamMembers.length >= 3 
+            ? teamMembers.slice(0, 3) 
+            : teamMembers;
+    });
+    
+    useEffect(() => {
+        const shuffled = teamMembers.length >= 3
+            ? [...teamMembers].sort(() => Math.random() - 0.5).slice(0, 3)
+            : teamMembers;
+    
+        if (JSON.stringify(shuffled) !== JSON.stringify(randomMembers)) {
+            setRandomMembers(shuffled);
+        }
+    }, [teamMembers]);
+    
 
     // 내 프로젝트 / 타 프로젝트
     const myProjects = projects.filter(project => project.my_project);
@@ -273,27 +285,27 @@ export default function Team() {
                     <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "10px" }}>
                         {leaders.map((leader) => (
                             <MemberItem key={leader.id}>
-                                <MemberProfile>
+                                <MemberProfile isLeader={true}>
                                 <Image src={leader.profileImage} alt={leader.name} width={50} height={50} />
                                 </MemberProfile>
-                                <MemberName>{leader.name}</MemberName>
+                                <MemberName isLeader={true}>{leader.name}</MemberName>
                             </MemberItem>
                         ))}
-                    </div>
                     {/* 팀원들 */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "0px", marginLeft: "auto" }}>
-                        {randomMembers.map((member, index) => (
-                            <MemberItem key={member.id} style={{ marginLeft: index === 0 ? "0px" : "-15px" }}>
-                                <MemberProfile style={{ position: "relative" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px" }}>
+                        {randomMembers.map((member) => (
+                            <MemberItem key={member.id}>
+                                <MemberProfile isLeader={false}>
                                     <Image src={member.profileImage} alt="Member" width={50} height={50} />
                                 </MemberProfile>
-                                <MemberName style={{ visibility: "hidden" }}>이름</MemberName>
+                                <MemberName isLeader={false}>{member.name}</MemberName>
                             </MemberItem>
                         ))}
                     </div>
+                    </div>
                     <div style={{ position: "relative", display: "inline-block" }}>
-                        <MemberDetail onClick={() => setIsDetailOpen(prev => !prev)}>· · · </MemberDetail>
-                        <MemberName style={{ visibility: "hidden" }}>이름</MemberName>
+                        <MemberDetail onClick={() => setIsDetailOpen(prev => !prev)}>더보기 </MemberDetail>
+                        <MemberName style={{ visibility: "hidden" }}></MemberName>
                         <ToggleMemberList isOpen={isDetailOpen}>
                             {allMembers.map(member => (
                                 <div key={member.id} style={{ 
