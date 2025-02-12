@@ -138,24 +138,7 @@ export default function Team() {
 
     const leaders = members.filter(member => member.role === "leader");
     const teamMembers = members.filter(member => member.role === "member");
-    const allMembers = [...leaders, ...teamMembers];
-
-    const [randomMembers, setRandomMembers] = useState(() => {
-        return teamMembers.length >= 3 
-            ? teamMembers.slice(0, 3) 
-            : teamMembers;
-    });
-    
-    useEffect(() => {
-        const shuffled = teamMembers.length >= 3
-            ? [...teamMembers].sort(() => Math.random() - 0.5).slice(0, 3)
-            : teamMembers;
-    
-        if (JSON.stringify(shuffled) !== JSON.stringify(randomMembers)) {
-            setRandomMembers(shuffled);
-        }
-    }, [teamMembers]);
-    
+    const allMembers = [...leaders, ...teamMembers];    
 
     // 내 프로젝트 / 타 프로젝트
     const myProjects = projects.filter(project => project.my_project);
@@ -293,12 +276,12 @@ export default function Team() {
                         ))}
                     {/* 팀원들 */}
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px" }}>
-                        {randomMembers.map((member) => (
+                        {teamMembers.map((member) => (
                             <MemberItem key={member.id}>
-                                <MemberProfile isLeader={false}>
-                                    <Image src={member.profileImage} alt="Member" width={50} height={50} />
+                                <MemberProfile>
+                                    <Image src={member.profileImage} alt={member.name} width={50} height={50} />
                                 </MemberProfile>
-                                <MemberName isLeader={false}>{member.name}</MemberName>
+                                <MemberName>{member.name}</MemberName>
                             </MemberItem>
                         ))}
                     </div>
