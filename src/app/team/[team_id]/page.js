@@ -1,15 +1,13 @@
 "use client";
 
-import Navbar from '../../../components/Navbar';
-import Sidebar from '../../../components/Sidebar';
 import Team from '../team';
+import Navbar from '@/components/Navbar';
 
 
-export default function TeamPage_id(){
+export default function TeamPage(){
     return(
         <>
         <Navbar />
-        <Sidebar />
         <Team/>
         </>
         
