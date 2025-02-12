@@ -174,9 +174,10 @@ export default function Team() {
     const handleClick = (projectId) => {
         setPendingProjects((prev) => ({
             ...prev,
-            [projectId]: true, // 해당 project_id만 true로 설정
+            [projectId]: !prev[projectId]
         }));
     };
+    
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -401,18 +402,17 @@ export default function Team() {
                             border: `2px solid ${pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9"}`,
                             borderRadius: "12px",
                             padding: "6px 12px",
-                            cursor: pendingProjects[project.project_id] ? "not-allowed" : "pointer",
+                            cursor: "pointer",
                             minWidth: "85px",
                             transition: "0.2s ease-in-out"
                         }}
                         onMouseOver={(e) => {
-                            if (!pendingProjects[project.project_id]) e.target.style.background = "#5a46c6";
+                            e.target.style.background = pendingProjects[project.project_id] ? "#B3B3B3" : "#5a46c6";
                         }}
                         onMouseOut={(e) => {
-                            if (!pendingProjects[project.project_id]) e.target.style.background = "#796AD9";
+                            e.target.style.background = pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9";
                         }}
                         onClick={() => handleClick(project.project_id)}
-                        disabled={pendingProjects[project.project_id]}
                     >
                         {pendingProjects[project.project_id] ? "승인대기" : "가입신청"}
                     </button>
@@ -421,6 +421,7 @@ export default function Team() {
             ))}
         </SectionContainer>
         <Space />
+
         {/* 프로젝트 나가기 modal */}
         {showModal && selectedProject && (
             <ModalOverlay>
