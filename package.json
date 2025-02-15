@@ -2,6 +2,7 @@
   "name": "devfit-next",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -13,6 +14,10 @@
     "@styled-system/should-forward-prop": "^5.1.5",
     "axios": "^1.7.9",
     "emoji-picker-react": "^4.12.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.3",
+    "caniuse-lite": "^1.0.30001699",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
@@ -20,7 +25,8 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.1.4",
     "recharts": "^2.15.1",
-    "styled-components": "^6.1.15"
+    "styled-components": "^6.1.15",
+    "scheduler": "^0.25.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
