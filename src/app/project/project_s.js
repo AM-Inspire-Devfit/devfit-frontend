@@ -10,7 +10,7 @@ export const BoxContainer = styled.div`
     flex-direction: column; 
     align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    margin: 30px 0;
+    margin: 50px 0;
 `;
 
 export const ChartWrapper = styled.div`
@@ -235,6 +235,8 @@ export const MeetingContainer = styled.div`
     align-items: stretch; 
     width: 100%;
     gap: 30px;
+    margin-top: 50px;
+    margin-bottom: 100px;
 `;
 
 export const MeetingList = styled.div`
