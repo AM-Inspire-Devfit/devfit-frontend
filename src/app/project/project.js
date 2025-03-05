@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import SprintCalendar from "./spring_calendar"; 
+import SprintCalendar from "./sprint_calendar"; 
 
 import { ContentContainer, Divider1 } from '../../components/common_s';
 
@@ -213,20 +213,6 @@ export default function Project() {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
-
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-    // 특정 날짜에 미팅 데이터 표시
-    const tileContent = ({ date }) => {
-        const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식 변환
-        const meeting = meetingData.find(meet => meet.date === formattedDate);
-
-        return meeting ? (
-            <div className="event">
-                {meeting.title}
-            </div>
-        ) : null;
-    };
 
     // 멤버별 색상 배정 & value 기준 정렬
     const assignColorsToSprint = (sprints) => {
@@ -458,10 +444,19 @@ export default function Project() {
             </P.BoxContainer>
 
             {!showCreateSprintBox && (
-            <div style={{ width: '750px', textAlign: 'left'}}>
+            <div style={{ width: '750px', textAlign: 'left', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
                 </h2>
+                <div style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
+                    <Image
+                        src="/img/edit.png" 
+                        alt="icon"
+                        width={20}  
+                        height={20}
+                        priority  
+                    />
+                </div>
                 <Divider1/>
                 <P.MeetingContainer>
                     <SprintCalendar 
