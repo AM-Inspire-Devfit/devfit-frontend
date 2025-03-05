@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import Calendar from "react-calendar"; // 캘린더 라이브러리
-
-import { CalendarContainer } from "../../components/calander_s";
+import SprintCalendar from "./spring_calendar"; 
 
 import { ContentContainer, Divider1 } from '../../components/common_s';
 
@@ -16,18 +14,18 @@ import SprintModal from "./sprint_modal";
 
 import Image from "next/image";
 
+const colorPalette = [
+    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
+    "#9966FF", "#FF9F40", "#C9CBCF", "#8D44AD",
+    "#27AE60", "#D35400"
+];
+
 const projectData = [
     {   teamName: "SideEffect",
         projectName: "devFit",
         projectDescription: "개발자들의 성공적인 협업을 돕는 웹서비스",
     }
 ]
-
-const colorPalette = [
-    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-    "#9966FF", "#FF9F40", "#C9CBCF", "#8D44AD",
-    "#27AE60", "#D35400"
-];
 
 const sprintData = [
     {
@@ -147,12 +145,18 @@ const sprintData = [
 const meetingData = [
     {   title: "아이디어 회의",
         date: "2025-02-20",
+        startTime: "14:00:00",
+        endTime: "16:00:00",
     },
     {   title: "백엔드 회의",
         date: "2025-02-23",
+        startTime: "14:00:00",
+        endTime: "16:00:00",
     },
     {   title: "프론트 회의",
         date: "2025-02-28",
+        startTime: "14:00:00",
+        endTime: "16:00:00",
     }
 ]
 
@@ -415,7 +419,7 @@ export default function Project() {
                         borderRadius: '10px',
                         color: '#432CA4',
                         fontSize: '20px',
-                        textAlign: 'center' 
+                        textAlign: 'center', 
                     }}>
                         <div>Sprint {lastSprintNum + 1}을(를) 생성해보세요!</div>
                         <button 
@@ -444,31 +448,20 @@ export default function Project() {
                 )}
             </P.BoxContainer>
 
-            <div style={{ width: '750px', textAlign: 'left' }}>
+            {!showCreateSprintBox && (
+            <div style={{ width: '750px', textAlign: 'left'}}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
                 </h2>
                 <Divider1/>
                 <P.MeetingContainer>
-                    <CalendarContainer>
-                        <Calendar 
-                            onChange={setSelectedDate} 
-                            value={selectedDate}
-                            tileContent={tileContent}
-                        />
-                    </CalendarContainer>
-
-                    
-                    <P.MeetingList>
-                        {meetingData.map((meeting, index) => (
-                            <P.MeetingItem key={`meeting-${index}`}> 
-                                {meeting.title}
-                                <P.MeetingDate>{meeting.date}</P.MeetingDate>
-                            </P.MeetingItem>
-                        ))}
-                    </P.MeetingList>
+                    <SprintCalendar 
+                        sprintStart={currentSprint.sprint_start} 
+                        sprintEnd={currentSprint.sprint_end}
+                    />
                 </P.MeetingContainer>
             </div>
+            )}
             
         </ContentContainer>
     );
