@@ -1,5 +1,3 @@
-"use client";
-
 import Team from '../team';
 import Navbar from '@/components/Navbar';
 

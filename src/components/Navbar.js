@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export const NavbarContainer = styled.nav`
   width: 100%;
-  height: 55px;
+  height: 70px;
   background-color: #FFFFFF;
   display: flex;
   position: fixed;
@@ -32,13 +32,13 @@ export const NavLinks = styled.div`
 
 export const StyledLink = styled(Link)`
   text-decoration: none;
-  color: #796AD9;
-  font-size: 13px;
-  font-weight: 700;
+  color: #2E1A86;
+  font-size: 16px;
+  font-weight: 500;
   transition: color 0.2s;
 
   &:hover {
-    color: #796AD9;
+    color: #2E1A86;
   }
 `;
 
@@ -50,15 +50,14 @@ const Navbar = () => {
         <Image 
           src="/img/devfit-logo.png" 
           alt="Logo" 
-          width={100} 
-          height={55} />
+          width={110} 
+          height={60} />
       </LogoContainer>
       </Link>
       <NavLinks>
-        <StyledLink href="/home">홈</StyledLink>
-        <StyledLink href="/teamspace">팀스페이스</StyledLink>
-        <StyledLink href="/mypage">마이페이지</StyledLink>
-        <StyledLink href="/">로그아웃</StyledLink>
+        <StyledLink href="/home">Home</StyledLink>
+        <StyledLink href="/mypage">MyPage</StyledLink>
+        <StyledLink href="/">Logout</StyledLink>
       </NavLinks>
     </NavbarContainer>
   );

@@ -1,8 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+
 import {
     ContentContainer,
+    Divider1,
+    Space
+} from '@/components/common_s'
+
+import {
     TitleContainer,
     TitleRow,
     TitleLeft,
@@ -10,12 +16,10 @@ import {
     EmojiBox,
     EmojiPickerContainer,
     Title,
-    Divider1,
     Subtitle,
     StyledInput,
     Button,
-    Space
-} from './team_s'
+} from '@/app/team/team_s'
 
 import {
     SectionContainer,
@@ -36,7 +40,7 @@ import {
     ProjectContent,
     ProjectDivider,
     ProjectHButton
-} from './section_s'
+} from '@/app/team/section_s'
 
 import {
     ModalOverlay,
