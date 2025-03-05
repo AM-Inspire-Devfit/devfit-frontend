@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { CalendarContainer } from "../../components/calander_s";
 
-const SprintCalendar = ({ sprintStart, sprintEnd, meetingData }) => {
+const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [] }) => {
     const [currentWeekStart, setCurrentWeekStart] = useState(new Date(sprintStart));
 
     useEffect(() => {
@@ -14,29 +14,25 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData }) => {
     const weekData = useMemo(() => {
         const startDate = new Date(currentWeekStart);
         const dayOfWeek = startDate.getDay();
-
-        // 현재 날짜 기준으로 해당 주의 월요일 찾기
         const mondayDate = new Date(startDate);
         mondayDate.setDate(startDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-
+    
         return weekDays.map((day, index) => {
             const date = new Date(mondayDate);
             date.setDate(mondayDate.getDate() + index);
-
-            // 해당 날짜의 회의 정보 찾기
-            const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 변환
-            const meetings = meetingData?.filter(meet => meet.date === formattedDate) || [];
-
+            const formattedDate = date.toISOString().split("T")[0];
+    
+            const meetings = meetingData.filter(meet => meet.date === formattedDate);
+    
             return {
                 day,
                 date: date >= new Date(sprintStart) && date <= new Date(sprintEnd)
                     ? `${date.getMonth() + 1}.${date.getDate()}`
                     : " ",
-                meetings, 
+                meetings,
             };
         });
     }, [currentWeekStart, sprintStart, sprintEnd, meetingData, weekDays]);
-
     const handlePrevWeek = () => {
         const newStart = new Date(currentWeekStart);
         newStart.setDate(newStart.getDate() - 7);
@@ -49,8 +45,15 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData }) => {
         if (newStart <= new Date(sprintEnd)) setCurrentWeekStart(newStart);
     };
 
-    // sprint 기간 내 마지막 날짜 가져오기
     const lastValidDate = weekData.findLast((item) => item.date !== " ")?.date;
+
+    const colorPalette = ["#FFC4C4", "#FFD5A5", "#FFF4A3", "#C4F4FF", "#E2C4FF"]; 
+
+    // 날짜와 회의 순서를 기반으로 색상 배정
+    const getColorForMeeting = (date, idx) => {
+        const dateHash = date.split("-").reduce((acc, val) => acc + parseInt(val, 10), 0);
+        return colorPalette[(dateHash + idx) % colorPalette.length];
+    };
 
     return (
         <CalendarContainer>
@@ -67,7 +70,7 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData }) => {
             </div>
             <div className="calendar-wrapper">
                 <div className="calendar-header-row">
-                    <div className="time-column-header"></div> {/* 시간대 빈 칸 */}
+                    <div className="time-column-header"></div> 
                     {weekData.map((item, index) => (
                         <div key={index} className="calendar-header-cell">
                             <div className="weekday">{item.day}</div>
@@ -79,26 +82,54 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData }) => {
                 <div className="calendar-body">
                     <div className="time-column">
                         {[...Array(16)].map((_, i) => (
-                            <div key={i} className="time-slot">{9 + i}:00</div>
+                            <div key={i} className="time-slot">{8 + i}:00</div>
                         ))}
                     </div>
 
                     <div className="grid-lines">
                         {[...Array(16)].map((_, i) => (
-                            <div key={i} className="grid-line"></div>
+                            <div 
+                                key={i} 
+                                className="grid-line" 
+                                style={{ height: i === 0 ? "0px" : "40px" }} 
+                        ></div>
                         ))}
                     </div>
 
                     <div className="vertical-lines">
-                        {weekData.map((item, i) => (
-                                <div key={i} className="vertical-line">
-                                    {item.meetings.map((meet, idx) => (
-                                        <div key={idx} className="meeting-label">
-                                            {meet.title} ({meet.startTime} - {meet.endTime})
+                        {weekData.map((item, colIndex) => (
+                            <div key={colIndex} className="vertical-line">
+                                {item.meetings
+                                    .sort((a, b) => a.startTime.localeCompare(b.startTime)) // 미팅 시간순 정렬
+                                    .map((meet, idx) => {
+                                    // 시간대 위치 계산
+                                    const startHour = parseInt(meet.startTime.split(":")[0], 10);
+                                    const endHour = parseInt(meet.endTime.split(":")[0], 10);
+                                    const startMinutes = parseInt(meet.startTime.split(":")[1], 10);
+                                    const endMinutes = parseInt(meet.endTime.split(":")[1], 10);
+                                    
+                                    const topPosition = ((startHour - 8) * 40) + (startMinutes / 60 * 40); 
+                                    const height = ((endHour - startHour) * 40) + ((endMinutes - startMinutes) / 60 * 40);
+                                    
+                                    // 순차적으로 색상 배정
+                                    const assignedColor = getColorForMeeting(meet.date, idx);
+
+                                    return (
+                                        <div 
+                                            key={idx} 
+                                            className="meeting-block"
+                                            style={{ 
+                                                top: `${topPosition}px`, 
+                                                height: `${height}px`,
+                                                backgroundColor: assignedColor
+                                            }}
+                                        >
+                                            {meet.title}
                                         </div>
-                                    ))}
-                                </div>
-                            ))}
+                                    );
+                                })}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
