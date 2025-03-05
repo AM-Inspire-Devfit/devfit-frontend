@@ -10,6 +10,7 @@ import { ContentContainer, Divider1 } from '../../components/common_s';
 import * as P from './project_s';
 
 import SprintModal from "./sprint_modal"; 
+import MeetingModal from "./meeting_modal";
 
 
 import Image from "next/image";
@@ -174,32 +175,50 @@ export default function Project() {
     const [isClient, setIsClient] = useState(false);
     const [chartSize, setChartSize] = useState(300); // chart의 기본값 설정
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [goal, setGoal] = useState("UI 디자인을 완료하고 핵심 기능 단위를 정리합니다.");
+    const [goal, setGoal] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+
+    //meeting
+    const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+    const [meetingTitle, setMeetingTitle] = useState("");
+    const [meetingDate, setMeetingDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
 
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
 
-    // 모달 열기/닫기 함수
+    // sprint 모달 열기/닫기 함수
     const handleModal = () => setIsModalOpen(prev => !prev);
+
+    // meeting 모달 열기/닫기 함수
+    const toggleMeetingModal = () => {
+        setIsMeetingModalOpen(prev => !prev);
+    };
+
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
-        if (isModalOpen) {
-            document.documentElement.style.overflow = "hidden"; // HTML 태그까지 스크롤 차단
+        const disableScroll = () => {
+            document.documentElement.style.overflow = "hidden"; 
             document.body.style.overflow = "hidden";
-        } else {
-            document.documentElement.style.overflow = "auto"; // 스크롤 원복
-            document.body.style.overflow = "auto";
-        }
+        };
     
-        return () => {
-            document.documentElement.style.overflow = "auto";
+        const enableScroll = () => {
+            document.documentElement.style.overflow = "auto"; 
             document.body.style.overflow = "auto";
         };
-    }, [isModalOpen]);
+    
+        if (isModalOpen || isMeetingModalOpen) {
+            disableScroll();
+        } else {
+            enableScroll();
+        }
+    
+        return enableScroll;
+    }, [isModalOpen, isMeetingModalOpen]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -448,7 +467,7 @@ export default function Project() {
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
                 </h2>
-                <div style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
+                <div onClick={toggleMeetingModal} style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
                     <Image
                         src="/img/edit.png" 
                         alt="icon"
@@ -457,6 +476,20 @@ export default function Project() {
                         priority  
                     />
                 </div>
+                {/* 미팅 modal */}
+                <MeetingModal 
+                    isOpen={isMeetingModalOpen} 
+                    onClose={toggleMeetingModal} 
+                    meetingTitle={meetingTitle}
+                    setMeetingTitle={setMeetingTitle}
+                    meetingDate={meetingDate}
+                    setMeetingDate={setMeetingDate}
+                    startTime={startTime}
+                    setStartTime={setStartTime}
+                    endTime={endTime}
+                    setEndTime={setEndTime}
+                    sprintNum={currentSprint.sprint_num}
+                />
                 <Divider1/>
                 <P.MeetingContainer>
                     <SprintCalendar 

@@ -35,3 +35,76 @@ export const ModalButton = styled.button`
   margin: 10px;
   color: white;
 `;
+
+export const Title = styled.h2`
+    color: #6A4BBF;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+`;
+
+export const Label = styled.label`
+    font-size: 16px;
+    font-weight: bold;
+    color: #6a50c5;
+    width: 80px;  
+    text-align: left;
+`;
+
+export const InputWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 15px;
+`;
+
+export const Input = styled.input`
+    flex: 1;
+    height: 40px;
+    padding: 10px;
+    border: 2px solid #796ad9;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+`;
+
+export const DateInputContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+`;
+
+export const DateInput = styled.input`
+    border: 2px solid #796ad9;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 14px;
+    width: 155px;
+    text-align: center;
+    outline: none;
+`;
+
+export const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 20px;
+`;
+
+export const SubmitButton = styled.button`
+    margin-top: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #6a50c5;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+        background: #5A3DAC;
+    }
+`;

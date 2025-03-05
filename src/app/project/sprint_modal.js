@@ -19,14 +19,6 @@ const SprintTitle = styled.h2`
     margin-bottom: 30px;
 `;
 
-const Label = styled.label`
-    font-size: 16px;
-    font-weight: bold;
-    color: #6a50c5;
-    width: 80px;  /* 고정 너비 설정 */
-    text-align: left;
-`;
-
 const GoalInputWrapper = styled.div`
     display: flex;
     align-items: center; /* 높이 정렬 */
@@ -53,45 +45,6 @@ const DateInputWrapper = styled.div`
     width: 100%;
 `;
 
-const DateInputContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 10px; /* 간격 줄이기 */
-`;
-
-const DateInput = styled.input`
-    border: 2px solid #796ad9;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 14px;
-    width: 155px;
-    text-align: center;
-    outline: none;
-`;
-
-const ButtonContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: 20px;
-`;
-
-const SubmitButton = styled.button`
-    margin-top: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: #6a50c5;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
-
-    &:hover {
-        background: #5A3DAC;
-    }
-`;
 
 export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, startDate, setStartDate, endDate, setEndDate }) {
     if (!isOpen) return null;
@@ -103,7 +56,7 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
                 
                 {/* 중간목표 입력 */}
                 <GoalInputWrapper>
-                    <Label>중간목표</Label>
+                    <m.Label>중간목표</m.Label>
                     <Textarea 
                         value={goal} 
                         onChange={(e) => setGoal(e.target.value)}
@@ -112,25 +65,25 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
                 
                 {/* 기한 입력 */}
                 <DateInputWrapper>
-                    <Label>기한</Label>
-                    <DateInputContainer>
-                        <DateInput 
+                    <m.Label>기한</m.Label>
+                    <m.DateInputContainer>
+                        <m.DateInput 
                             type="date" 
                             value={startDate} 
                             onChange={(e) => setStartDate(e.target.value)}
                         />
                         <span> ~ </span>
-                        <DateInput 
+                        <m.DateInput 
                             type="date" 
                             value={endDate} 
                             onChange={(e) => setEndDate(e.target.value)}
                         />
-                    </DateInputContainer>
+                    </m.DateInputContainer>
                 </DateInputWrapper>
 
-                <ButtonContainer>
-                    <SubmitButton onClick={onClose}>완료</SubmitButton>
-                </ButtonContainer>
+                <m.ButtonContainer>
+                    <m.SubmitButton onClick={onClose}>완료</m.SubmitButton>
+                </m.ButtonContainer>
             </ModalContent>
         </m.ModalOverlay>
     );
