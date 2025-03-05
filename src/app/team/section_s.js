@@ -61,6 +61,9 @@ export const MemberProfile = styled.div.withConfig({
   border-radius: 50%;
   overflow: hidden;
   border: ${({ isLeader }) => (isLeader ? "4px solid #796AD9" : "2px solid #A294F9")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const MemberName = styled.div.withConfig({
@@ -119,7 +122,6 @@ export const Divider2 = styled.hr`
   margin: 0;
   
 `;
-
 
 export const ProjectBox = styled.div`
   display: flex;
