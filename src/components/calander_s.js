@@ -45,10 +45,16 @@ export const CalendarContainer = styled.div`
     /* 요일과 날짜 */
     .calendar-header-row {
         display: flex;
-        border-bottom: 4px solid #9087CA;
-        height: 40px;
-        align-items: center;
+        height: 60px;
+        align-items: flex-end;
     }
+
+    .calendar-header-cell {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 4px solid #9087CA; 
+}
 
     .time-column-header {
         width: 60px;
@@ -95,19 +101,21 @@ export const CalendarContainer = styled.div`
         display: flex;
         flex-direction: column;
         width: 60px;
-        border-right: 2px solid #9087CA;
         align-items: stretch;
+        padding-right: 5px;
     }
 
     .time-slot {
         font-size: 12px;
-        padding: 11px 12px;
+        padding: 0 12px; 
         text-align: right;
-        border-bottom: 1px solid #9087CA;
         height: 40px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        border-bottom: 1px solid #ffffff;
+        position: relative;
+        top: -20px;
     }
 
     .grid-lines {
@@ -135,11 +143,30 @@ export const CalendarContainer = styled.div`
     }
 
     .vertical-line {
+        position: relative; 
         flex: 1;
         border-right: 1px solid #C5BCFF; 
+        overflow: visible;
     }
 
     .vertical-line:last-child {
         border-right: none;
     }
+
+    .meeting-block {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    width: 100%; 
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    box-sizing: border-box;
+    z-index: 10;
+}
 `;

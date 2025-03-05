@@ -145,18 +145,27 @@ const sprintData = [
 const meetingData = [
     {   title: "아이디어 회의",
         date: "2025-02-20",
-        startTime: "14:00:00",
+        startTime: "14:30:00",
         endTime: "16:00:00",
+        toDoStatus: "STATUS_COMPLETED"
+    },
+    {   title: "아이디어 2차 회의",
+        date: "2025-02-20",
+        startTime: "18:30:00",
+        endTime: "20:00:00",
+        toDoStatus: "STATUS_COMPLETED"
     },
     {   title: "백엔드 회의",
         date: "2025-02-23",
         startTime: "14:00:00",
         endTime: "16:00:00",
+        toDoStatus: "STATUS_COMPLETED"
     },
     {   title: "프론트 회의",
         date: "2025-02-28",
         startTime: "14:00:00",
         endTime: "16:00:00",
+        toDoStatus: "STATUS_COMPLETED"
     }
 ]
 
@@ -458,6 +467,7 @@ export default function Project() {
                     <SprintCalendar 
                         sprintStart={currentSprint.sprint_start} 
                         sprintEnd={currentSprint.sprint_end}
+                        meetingData={meetingData}
                     />
                 </P.MeetingContainer>
             </div>
