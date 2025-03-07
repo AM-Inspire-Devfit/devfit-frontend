@@ -26,7 +26,8 @@ export default function Team() {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [pendingProjects, setPendingProjects] = useState({});
 
-    const [showModal, setShowModal] = useState(false);
+    const [leaveModal, setLeaveModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
     const [members, setMembers] = useState([
@@ -122,14 +123,14 @@ export default function Team() {
             document.body.style.overflow = "auto";
         };
     
-        if (showModal) {
+        if (leaveModal) {
             disableScroll();
         } else {
             enableScroll();
         }
     
-        return enableScroll;
-    }, [showModal]);
+        return () => enableScroll();
+    }, [leaveModal]);
 
 
     const handleEditClick = () => {
@@ -150,7 +151,13 @@ export default function Team() {
     // 나의 프로젝트 나가기 모달
     const handleLeaveClick = (project) => {
         setSelectedProject(project);
-        setShowModal(true);
+        setLeaveModal(true);
+    };
+
+    // 프로젝트 삭제 모달
+    const handleDeleteClick = (project) => {
+        setSelectedProject(project);
+        setDeleteModal(true);
     };
 
     // 타 프로젝트 가입 신청 <-> 승인 대기
@@ -311,10 +318,11 @@ export default function Team() {
                         </S.ProjectDescription>
                     </S.ProjectInfo>
                     </S.ProjectContent>
-                    <S.ProjectDivider />
+                    <S.ProjectDivider1 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
                     <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                     <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
+                    <S.DeleteProjectButton onClick={() => handleDeleteClick(project)}>삭제</S.DeleteProjectButton>
                     </div>
                 </S.ProjectBox>
                 ))}
@@ -336,7 +344,7 @@ export default function Team() {
                             {project.description}
                         </S.ProjectDescription>
                     </S.ProjectInfo>
-                    <S.ProjectDivider />
+                    <S.ProjectDivider2 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
                     <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                     <JoinProjectButton 
@@ -350,10 +358,10 @@ export default function Team() {
         <c.Space />
 
         {/* 프로젝트 나가기 modal */}
-        {showModal && selectedProject && (
+        {leaveModal && selectedProject && (
         <LeaveModal 
             selectedProject={selectedProject} 
-            onClose={() => setShowModal(false)}
+            onClose={() => setLeaveModal(false)}
         />
         )}
         </c.ContentContainer>

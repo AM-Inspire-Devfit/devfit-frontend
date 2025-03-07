@@ -191,7 +191,14 @@ export const ProjectContent = styled.div`
   width: 100%;
 `;
 
-export const ProjectDivider = styled.div`
+export const ProjectDivider1 = styled.div`
+  width: 1px;
+  height: 100px;
+  background-color: #796AD9;
+  margin: 0 20px;
+`;
+
+export const ProjectDivider2 = styled.div`
   width: 1px;
   height: 80px;
   background-color: #796AD9;
@@ -232,6 +239,15 @@ const StyledButton = styled.button`
     &:hover {
         background: ${({ $disabled }) =>
             $disabled ? "#B3B3B3" : "#5a46c6"};
+    }
+`;
+
+export const DeleteProjectButton = styled(StyledButton)`
+    background: #D9534F;
+    border: 2px solid #D9534F;
+    
+    &:hover {
+        background: #C9302C;
     }
 `;
 
