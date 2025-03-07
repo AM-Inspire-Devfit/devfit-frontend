@@ -2,52 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 
-import {
-    ContentContainer,
-    Divider1,
-    Space
-} from '@/components/common_s'
+import * as c from '@/components/common_s'
 
-import {
-    TitleContainer,
-    TitleRow,
-    TitleLeft,
-    TitleRight,
-    EmojiBox,
-    EmojiPickerContainer,
-    Title,
-    Subtitle,
-    StyledInput,
-    Button,
-} from '@/app/team/team_s'
+import * as T from '@/app/team/team_s'
 
-import {
-    SectionContainer,
-    SectionHeaderWrapper,
-    SectionHeaderContainer,
-    SectionHeader,
-    MemberList,
-    MemberItem,
-    MemberProfile,
-    MemberName,
-    MemberDetail,
-    ToggleMemberList,
-    Divider2,
-    ProjectBox,
-    ProjectInfo,
-    ProjectTitle,
-    ProjectDescription,
-    ProjectContent,
-    ProjectDivider,
-    ProjectHButton
-} from '@/app/team/section_s'
+import * as S from '@/app/team/section_s'
+import { LeaveProjectButton, JoinProjectButton } from "@/app/team/section_s";
 
-import {
-    ModalOverlay,
-    ModalContent,
-    ModalButton
-
-} from '@/components/modal_s';
+import LeaveModal from "./leave_modal";
 
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
@@ -148,6 +110,28 @@ export default function Team() {
     const myProjects = projects.filter(project => project.my_project);
     const otherProjects = projects.filter(project => !project.my_project);
 
+    // 모달 상태에 따라 스크롤 제어
+    useEffect(() => {
+        const disableScroll = () => {
+            document.documentElement.style.overflow = "hidden";
+            document.body.style.overflow = "hidden";
+        };
+    
+        const enableScroll = () => {
+            document.documentElement.style.overflow = "auto";
+            document.body.style.overflow = "auto";
+        };
+    
+        if (showModal) {
+            disableScroll();
+        } else {
+            enableScroll();
+        }
+    
+        return enableScroll;
+    }, [showModal]);
+
+
     const handleEditClick = () => {
         setIsEditing((prev) => !prev); 
     };
@@ -169,7 +153,7 @@ export default function Team() {
         setShowModal(true);
     };
 
-    // 타 프로젝트 가입 신청 -> 승인 대기
+    // 타 프로젝트 가입 신청 <-> 승인 대기
     const handleClick = (projectId) => {
         setPendingProjects((prev) => ({
             ...prev,
@@ -203,10 +187,10 @@ export default function Team() {
 
     return (
 
-        <ContentContainer>
-            <TitleContainer>
-                <TitleLeft>
-                <EmojiBox onClick={(e) => {
+        <c.ContentContainer>
+            <T.TitleContainer>
+                <T.TitleLeft>
+                <T.EmojiBox onClick={(e) => {
                     e.stopPropagation(); // 이벤트 전파 방지
                     setShowEmojiPicker(!showEmojiPicker);
                 }}>
@@ -220,11 +204,11 @@ export default function Team() {
                                 />
                         </EmojiPickerContainer>
                         )}
-                    </EmojiBox>
-                </TitleLeft>
+                    </T.EmojiBox>
+                </T.TitleLeft>
                     
-                    <TitleRight>
-                        <TitleRow>
+                    <T.TitleRight>
+                        <T.TitleRow>
                         {isEditing ? (
                             <StyledInput
                                 type="text"
@@ -234,7 +218,7 @@ export default function Team() {
                                 autoFocus
                             />
                         ) : (
-                            <Title>{title}</Title>
+                            <T.Title>{title}</T.Title>
                         )}
                         <Image
                             src="/img/edit.png"
@@ -244,8 +228,8 @@ export default function Team() {
                             onClick={handleEditClick}
                             style={{ cursor: "pointer", marginLeft: "10px" }}
                         />
-                        </TitleRow>
-                        <Divider1 />
+                        </T.TitleRow>
+                        <c.Divider1 />
                         {isEditing ? (
                             <StyledInput
                                 type="text"
@@ -254,193 +238,125 @@ export default function Team() {
                                 onKeyDown={handleKeyDown}
                             />
                         ) : (
-                            <Subtitle>{subtitle}</Subtitle>
+                            <T.Subtitle>{subtitle}</T.Subtitle>
                         )}
-                    </TitleRight>
-            </TitleContainer>
+                    </T.TitleRight>
+            </T.TitleContainer>
 
-            <SectionContainer>
-            <SectionHeaderWrapper>
-                <SectionHeaderContainer>
-                <SectionHeader>Member</SectionHeader>
-                </SectionHeaderContainer>
-                <Button>초대코드 생성</Button>
-            </SectionHeaderWrapper>
-            <Divider2 />
-                <MemberList>
+            <S.SectionContainer>
+            <S.SectionHeaderWrapper>
+                <S.SectionHeaderContainer>
+                <S.SectionHeader>Member</S.SectionHeader>
+                </S.SectionHeaderContainer>
+                <T.Button>초대코드 생성</T.Button>
+            </S.SectionHeaderWrapper>
+            <S.Divider2 />
+                <S.MemberList>
                     {/* 리더 */}
                     <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "10px" }}>
                         {leaders.map((leader) => (
-                            <MemberItem key={leader.id}>
-                                <MemberProfile isLeader={true}>
+                            <S.MemberItem key={leader.id}>
+                                <S.MemberProfile isLeader={true}>
                                 <Image src={leader.profileImage} alt={leader.name} width={50} height={50} />
-                                </MemberProfile>
-                                <MemberName isLeader={true}>{leader.name}</MemberName>
-                            </MemberItem>
+                                </S.MemberProfile>
+                                <S.MemberName isLeader={true}>{leader.name}</S.MemberName>
+                            </S.MemberItem>
                         ))}
                     {/* 팀원들 */}
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px" }}>
                         {teamMembers.map((member) => (
-                            <MemberItem key={member.id}>
-                                <MemberProfile>
+                            <S.MemberItem key={member.id}>
+                                <S.MemberProfile>
                                     <Image src={member.profileImage} alt={member.name} width={50} height={50} />
-                                </MemberProfile>
-                                <MemberName>{member.name}</MemberName>
-                            </MemberItem>
+                                </S.MemberProfile>
+                                <S.MemberName>{member.name}</S.MemberName>
+                            </S.MemberItem>
                         ))}
                     </div>
                     </div>
                     <div style={{ position: "relative", display: "inline-block" }}>
-                        <MemberDetail onClick={() => setIsDetailOpen(prev => !prev)}>더보기 </MemberDetail>
-                        <MemberName style={{ visibility: "hidden" }}></MemberName>
-                        <ToggleMemberList isOpen={isDetailOpen}>
+                        <S.MemberDetail onClick={() => setIsDetailOpen(prev => !prev)}>더보기 </S.MemberDetail>
+                        <S.MemberName style={{ visibility: "hidden" }}></S.MemberName>
+                        <S.ToggleMemberList isOpen={isDetailOpen}>
                             {allMembers.map(member => (
-                                <div key={member.id} style={{ 
-                                    display: "flex", 
-                                    alignItems: "center", 
-                                    width: "100%", 
-                                    padding: "5px 3px",
-                                    gap: "10px" 
-                                }}>
-                                    <div style={{
-                                        width: "40px",
-                                        height: "40px",
-                                        borderRadius: "50%",
-                                        overflow: "hidden",
-                                        border: "2px solid #796AD9"
-                                    }}>
-                                        <Image src={member.profileImage} alt={member.name} width={40} height={40} />
-                                    </div>
-                                    <p style={{
-                                        flexGrow: 1, 
-                                        textAlign: "right", 
-                                        fontSize: "14px",
-                                        color: "#432CA4",
-                                        fontWeight: "bold",
-                                    }}>
-                                        {member.name}
-                                    </p>
-                                </div>
+                                <S.ToggleMemberItem key={member.id}>
+                                <S.ToggleMemberImage>
+                                    <Image src={member.profileImage} alt={member.name} width={40} height={40} />
+                                </S.ToggleMemberImage>
+                                <S.ToggleMemberText>{member.name}</S.ToggleMemberText>
+                            </S.ToggleMemberItem>
                             ))}
-                        </ToggleMemberList>
+                        </S.ToggleMemberList>
                     </div>
-                </MemberList>
-            </SectionContainer>
+                </S.MemberList>
+            </S.SectionContainer>
 
-            <SectionContainer>
-            <SectionHeaderWrapper>
-                <SectionHeaderContainer>
-                <SectionHeader>내 프로젝트</SectionHeader>
-                </SectionHeaderContainer>
-                <Button>추가하기</Button>
-            </SectionHeaderWrapper>
-            <Divider2 />
+            <S.SectionContainer>
+            <S.SectionHeaderWrapper>
+                <S.SectionHeaderContainer>
+                <S.SectionHeader>내 프로젝트</S.SectionHeader>
+                </S.SectionHeaderContainer>
+                <T.Button>추가하기</T.Button>
+            </S.SectionHeaderWrapper>
+            <S.Divider2 />
 
             {/* 프로젝트 박스 */}
             {myProjects.map((project) => (
-                <ProjectBox key={project.project_id}>
-                    <ProjectContent>
-                    <ProjectTitle>{project.title}</ProjectTitle>
-                    <ProjectInfo>
-                        <ProjectDescription>
+                <S.ProjectBox key={project.project_id}>
+                    <S.ProjectContent>
+                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                    <S.ProjectInfo>
+                        <S.ProjectDescription>
                             {project.description}
-                        </ProjectDescription>
-                    </ProjectInfo>
-                    </ProjectContent>
-                    <ProjectDivider />
+                        </S.ProjectDescription>
+                    </S.ProjectInfo>
+                    </S.ProjectContent>
+                    <S.ProjectDivider />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <ProjectHButton>프로젝트 홈</ProjectHButton>
-                    <button style={{
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                        color: "white",
-                        background: "#796AD9",
-                        border: "2px solid #796AD9",
-                        borderRadius: "12px",
-                        padding: "6px 12px",
-                        cursor: "pointer",
-                        minWidth: "85px",
-                        transition: "0.2s ease-in-out"
-                    }}
-                    onMouseOver={(e) => e.target.style.background = "#5a46c6"}
-                    onMouseOut={(e) => e.target.style.background = "#796AD9"}
-                    onClick={() => handleLeaveClick(project)}
-                    >
-                    나가기
-                    </button>
+                    <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                    <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
                     </div>
-                </ProjectBox>
+                </S.ProjectBox>
                 ))}
-            </SectionContainer>
+            </S.SectionContainer>
 
 
-            <SectionContainer>
-            <SectionHeaderWrapper>
-                <SectionHeaderContainer>
-                <SectionHeader>타 프로젝트</SectionHeader>
-                </SectionHeaderContainer>
-            </SectionHeaderWrapper>
-            <Divider2 />
+            <S.SectionContainer>
+            <S.SectionHeaderWrapper>
+                <S.SectionHeaderContainer>
+                <S.SectionHeader>타 프로젝트</S.SectionHeader>
+                </S.SectionHeaderContainer>
+            </S.SectionHeaderWrapper>
+            <S.Divider2 />
                 {otherProjects.map((project) => (
-                <ProjectBox key={project.project_id}>
-                    <ProjectTitle>{project.title}</ProjectTitle>
-                    <ProjectInfo>
-                        <ProjectDescription>
+                <S.ProjectBox key={project.project_id}>
+                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                    <S.ProjectInfo>
+                        <S.ProjectDescription>
                             {project.description}
-                        </ProjectDescription>
-                    </ProjectInfo>
-                    <ProjectDivider />
+                        </S.ProjectDescription>
+                    </S.ProjectInfo>
+                    <S.ProjectDivider />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <ProjectHButton>프로젝트 홈</ProjectHButton>
-                    <button
-                        style={{
-                            fontSize: "12px",
-                            fontWeight: "bold",
-                            color: "white",
-                            background: pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9",
-                            border: `2px solid ${pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9"}`,
-                            borderRadius: "12px",
-                            padding: "6px 12px",
-                            cursor: "pointer",
-                            minWidth: "85px",
-                            transition: "0.2s ease-in-out"
-                        }}
-                        onMouseOver={(e) => {
-                            e.target.style.background = pendingProjects[project.project_id] ? "#B3B3B3" : "#5a46c6";
-                        }}
-                        onMouseOut={(e) => {
-                            e.target.style.background = pendingProjects[project.project_id] ? "#B3B3B3" : "#796AD9";
-                        }}
-                        onClick={() => handleClick(project.project_id)}
-                    >
-                        {pendingProjects[project.project_id] ? "승인대기" : "가입신청"}
-                    </button>
+                    <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                    <JoinProjectButton 
+                        onClick={() => handleClick(project.project_id)} 
+                        isPending={pendingProjects[project.project_id]}
+                    />
                     </div>
-                </ProjectBox>
+                </S.ProjectBox>
             ))}
-        </SectionContainer>
-        <Space />
+        </S.SectionContainer>
+        <c.Space />
 
         {/* 프로젝트 나가기 modal */}
         {showModal && selectedProject && (
-            <ModalOverlay>
-                <ModalContent>
-                    <div style={{ marginTop: "20px", textAlign: "center" }}>
-                        <p style={{ fontSize: "25px", marginBottom: "5px" }}>
-                            <strong>{selectedProject.title}</strong> 프로젝트를
-                        </p>
-                        <p style={{ fontSize: "25px", fontWeight: "normal" }}>
-                            나가시겠습니까?
-                        </p>
-                    </div>
-                    <div style={{ marginTop: "20px", display: "flex", gap: "60px", justifyContent: "center" }}> 
-                        <ModalButton onClick={() => setShowModal(false)}>예</ModalButton>
-                        <ModalButton onClick={() => setShowModal(false)}>아니오</ModalButton>
-                    </div>
-                </ModalContent>
-            </ModalOverlay>
+        <LeaveModal 
+            selectedProject={selectedProject} 
+            onClose={() => setShowModal(false)}
+        />
         )}
-        </ContentContainer>
+        </c.ContentContainer>
     );
 
 }

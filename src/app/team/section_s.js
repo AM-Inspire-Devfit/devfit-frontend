@@ -115,6 +115,31 @@ export const ToggleMemberList = styled.div.withConfig({
 
 `;
 
+export const ToggleMemberItem = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 5px 3px;
+  gap: 10px;
+`;
+
+export const ToggleMemberImage = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #796AD9;
+`;
+
+export const ToggleMemberText = styled.p`
+  flex-grow: 1;
+  text-align: right;
+  font-size: 14px;
+  color: #432CA4;
+  font-weight: bold;
+`;
+
+
 export const Divider2 = styled.hr`
   width: 100%;
   border: none;
@@ -189,3 +214,39 @@ export const ProjectHButton = styled.button`
     background: #cec4fe;
   }
 `;
+
+const StyledButton = styled.button`
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background: ${({ $disabled }) =>
+        $disabled ? "#B3B3B3" : "#796AD9"};
+    border: 2px solid ${({ $disabled }) =>
+        $disabled ? "#B3B3B3" : "#796AD9"};
+    border-radius: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    min-width: 85px;
+    transition: 0.2s ease-in-out;
+    
+    &:hover {
+        background: ${({ $disabled }) =>
+            $disabled ? "#B3B3B3" : "#5a46c6"};
+    }
+`;
+
+export function LeaveProjectButton({ onClick }) {
+    return (
+        <StyledButton onClick={onClick}>
+            나가기
+        </StyledButton>
+    );
+}
+
+export function JoinProjectButton({ onClick, isPending }) {
+    return (
+        <StyledButton onClick={onClick} $disabled={isPending}>
+            {isPending ? "승인대기" : "가입신청"}
+        </StyledButton>
+    );
+}
