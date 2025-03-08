@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from 'next/link'; 
 
 import * as c from '@/components/common_s'
 
@@ -31,6 +32,13 @@ export default function Team() {
     const [leaveModal, setLeaveModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
+
+    const userData = [
+        {
+            member_id: 1,
+            
+        }
+    ]
 
     const [members, setMembers] = useState([
         {
@@ -353,7 +361,9 @@ export default function Team() {
                     </S.ProjectContent>
                     <S.ProjectDivider1 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                    <Link href={`/project/${project.project_id}`}>
+                        <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                    </Link>
                     <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
                     <S.DeleteProjectButton onClick={() => handleDeleteClick(project)}>삭제</S.DeleteProjectButton>
                     </div>
@@ -386,7 +396,9 @@ export default function Team() {
                     </S.ProjectInfo>
                     <S.ProjectDivider2 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                    <Link href={`/project/${project.project_id}`}>
+                        <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                    </Link>
                     <JoinProjectButton 
                         onClick={() => handleClick(project.project_id)} 
                         isPending={pendingProjects[project.project_id]}
