@@ -108,3 +108,14 @@ export const SubmitButton = styled.button`
         background: #5A3DAC;
     }
 `;
+
+export const CloseButton = styled.button`
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #6A5ACD;
+`;

@@ -5,17 +5,6 @@ import { useState } from 'react';
 import { IoClose } from "react-icons/io5";  // 닫기 아이콘
 import { FiCopy } from "react-icons/fi"; 
 
-export const CloseButton = styled.button`
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: #6A5ACD;
-`;
-
 export const Title = styled.h2`
     margin-top: 30px;
     font-size: 30px;
@@ -85,9 +74,9 @@ export default function InviteModal({ onClose }) {
                     position: "relative"
                 }}
             >
-                <CloseButton onClick={onClose}>
+                <m.CloseButton onClick={onClose}>
                     <IoClose size={24} />
-                </CloseButton>
+                </m.CloseButton>
 
                 <Title>팀 코드가 생성되었습니다!</Title>
                 <Subtitle>팀 코드를 공유하여 팀원을 초대하세요</Subtitle>

@@ -10,8 +10,9 @@ import * as T from '@/app/team/team_s'
 import * as S from '@/app/team/section_s'
 import { LeaveProjectButton, JoinProjectButton } from "@/app/team/section_s";
 
-import LeaveModal from "./leave_modal";
 import InviteModal from "./invite_modal";
+import AddModal from "./add_modal";
+import LeaveModal from "./leave_modal";
 
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
@@ -30,8 +31,9 @@ export default function Team() {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [pendingProjects, setPendingProjects] = useState({});
 
-    const [leaveModal, setLeaveModal] = useState(false);
     const [inviteModal, setInviteModal] = useState(false);
+    const [addModal, setAddModal] = useState(false);
+    const [leaveModal, setLeaveModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
@@ -135,14 +137,14 @@ export default function Team() {
             document.body.style.overflow = "auto";
         };
     
-        if (leaveModal || inviteModal) {
+        if (leaveModal || inviteModal || addModal) {
             disableScroll();
         } else {
             enableScroll();
         }
     
         return () => enableScroll();
-    }, [leaveModal, inviteModal]);
+    }, [leaveModal, inviteModal, addModal]);
 
 
     const handleEditClick = () => {
@@ -204,6 +206,11 @@ export default function Team() {
     const handleInviteClick = () => {
         setInviteModal(true);
     };
+
+    // 프로젝트 생성 모달 
+    const handleAddClick = () => {
+        setAddModal(true);
+    }
     
 
     // 나의 프로젝트 나가기 모달
@@ -354,7 +361,7 @@ export default function Team() {
                 <S.SectionHeaderContainer>
                 <S.SectionHeader>내 프로젝트</S.SectionHeader>
                 </S.SectionHeaderContainer>
-                <T.Button>추가하기</T.Button>
+                <T.Button onClick={() => handleAddClick()}>추가하기</T.Button>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
 
@@ -419,6 +426,20 @@ export default function Team() {
         </S.SectionContainer>
         <c.Space />
 
+
+        {/* 초대코드 생성 modal */}
+        {inviteModal && 
+        <InviteModal  
+            onClose={() => setInviteModal(false)} 
+        />}
+
+        {/* 프로젝트 생성 modal */}
+        {addModal && 
+        <AddModal  
+            onClose={() => setAddModal(false)} 
+        />}
+
+
         {/* 프로젝트 나가기 modal */}
         {leaveModal && selectedProject && (
         <LeaveModal 
@@ -426,12 +447,6 @@ export default function Team() {
             onClose={() => setLeaveModal(false)}
         />
         )}
-
-        {/* 초대코드 생성 modal */}
-        {inviteModal && 
-        <InviteModal  
-            onClose={() => setInviteModal(false)} 
-        />}
         </c.ContentContainer>
 
     );
