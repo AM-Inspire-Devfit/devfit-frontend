@@ -193,7 +193,7 @@ export const ProjectContent = styled.div`
 
 export const ProjectDivider1 = styled.div`
   width: 1px;
-  height: 100px;
+  height: 105px;
   background-color: #796AD9;
   margin: 0 20px;
 `;

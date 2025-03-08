@@ -23,7 +23,8 @@ export default function AddModal({ onClose }) {
                 style = {{
                     width: "600px",
                     height: "390px",
-                    position: "relative"
+                    position: "relative",
+                    border: "4px solid #6A50C5",
                 }}
             >
 

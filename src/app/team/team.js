@@ -13,6 +13,7 @@ import { LeaveProjectButton, JoinProjectButton } from "@/app/team/section_s";
 import InviteModal from "./invite_modal";
 import AddModal from "./add_modal";
 import LeaveModal from "./leave_modal";
+import DeleteModal from "./delete_modal";
 
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
@@ -37,12 +38,7 @@ export default function Team() {
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
-    const userData = [
-        {
-            member_id: 1,
-            
-        }
-    ]
+    const userData = { memberId: 1234 };
 
     const [members, setMembers] = useState([
         {
@@ -83,36 +79,42 @@ export default function Team() {
             title: "SideEffect",
             description: "개발자들을 위한 협업 도구 제공 프로젝트",
             my_project: true,
+            adminId: 1234
         },
         {
             project_id: 2,
             title: "AWS",
             description: "클라우드 기반 웹서비스 구축 프로젝트",
             my_project: true,
+            adminId: 5678
         },
         {
             project_id: 3,
             title: "KING",
             description: "유니티 기반 게임 개발 동아리",
             my_project: false,
+            adminId: 5678
         },
         {
             project_id: 4,
             title: "CodeSync",
             description: "실시간 코드 공유 및 협업을 위한 플랫폼",
             my_project: false,
+            adminId: 5678
         },
         {
             project_id: 5,
             title: "AI Scholar",
             description: "AI를 활용한 맞춤형 장학금 추천 서비스",
             my_project: true,
+            adminId: 1234
         },
         {
             project_id: 6,
             title: "DevMatch",
             description: "개발자 매칭 및 협업을 지원하는 플랫폼",
             my_project: false,
+            adminId: 5678
         }
     ]);
 
@@ -137,14 +139,14 @@ export default function Team() {
             document.body.style.overflow = "auto";
         };
     
-        if (leaveModal || inviteModal || addModal) {
+        if (leaveModal || inviteModal || addModal || deleteModal) {
             disableScroll();
         } else {
             enableScroll();
         }
     
         return () => enableScroll();
-    }, [leaveModal, inviteModal, addModal]);
+    }, [leaveModal, inviteModal, addModal, deleteModal]);
 
 
     const handleEditClick = () => {
@@ -212,7 +214,6 @@ export default function Team() {
         setAddModal(true);
     }
     
-
     // 나의 프로젝트 나가기 모달
     const handleLeaveClick = (project) => {
         setSelectedProject(project);
@@ -355,7 +356,8 @@ export default function Team() {
                     </div>
                 </S.MemberList>
             </S.SectionContainer>
-
+            
+            {/* 내 프로젝트 */}
             <S.SectionContainer>
             <S.SectionHeaderWrapper>
                 <S.SectionHeaderContainer>
@@ -364,8 +366,6 @@ export default function Team() {
                 <T.Button onClick={() => handleAddClick()}>추가하기</T.Button>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
-
-            {/* 프로젝트 박스 */}
             {myProjects.map((project) => (
                 <S.ProjectBox key={project.project_id}>
                     <S.ProjectContent>
@@ -376,19 +376,36 @@ export default function Team() {
                         </S.ProjectDescription>
                     </S.ProjectInfo>
                     </S.ProjectContent>
-                    <S.ProjectDivider1 />
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <Link href={`/project/${project.project_id}`}>
-                        <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
-                    </Link>
-                    <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
-                    <S.DeleteProjectButton onClick={() => handleDeleteClick(project)}>삭제</S.DeleteProjectButton>
-                    </div>
+
+                    {/* 유저가 프로젝트 팀장일 경우 */}
+                    {project.adminId === userData.memberId ? (
+                        <>
+                        <S.ProjectDivider1 />
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                        <Link href={`/project/${project.project_id}`}>
+                            <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                        </Link>
+                        <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
+                        <S.DeleteProjectButton onClick={() => handleDeleteClick(project)}>삭제</S.DeleteProjectButton>
+                        </div>
+                        </>
+                    ) : (
+                        // 유저가 프로젝트 팀원일 경우
+                        <>
+                        <S.ProjectDivider2 />
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                            <Link href={`/project/${project.project_id}`}>
+                                <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
+                            </Link>
+                            <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
+                        </div>
+                        </>
+                    )}
                 </S.ProjectBox>
                 ))}
             </S.SectionContainer>
 
-
+            {/* 타 프로젝트 */}
             <S.SectionContainer>
             <S.SectionHeaderWrapper>
                 <S.SectionHeaderContainer
@@ -439,6 +456,13 @@ export default function Team() {
             onClose={() => setAddModal(false)} 
         />}
 
+        {/* 프로젝트 삭제 modal */}
+        {deleteModal && selectedProject && (
+        <DeleteModal 
+            selectedProject={selectedProject} 
+            onClose={() => setDeleteModal(false)}
+        />
+        )}
 
         {/* 프로젝트 나가기 modal */}
         {leaveModal && selectedProject && (
