@@ -286,7 +286,7 @@ export default function Team() {
             <S.SectionContainer>
             <S.SectionHeaderWrapper>
                 <S.SectionHeaderContainer>
-                <S.SectionHeader>Member</S.SectionHeader>
+                <S.SectionHeader>팀 멤버</S.SectionHeader>
                 </S.SectionHeaderContainer>
                 <T.Button>초대코드 생성</T.Button>
             </S.SectionHeaderWrapper>
@@ -364,8 +364,15 @@ export default function Team() {
 
             <S.SectionContainer>
             <S.SectionHeaderWrapper>
-                <S.SectionHeaderContainer>
-                <S.SectionHeader>타 프로젝트</S.SectionHeader>
+                <S.SectionHeaderContainer
+                    style={{ 
+                    background: "#9688ED"
+                    }} >
+                <S.SectionHeader
+                    style={{ 
+                        color: "white"
+                    }}
+                >타 프로젝트</S.SectionHeader>
                 </S.SectionHeaderContainer>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
