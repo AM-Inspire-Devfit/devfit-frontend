@@ -11,6 +11,7 @@ import * as S from '@/app/team/section_s'
 import { LeaveProjectButton, JoinProjectButton } from "@/app/team/section_s";
 
 import LeaveModal from "./leave_modal";
+import InviteModal from "./invite_modal";
 
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
@@ -30,6 +31,7 @@ export default function Team() {
     const [pendingProjects, setPendingProjects] = useState({});
 
     const [leaveModal, setLeaveModal] = useState(false);
+    const [inviteModal, setInviteModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
@@ -133,14 +135,14 @@ export default function Team() {
             document.body.style.overflow = "auto";
         };
     
-        if (leaveModal) {
+        if (leaveModal || inviteModal) {
             disableScroll();
         } else {
             enableScroll();
         }
     
         return () => enableScroll();
-    }, [leaveModal]);
+    }, [leaveModal, inviteModal]);
 
 
     const handleEditClick = () => {
@@ -197,6 +199,12 @@ export default function Team() {
             window.removeEventListener("mousedown", handleClickOutside);
         };
     }, [showEmojiPicker]);
+
+    // 초대코드 생성 모달
+    const handleInviteClick = () => {
+        setInviteModal(true);
+    };
+    
 
     // 나의 프로젝트 나가기 모달
     const handleLeaveClick = (project) => {
@@ -296,7 +304,9 @@ export default function Team() {
                 <S.SectionHeaderContainer>
                 <S.SectionHeader>팀 멤버</S.SectionHeader>
                 </S.SectionHeaderContainer>
-                <T.Button>초대코드 생성</T.Button>
+                <T.Button onClick={handleInviteClick}>
+                    초대코드 생성
+                </T.Button>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
                 <S.MemberList>
@@ -416,7 +426,14 @@ export default function Team() {
             onClose={() => setLeaveModal(false)}
         />
         )}
+
+        {/* 초대코드 생성 modal */}
+        {inviteModal && 
+        <InviteModal  
+            onClose={() => setInviteModal(false)} 
+        />}
         </c.ContentContainer>
+
     );
 
 }
