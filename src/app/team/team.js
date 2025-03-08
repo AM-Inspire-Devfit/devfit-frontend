@@ -22,7 +22,9 @@ export default function Team() {
 
     const [chosenEmoji, setChosenEmoji] = useState("🍇"); // sideEffect 디폴트 이모지
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const emojiBoxRef = useRef(null);
     const emojiPickerRef = useRef(null);
+    const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [pendingProjects, setPendingProjects] = useState({});
 
@@ -143,10 +145,50 @@ export default function Team() {
         }
     };
 
-    const onEmojiClick = (emojiData) => {
-        setChosenEmoji(emojiData.emoji);
-        setShowEmojiPicker(false);
+    // 이모지 클릭 시 위치 계산
+    const updatePickerPosition = () => {
+        if (emojiBoxRef.current) {
+            const rect = emojiBoxRef.current.getBoundingClientRect();
+            setPickerPosition({
+                top: rect.bottom + window.scrollY + 8, 
+                left: rect.left + rect.width / 2,  
+            });
+        }
     };
+
+    // 창 크기 변경 시 이모지 팝업 위치 업데이트
+    useEffect(() => {
+        if (showEmojiPicker) {
+            updatePickerPosition(); // Picker가 열릴 때 한 번 실행
+
+            const handleResize = () => {
+                updatePickerPosition(); 
+            };
+
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }
+    }, [showEmojiPicker]);
+
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                emojiPickerRef.current &&
+                !emojiPickerRef.current.contains(event.target) &&
+                !emojiBoxRef.current.contains(event.target)
+            ) {
+                setShowEmojiPicker(false);
+            }
+        }
+
+        if (showEmojiPicker) {
+            window.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            window.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showEmojiPicker]);
 
     // 나의 프로젝트 나가기 모달
     const handleLeaveClick = (project) => {
@@ -169,55 +211,28 @@ export default function Team() {
     };
     
 
-    useEffect(() => {
-        function handleClickOutside(event) {
-            // 이모지 피커 내부 클릭 시 닫히지 않도록 예외 처리
-            if (
-                emojiPickerRef.current &&
-                (emojiPickerRef.current.contains(event.target) ||
-                event.target.closest(".emoji-picker"))
-            ) {
-                return;
-            }
-    
-            // 이외의 경우는 이모지 피커 닫기
-            setShowEmojiPicker(false);
-        }
-    
-        // 화면 전체에서 클릭 이벤트 감지
-        window.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            window.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-    
-
     return (
 
         <c.ContentContainer>
             <T.TitleContainer>
                 <T.TitleLeft>
-                <T.EmojiBox onClick={(e) => {
-                    e.stopPropagation(); // 이벤트 전파 방지
-                    setShowEmojiPicker(!showEmojiPicker);
-                }}>
+                <T.EmojiBox
+                    ref={emojiBoxRef}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        updatePickerPosition();
+                        setShowEmojiPicker((prev) => !prev);
+                    }}
+                >
                         {chosenEmoji}
                         <Image src="/img/emoji_edit.png" alt="Edit" width={35} height={35} />
-                        {showEmojiPicker && (
-                            <EmojiPickerContainer ref={emojiPickerRef} className="emoji-picker-container">
-                                <EmojiPicker 
-                                    onEmojiClick={onEmojiClick} 
-                                    className="emoji-category"
-                                />
-                        </EmojiPickerContainer>
-                        )}
-                    </T.EmojiBox>
+                        </T.EmojiBox>
                 </T.TitleLeft>
                     
                     <T.TitleRight>
                         <T.TitleRow>
                         {isEditing ? (
-                            <StyledInput
+                            <T.StyledInput
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
@@ -238,7 +253,7 @@ export default function Team() {
                         </T.TitleRow>
                         <c.Divider1 />
                         {isEditing ? (
-                            <StyledInput
+                            <T.StyledInput
                                 type="text"
                                 value={subtitle}
                                 onChange={(e) => setSubtitle(e.target.value)}
@@ -249,6 +264,24 @@ export default function Team() {
                         )}
                     </T.TitleRight>
             </T.TitleContainer>
+
+            {showEmojiPicker && (
+                <div
+                    ref={emojiPickerRef}
+                    style={{
+                        position: "absolute",
+                        top: `${pickerPosition.top}px`,  
+                        left: `${pickerPosition.left}px`, 
+                        transform: "translateX(-50%)",
+                        zIndex: 200,
+                        background: "white",
+                        borderRadius: "8px",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    }}
+                >
+                    <EmojiPicker onEmojiClick={(emojiData) => setChosenEmoji(emojiData.emoji)} />
+                </div>
+            )}
 
             <S.SectionContainer>
             <S.SectionHeaderWrapper>

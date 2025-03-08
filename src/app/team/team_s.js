@@ -32,9 +32,9 @@ export const EmojiBox = styled.div`
   justify-content: center;
   cursor: pointer;
   border: 2px solid #796AD9;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 5px;
-  position: relative;
+  position: relative; 
 
   img {
     position: absolute;
@@ -44,20 +44,6 @@ export const EmojiBox = styled.div`
     height: 25px;
     object-fit: contain; 
   }
-`;
-
-export const EmojiPickerContainer = styled.div`
-  position: absolute;
-  top: 100%; 
-  left: 50%; 
-  transform: translateX(-50%);
-  width: 370px;
-  height: 480px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 200; 
-  padding: 10px;
 `;
 
 
