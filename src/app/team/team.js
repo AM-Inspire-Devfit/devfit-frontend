@@ -14,6 +14,7 @@ import InviteModal from "./invite_modal";
 import AddModal from "./add_modal";
 import LeaveModal from "./leave_modal";
 import DeleteModal from "./delete_modal";
+import AdminLModal from "./admin_leave_modal";
 
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
@@ -36,6 +37,7 @@ export default function Team() {
     const [addModal, setAddModal] = useState(false);
     const [leaveModal, setLeaveModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const [adminLModal, setAdminLModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
     const userData = { memberId: 1234 };
@@ -220,6 +222,13 @@ export default function Team() {
         setLeaveModal(true);
     };
 
+    // 프로젝트 팀장 나가기 모달
+    const handleAdminLClick = (project) => {
+        console.log("handleAdminLClick 실행됨", project);
+        setSelectedProject(project);
+        setAdminLModal(true);
+    };
+
     // 프로젝트 삭제 모달
     const handleDeleteClick = (project) => {
         setSelectedProject(project);
@@ -385,7 +394,7 @@ export default function Team() {
                         <Link href={`/project/${project.project_id}`}>
                             <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                         </Link>
-                        <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
+                        <LeaveProjectButton onClick={() => handleAdminLClick(project)} />
                         <S.DeleteProjectButton onClick={() => handleDeleteClick(project)}>삭제</S.DeleteProjectButton>
                         </div>
                         </>
@@ -469,6 +478,13 @@ export default function Team() {
         <LeaveModal 
             selectedProject={selectedProject} 
             onClose={() => setLeaveModal(false)}
+        />
+        )}
+
+        {/* 프로젝트 팀장 나가기 modal */}
+        {adminLModal && (
+        <AdminLModal
+            onClose={() => setAdminLModal(false)}
         />
         )}
         </c.ContentContainer>

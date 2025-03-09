@@ -24,10 +24,12 @@ export default function DeleteModal({ selectedProject, onClose }) {
                         textAlign: "left",
                         marginBottom: "20px",
                         fontSize: "15px",
-                        color: "#333"
+                        color: "#333",
+                        width: "100%",
+                        boxSizing: "border-box",
                     }}
                 >
-                    프로젝트를 삭제하면 이전 작업 기록을 포함한 모든 데이터가 삭제되며, 
+                    프로젝트를 삭제하면 이전 작업 기록을 포함한 모든 데이터가 삭제되며 
                     소속 팀원들 또한 더 이상 이를 열람할 수 없습니다.
                     <br />
                     <br />
