@@ -62,12 +62,30 @@ const sprintData = [
             }
         ],
         taskData : [
-            { task: "API 명세서 작성"},
-            { task: "피그마 UI 디자인 완료"},
-            { task: "백/프론트 깃레포 생성"},
-            { task: "회의록 작성"},
-            { task: "로고 디자인"},
-            { task: "API 명세서 작성"},
+            { 
+                task: "API 명세서 작성",
+                toDoStatus: "COMPELTED"
+            },
+            { 
+                task: "피그마 UI 디자인 완료",
+                toDoStatus: "NOT_STARTED"
+            },
+            { 
+                task: "백/프론트 깃레포 생성",
+                toDoStatus: "COMPELTED"
+            },
+            { 
+                task: "회의록 작성",
+                toDoStatus: "NOT_STARTED"
+            },
+            { 
+                task: "로고 디자인",
+                toDoStatus: "NOT_STARTED"
+            },
+            { 
+                task: "API 명세서 작성",
+                toDoStatus: "COMPELTED"
+            },
         ],
         last: false
     },
@@ -104,7 +122,14 @@ const sprintData = [
             }
         ],
         taskData : [
-            { task: "API 명세서 작성"},
+            { 
+                task: "API 명세서 작성",
+                toDoStatus: "COMPELTED"
+            },
+            { 
+                task: "피그마 UI 디자인 완료",
+                toDoStatus: "NOT_STARTED"
+            },
         ],
         last: false
     },
@@ -135,9 +160,22 @@ const sprintData = [
             }
         ],
         taskData : [
-            { task: "API 명세서 작성"},
-            { task: "API 명세서 작성"},
-            { task: "API 명세서 작성"},
+            { 
+                task: "API 명세서 작성",
+                toDoStatus: "COMPELTED"
+            },
+            { 
+                task: "피그마 UI 디자인 완료",
+                toDoStatus: "NOT_STARTED"
+            },
+            { 
+                task: "API 명세서 작성",
+                toDoStatus: "COMPELTED"
+            },
+            { 
+                task: "피그마 UI 디자인 완료",
+                toDoStatus: "NOT_STARTED"
+            },
         ],
         last: true
     }
@@ -429,7 +467,9 @@ export default function Project() {
                     <P.TaskGrid>
                         {currentSprint.taskData.map((item, index) => (
                             <P.TaskItem key={`task-${index}`}> 
-                                <P.TaskCheckbox />
+                                <P.TaskCheckbox
+                                    checked={item.toDoStatus === "COMPELTED"} readOnly
+                                />
                                 {item.task}
                             </P.TaskItem>
                         ))}

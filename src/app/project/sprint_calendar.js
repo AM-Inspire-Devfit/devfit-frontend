@@ -68,7 +68,7 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingCli
                     <AiOutlineLeft size={20} />
                 </button>
                 <span className="date-range">
-                    {currentWeekStart.toLocaleDateString().replace(/\.$/, "")} - {lastValidDate.replace(/\.$/, "")}
+                    {currentWeekStart.toLocaleDateString().replace(/\.$/, "")} - {lastValidDate}
                 </span>
                 <button onClick={handleNextWeek} className="nav-button">
                     <AiOutlineRight size={20} />

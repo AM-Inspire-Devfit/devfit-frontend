@@ -194,7 +194,6 @@ export const TaskItem = styled.label`
 export const TaskCheckbox = styled.input.attrs({ type: "checkbox" })`
     width: 16px;
     height: 16px;
-    cursor: pointer;
     appearance: none; 
     border: 1px solid #4F3DBD;
     border-radius: 4px;
