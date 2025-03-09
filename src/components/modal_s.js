@@ -109,6 +109,23 @@ export const SubmitButton = styled.button`
     }
 `;
 
+export const DeleteButton = styled.button`
+    margin-top: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #D32F2F;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+        background: #D32F2F;
+    }
+`;
+
 export const CloseButton = styled.button`
     position: absolute;
     top: 15px;

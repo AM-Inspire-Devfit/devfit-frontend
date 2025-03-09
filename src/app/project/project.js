@@ -144,25 +144,29 @@ const sprintData = [
 ];
 
 const meetingData = [
-    {   title: "아이디어 회의",
+    {   sprint_num: 1,
+        title: "아이디어 회의",
         date: "2025-02-20",
         startTime: "14:30:00",
         endTime: "16:00:00",
         toDoStatus: "STATUS_COMPLETED"
     },
-    {   title: "아이디어 2차 회의",
+    {   sprint_num: 2,
+        title: "아이디어 2차 회의",
         date: "2025-02-20",
         startTime: "18:30:00",
         endTime: "20:00:00",
         toDoStatus: "STATUS_COMPLETED"
     },
-    {   title: "백엔드 회의",
+    {   sprint_num: 2,
+        title: "백엔드 회의",
         date: "2025-02-23",
         startTime: "14:00:00",
         endTime: "16:00:00",
         toDoStatus: "STATUS_COMPLETED"
     },
-    {   title: "프론트 회의",
+    {   sprint_num: 2,
+        title: "프론트 회의",
         date: "2025-02-28",
         startTime: "14:00:00",
         endTime: "16:00:00",
@@ -180,6 +184,7 @@ export default function Project() {
     const [endDate, setEndDate] = useState("");
 
     //meeting
+    const [selectedMeeting, setSelectedMeeting] = useState(null);
     const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
     const [meetingTitle, setMeetingTitle] = useState("");
     const [meetingDate, setMeetingDate] = useState("");
@@ -192,12 +197,6 @@ export default function Project() {
 
     // sprint 모달 열기/닫기 함수
     const handleModal = () => setIsModalOpen(prev => !prev);
-
-    // meeting 모달 열기/닫기 함수
-    const toggleMeetingModal = () => {
-        setIsMeetingModalOpen(prev => !prev);
-    };
-
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -293,6 +292,26 @@ export default function Project() {
         setStartDate(currentSprint.sprint_start);
         setEndDate(currentSprint.sprint_end);
     }, [isModalOpen, currentSprint]);
+
+    // 신규 미팅 생성
+    const openMeetingModalForCreate = () => {
+        setSelectedMeeting(null);
+        setMeetingTitle("");
+        setMeetingDate("");
+        setStartTime("");
+        setEndTime("");
+        setIsMeetingModalOpen(true);
+    };
+    
+    // 기존 미팅 수정
+    const openMeetingModalForEdit = (meeting) => {
+        setSelectedMeeting(meeting);
+        setMeetingTitle(meeting.title);
+        setMeetingDate(meeting.date);
+        setStartTime(meeting.startTime);
+        setEndTime(meeting.endTime);
+        setIsMeetingModalOpen(true);
+    };
 
     return (
         <ContentContainer>
@@ -467,7 +486,7 @@ export default function Project() {
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
                 </h2>
-                <div onClick={toggleMeetingModal} style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
+                <div onClick={openMeetingModalForCreate} style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
                     <Image
                         src="/img/edit.png" 
                         alt="icon"
@@ -479,7 +498,7 @@ export default function Project() {
                 {/* 미팅 modal */}
                 <MeetingModal 
                     isOpen={isMeetingModalOpen} 
-                    onClose={toggleMeetingModal} 
+                    onClose={() => setIsMeetingModalOpen(false)}
                     meetingTitle={meetingTitle}
                     setMeetingTitle={setMeetingTitle}
                     meetingDate={meetingDate}
@@ -489,13 +508,16 @@ export default function Project() {
                     endTime={endTime}
                     setEndTime={setEndTime}
                     sprintNum={currentSprint.sprint_num}
+                    isEditing={!!selectedMeeting} 
                 />
+                
                 <Divider1/>
                 <P.MeetingContainer>
                     <SprintCalendar 
                         sprintStart={currentSprint.sprint_start} 
                         sprintEnd={currentSprint.sprint_end}
                         meetingData={meetingData}
+                        onMeetingClick={openMeetingModalForEdit}
                     />
                 </P.MeetingContainer>
             </div>

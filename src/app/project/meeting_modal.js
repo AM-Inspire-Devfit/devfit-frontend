@@ -12,7 +12,7 @@ const ModalContent = styled.div`
     border: 2px solid #796AD9;
 `;
 
-export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeetingTitle, meetingDate, setMeetingDate, startTime, setStartTime, endTime, setEndTime, sprintNum }) {
+export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeetingTitle, meetingDate, setMeetingDate, startTime, setStartTime, endTime, setEndTime, sprintNum, isEditing }) {
     if (!isOpen) return null;
 
     return (
@@ -58,8 +58,20 @@ export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeeting
                     </m.DateInputContainer>
                 </m.InputWrapper>
 
-                <m.ButtonContainer>
-                    <m.SubmitButton onClick={onClose}>완료</m.SubmitButton>
+                <m.ButtonContainer
+                    style={{
+                        gap: "10px"
+                    }}
+                >
+                    <m.SubmitButton onClick={onClose}>
+                        {isEditing ? "수정 완료" : "미팅 생성"}
+                    </m.SubmitButton>
+
+                    {isEditing && (
+                    <m.DeleteButton onClick={onClose}>
+                        삭제
+                    </m.DeleteButton>
+                )}
                 </m.ButtonContainer>
             </ModalContent>
         </m.ModalOverlay>

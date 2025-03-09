@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { CalendarContainer } from "../../components/calander_s";
 
-const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [] }) => {
+const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingClick }) => {
     const [currentWeekStart, setCurrentWeekStart] = useState(new Date(sprintStart));
 
     useEffect(() => {
@@ -53,6 +53,12 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [] }) => {
     const getColorForMeeting = (date, idx) => {
         const dateHash = date.split("-").reduce((acc, val) => acc + parseInt(val, 10), 0);
         return colorPalette[(dateHash + idx) % colorPalette.length];
+    };
+
+    const handleMeetingClick = (meeting) => {
+        if (onMeetingClick) {
+            onMeetingClick(meeting); 
+        }
     };
 
     return (
@@ -121,8 +127,11 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [] }) => {
                                             style={{ 
                                                 top: `${topPosition}px`, 
                                                 height: `${height}px`,
-                                                backgroundColor: assignedColor
+                                                backgroundColor: assignedColor,
+                                                cursor: "pointer"
+                                                
                                             }}
+                                            onClick={() => handleMeetingClick(meet)}
                                         >
                                             {meet.title}
                                         </div>
