@@ -441,7 +441,7 @@ export default function Team() {
                     </S.ProjectInfo>
                     <S.ProjectDivider2 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <Link href={`/project/${project.project_id}`}>
+                    <Link href={`/project/${project.project_id}/view`}>
                         <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                     </Link>
                     <JoinProjectButton 
