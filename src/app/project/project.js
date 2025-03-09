@@ -516,7 +516,7 @@ export default function Project() {
                     <SprintCalendar 
                         sprintStart={currentSprint.sprint_start} 
                         sprintEnd={currentSprint.sprint_end}
-                        meetingData={meetingData}
+                        meetingData={meetingData.filter(meet => meet.sprint_num === currentSprint.sprint_num)}
                         onMeetingClick={openMeetingModalForEdit}
                     />
                 </P.MeetingContainer>
