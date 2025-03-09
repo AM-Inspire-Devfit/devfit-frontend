@@ -81,25 +81,25 @@ const sprintData = [
             {
                 id: 1,
                 name: "최현태",
-                value: 30,
+                value: 5,
                 profileImage: "/img/profile2.png" 
             },
             {
                 id: 2,
                 name: "조수빈",
-                value: 25,
+                value: 15,
                 profileImage: "/img/profile.png" 
             },
             {
                 id: 3,
                 name: "정선우",
-                value: 20,
+                value: 0,
                 profileImage: "/img/profile.png" 
             },
             {
                 id: 4,
                 name: "채민주",
-                value: 20,
+                value: 10,
                 profileImage: "/img/profile.png" 
             }
         ],
@@ -252,7 +252,7 @@ export default function Project() {
                 ...sprint,
                 member: sortedMembers.map(member => ({
                     ...member,
-                    isTop: member.value === highestValue // 최고 기여자에게 🥇 배지 추가
+                    isTop: highestValue > 0 && member.value === highestValue // 최고 기여자에게 🥇 배지 추가
                 }))
             };
         });
