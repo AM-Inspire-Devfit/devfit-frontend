@@ -62,7 +62,7 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [] }) => {
                     <AiOutlineLeft size={20} />
                 </button>
                 <span className="date-range">
-                    {currentWeekStart.toLocaleDateString()} - {lastValidDate}
+                    {currentWeekStart.toLocaleDateString().replace(/\.$/, "")} - {lastValidDate.replace(/\.$/, "")}
                 </span>
                 <button onClick={handleNextWeek} className="nav-button">
                     <AiOutlineRight size={20} />
