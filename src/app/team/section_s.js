@@ -83,6 +83,8 @@ export const MemberDetail = styled.div`
   border-radius: 50%;
   position: relative; 
   margin-left: 10px; 
+  margin-right: 10px; 
+  margin-top: -18px;
   cursor: pointer;
 
   display: flex;

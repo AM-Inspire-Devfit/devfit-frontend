@@ -328,7 +328,7 @@ export default function Team() {
             <S.Divider2 />
                 <S.MemberList>
                     {/* 리더 */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "20px" }}>
                         {leaders.map((leader) => (
                             <S.MemberItem key={leader.id}>
                                 <S.MemberProfile isLeader={true}>
@@ -339,12 +339,14 @@ export default function Team() {
                         ))}
                     {/* 팀원들 */}
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px" }}>
-                        {teamMembers.map((member) => (
-                            <S.MemberItem key={member.id}>
+                        {teamMembers.slice(0, 3).map((member, index) => (
+                            <S.MemberItem key={member.id} style={{ position: "relative", marginLeft: index === 0 ? "0" : "-15px" }}>
                                 <S.MemberProfile>
                                     <Image src={member.profileImage} alt={member.name} width={50} height={50} />
                                 </S.MemberProfile>
-                                <S.MemberName>{member.name}</S.MemberName>
+                                <S.MemberName style={{ visibility: member.name ? "hidden" : "visible" }}>
+                                    {member.name}
+                                </S.MemberName>
                             </S.MemberItem>
                         ))}
                     </div>
