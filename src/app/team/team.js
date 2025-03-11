@@ -78,7 +78,7 @@ export default function Team() {
     const [projects, setProjects] = useState([
         {
             project_id: 1,
-            title: "SideEffect",
+            title: "devFit",
             description: "개발자들을 위한 협업 도구 제공 프로젝트",
             my_project: true,
             adminId: 1234

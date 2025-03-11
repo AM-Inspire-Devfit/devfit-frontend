@@ -139,7 +139,7 @@ export const ProgressBarWrapper = styled.div`
     height: 100%;
     position: relative;
     background-color: #e0e0e0; 
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
 `;
 

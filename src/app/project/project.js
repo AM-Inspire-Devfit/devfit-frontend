@@ -1,6 +1,8 @@
 "use client";  
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+
 import { PieChart, Pie, Cell } from "recharts";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import SprintCalendar from "./sprint_calendar"; 
@@ -22,7 +24,9 @@ const colorPalette = [
 ];
 
 const projectData = [
-    {   teamName: "SideEffect",
+    {   
+        project_id: 1,
+        teamName: "SideEffect",
         projectName: "devFit",
         projectDescription: "개발자들의 성공적인 협업을 돕는 웹서비스",
     }
@@ -30,6 +34,7 @@ const projectData = [
 
 const sprintData = [
     {
+        sprint_id: 1,
         sprint_num: 1,
         goal: "UI 디자인을 완료하고 핵심 기능 단위를 정리합니다.",
         sprint_start: "2025-01-20",
@@ -90,6 +95,7 @@ const sprintData = [
         last: false
     },
     {
+        sprint_id: 2,
         sprint_num: 2,
         goal: "리액트 프로젝트를 생성합니다.",
         sprint_start: "2025-02-20",
@@ -134,6 +140,7 @@ const sprintData = [
         last: false
     },
     {
+        sprint_id: 3,
         sprint_num: 3,
         goal: "API 연결을 시작합니다.",
         sprint_start: "2025-03-20",
@@ -221,6 +228,9 @@ export default function Project() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
+    const project = projectData[0]; 
+    const project_id = project.project_id; 
+
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
     const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
@@ -301,6 +311,9 @@ export default function Project() {
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
     const currentSprint = sprintDataWithColors[currentSprintIndex]; 
+
+    const sprint = sprintData.find(s => s.sprint_num === currentSprint.sprint_num);
+    const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
 
@@ -475,7 +488,9 @@ export default function Project() {
                         ))}
                     </P.TaskGrid>
                     <P.ButtonWrapper>
-                        <P.TaskButton>상세보기</P.TaskButton>
+                        <Link href={`/project/${project_id}/sprint/${sprint_id}`}>
+                            <P.TaskButton>상세보기</P.TaskButton>
+                        </Link>
                     </P.ButtonWrapper>
                 </P.SprintBox>
                 </>

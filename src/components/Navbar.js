@@ -16,7 +16,7 @@ export const NavbarContainer = styled.nav`
   padding: 0 30px;
   top: 0;
   left: 0;
-  border-bottom: 2px solid #796AD9;
+  border-bottom: 1px solid #D9D9D9;
   z-index: 1000;
 `;
 

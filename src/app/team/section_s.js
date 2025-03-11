@@ -241,6 +241,8 @@ const StyledButton = styled.button`
     &:hover {
         background: ${({ $disabled }) =>
             $disabled ? "#B3B3B3" : "#5a46c6"};
+        border: 2px solid ${({ $disabled }) =>
+        $disabled ? "#B3B3B3" : "#5a46c6"};
     }
 `;
 
@@ -250,6 +252,7 @@ export const DeleteProjectButton = styled(StyledButton)`
     
     &:hover {
         background: #C9302C;
+        border: 2px solid #C9302C;
     }
 `;
 
