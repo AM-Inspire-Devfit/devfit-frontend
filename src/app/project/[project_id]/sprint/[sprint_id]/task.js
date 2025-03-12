@@ -134,11 +134,11 @@ export default function Task() {
                 }}
             >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86' }}>
-                    <span style={{ fontSize: '23px', marginLeft: '20px' }}>
+                <h2 style={{ fontWeight: 'bold', color: '#2E1A86' }}>
+                    <span style={{ fontSize: '32px', marginLeft: '20px' }}>
                         Sprint {currentSprint.sprint_num}
                     </span>
-                    <span style={{ fontSize: '12px', marginLeft: '15px' }}>
+                    <span style={{ fontSize: '15px', marginLeft: '15px' }}>
                         {currentSprint.sprint_start} ~ {currentSprint.sprint_end}
                     </span>
                 </h2>
@@ -147,7 +147,7 @@ export default function Task() {
             <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Divider1 />
             </div>
-            <p style={{ fontSize: '14px', fontWeight: 400, color: '#4F3DBD', marginTop: '10px', marginLeft: '20px', marginBottom: '15px', textAlign: 'left' }}>
+            <p style={{ fontSize: '15px', fontWeight: 400, color: '#4F3DBD', marginTop: '10px', marginLeft: '20px', marginBottom: '15px', textAlign: 'left' }}>
                 {currentSprint.goal}
             </p>    
             </div>
@@ -166,6 +166,13 @@ export default function Task() {
                     <P.ProgressBar progress={currentSprint.progress} /> 
                 </P.ProgressBarWrapper>
             </P.ProgressContainer>
+
+            <T.TaskContainerWrapper>
+                <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#2E1A86" }}>
+                    Task
+                </h2>
+                <T.AddTaskButton>추가하기</T.AddTaskButton>
+            </T.TaskContainerWrapper>
 
                 <T.TaskContainer>
                     {taskData.map((task, index) => (

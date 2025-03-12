@@ -1,11 +1,38 @@
 import styled from "styled-components";
 
+export const TaskContainerWrapper = styled.div`
+    width: 720px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-top: 30px;
+`;
+
+export const AddTaskButton = styled.button`
+    width: 90px;
+    height: 35px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #796AD9;
+    background-color: white;
+    border: 2px solid #796AD9;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        color: white;
+        background-color: #5a46c6;
+        border: 2px solid #5a46c6;
+    }
+`;
+
 export const TaskContainer = styled.div`
     width: 720px;
     height: auto;
     min-height: 500px;
     background-color: #ffffff;
-    border: 3px solid #796AD9;
     border-radius: 10px;
     padding: 20px;
     margin-top: 20px;
@@ -14,6 +41,7 @@ export const TaskContainer = styled.div`
     align-items: flex-start; 
     padding-top: 20px; 
     margin-bottom: 70px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.45);
 `;
 
 export const TaskWrapper = styled.div`
@@ -36,7 +64,7 @@ export const TaskBox = styled.div`
     justify-content: space-between; 
     padding: 10px 15px;
     margin: 5px 0;
-    border: 2px solid #796AD9;
+    border: 1px solid #796AD9;
 `;
 
 export const TaskLeft = styled.div`
@@ -119,9 +147,9 @@ export const TaskStatusButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 120px; 
+    width: 100px; 
     height: 40px;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     color: white; 
     background-color: #A194F2; 
@@ -129,7 +157,7 @@ export const TaskStatusButton = styled.button`
     border-radius: 25px; 
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-left: 10px;
+    margin-left: 25px;
 
     &:hover {
         background-color: #5a46c6; 
@@ -141,9 +169,9 @@ export const MyTaskButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 120px; 
+    width: 100px; 
     height: 40px;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     color: white; 
     background-color: #5a46c6; 
@@ -151,16 +179,16 @@ export const MyTaskButton = styled.button`
     border-radius: 25px; 
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-left: 10px;
+    margin-left: 25px;
 `;
 
 export const SOSButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 120px; 
+    width: 100px; 
     height: 40px;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     color: white; 
     background: #D9534F;
@@ -168,7 +196,7 @@ export const SOSButton = styled.button`
     border-radius: 25px; 
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-left: 10px;
+    margin-left: 25px;
     
     &:hover {
         background: #C9302C;

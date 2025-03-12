@@ -64,7 +64,8 @@ const sprintData = [
                 name: "채민주",
                 value: 20,
                 profileImage: "/img/profile.png" 
-            }
+            },
+            
         ],
         taskData : [
             { 
