@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 import { ContentContainer, Divider1 } from '@/components/common_s';
-import * as P from '../../../project_s';
+import * as P from '../project/project_s';
 import * as T from './task_s';
 
 export default function Task() {
@@ -14,7 +14,6 @@ export default function Task() {
             name: "채민주",
         }
     ]
-
 
     const sprintData = [
         {
@@ -177,7 +176,7 @@ export default function Task() {
                 <T.TaskContainer>
                     {taskData.map((task, index) => (
                         <T.TaskWrapper key={index}>
-                        <T.TaskBox key={index} $isCompleted={task.toDoStatus === "COMPELTED"}>
+                        <T.TaskBox key={index} $isCompleted={task.toDoStatus === "COMPELTED"} $isSOS={task.sos}>
                             <T.TaskLeft>
                             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                                 <P.TaskCheckbox

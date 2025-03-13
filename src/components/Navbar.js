@@ -56,7 +56,7 @@ const Navbar = () => {
       </Link>
       <NavLinks>
         <StyledLink href="/home">Home</StyledLink>
-        <StyledLink href="/mypage">MyPage</StyledLink>
+        <StyledLink href="/project/${project_id}/mypage">MyPage</StyledLink>
         <StyledLink href="/">Logout</StyledLink>
       </NavLinks>
     </NavbarContainer>
@@ -64,4 +64,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

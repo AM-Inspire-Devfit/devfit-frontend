@@ -57,7 +57,9 @@ export const TaskBox = styled.div`
     width: 530px;
     height: auto;
     min-height: 70px;
-    background-color: ${({ $isCompleted }) => ($isCompleted ? "#EDEAFF" : "#ffffff")};
+    background-color: ${({ $isCompleted, $isSOS }) => 
+        $isCompleted ? "#EDEAFF" : 
+        $isSOS ? "#FFE5E5" : "#ffffff"}; 
     border-radius: 8px;
     display: flex;
     align-items: center; 
@@ -197,6 +199,79 @@ export const SOSButton = styled.button`
     cursor: pointer;
     transition: all 0.3s ease;
     margin-left: 25px;
+    
+    &:hover {
+        background: #C9302C;
+        border: 2px solid #C9302C;
+    }
+`;
+
+export const NCButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; 
+    height: 40px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white; 
+    background: #5a46c6; 
+    border: 2px solid #5a46c6; 
+    border-radius: 25px; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 25px;
+
+    &:hover {
+        background: #A194F2;
+        border: 2px solid #A194F2;
+    }
+`;
+
+export const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: column;  
+    align-items: flex-end; 
+    gap: 5px;  
+    width: 100px;
+    margin-left: 25px;
+`;
+
+export const CButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; 
+    height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white; 
+    background: #A194F2; 
+    border: 2px solid #A194F2; 
+    border-radius: 25px; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background: #5a46c6; 
+        border: 2px solid #5a46c6; 
+    }
+`;
+
+export const SButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; 
+    height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white; 
+    background: ${({ $isSOS }) => ($isSOS ? "#C9302C" : "#E06865")};  
+    border: 2px solid ${({ $isSOS }) => ($isSOS ? "#C9302C" : "#E06865")}; 
+    border-radius: 25px; 
+    cursor: pointer;
+    transition: all 0.3s ease;
     
     &:hover {
         background: #C9302C;

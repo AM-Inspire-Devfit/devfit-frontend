@@ -1,11 +1,12 @@
-import Task from '../../../../task/task';
-import Navbar from '@/components/Navbar';
 
-export default function TaskPage(){
+import Navbar from '@/components/Navbar';
+import My from '../../../mypage/mypage';
+
+export default function MyPage(){
     return(
         <>
         <Navbar/>
-        <Task/>
+        <My />
         </>
         
     )
