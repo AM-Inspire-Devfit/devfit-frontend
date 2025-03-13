@@ -150,11 +150,11 @@ export const TaskStatusButton = styled.button`
     align-items: center;
     justify-content: center;
     width: 100px; 
-    height: 40px;
+    height: 30px;
     font-size: 15px;
     font-weight: bold;
-    color: white; 
-    background-color: #A194F2; 
+    color: #A194F2; 
+    background-color: #ffffff; 
     border: 3px solid #A194F2; 
     border-radius: 25px; 
     cursor: pointer;
@@ -162,8 +162,9 @@ export const TaskStatusButton = styled.button`
     margin-left: 25px;
 
     &:hover {
-        background-color: #5a46c6; 
-        border: 3px solid #5a46c6; 
+        color: white; 
+        background-color: #A194F2; 
+        border: 3px solid #A194F2; 
     }
 `;
 
@@ -172,7 +173,7 @@ export const MyTaskButton = styled.button`
     align-items: center;
     justify-content: center;
     width: 100px; 
-    height: 40px;
+    height: 30px;
     font-size: 15px;
     font-weight: bold;
     color: white; 
@@ -189,7 +190,7 @@ export const SOSButton = styled.button`
     align-items: center;
     justify-content: center;
     width: 100px; 
-    height: 40px;
+    height: 30px;
     font-size: 15px;
     font-weight: bold;
     color: white; 
@@ -211,20 +212,21 @@ export const NCButton = styled.button`
     align-items: center;
     justify-content: center;
     width: 100px; 
-    height: 40px;
+    height: 30px;
     font-size: 15px;
     font-weight: bold;
-    color: white; 
-    background: #5a46c6; 
-    border: 2px solid #5a46c6; 
+    color: #B4B3B9; 
+    background: #ffffff; 
+    border: 2px solid #B4B3B9; 
     border-radius: 25px; 
     cursor: pointer;
     transition: all 0.3s ease;
     margin-left: 25px;
 
     &:hover {
-        background: #A194F2;
-        border: 2px solid #A194F2;
+        color: #ffffff;
+        background: #8F8D97; 
+        border: 2px solid #8F8D97;
     }
 `;
 
@@ -245,14 +247,15 @@ export const CButton = styled.button`
     height: 30px;
     font-size: 15px;
     font-weight: bold;
-    color: white; 
-    background: #A194F2; 
+    color: #A194F2; 
+    background: #ffffff; 
     border: 2px solid #A194F2; 
     border-radius: 25px; 
     cursor: pointer;
     transition: all 0.3s ease;
     
     &:hover {
+        color: #ffffff; 
         background: #5a46c6; 
         border: 2px solid #5a46c6; 
     }
@@ -266,14 +269,15 @@ export const SButton = styled.button`
     height: 30px;
     font-size: 15px;
     font-weight: bold;
-    color: white; 
-    background: ${({ $isSOS }) => ($isSOS ? "#C9302C" : "#E06865")};  
-    border: 2px solid ${({ $isSOS }) => ($isSOS ? "#C9302C" : "#E06865")}; 
+    color: ${({ $isSOS }) => ($isSOS ? "white" : "#C9302C")};  
+    background: ${({ $isSOS }) => ($isSOS ? "#C9302C" : "#ffffff")};  
+    border: 2px solid ${({ $isSOS }) => ($isSOS ? "#C9302C" : "#C9302C")}; 
     border-radius: 25px; 
     cursor: pointer;
     transition: all 0.3s ease;
     
     &:hover {
+        color: white;
         background: #C9302C;
         border: 2px solid #C9302C;
     }

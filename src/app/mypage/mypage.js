@@ -1,6 +1,7 @@
 "use client";  
 
 import { useState } from "react";
+import Link from 'next/link';
 
 import { ContentContainer, Divider1 } from '@/components/common_s';
 import * as M from './mypage_s';
@@ -32,7 +33,7 @@ export default function My() {
             sprint_num: 1,
             goal: "UI 디자인을 완료하고 핵심 기능 단위를 정리합니다.",
         },
-        
+
     ]
 
     const taskData = [
@@ -92,16 +93,19 @@ export default function My() {
 
         <ContentContainer>
             <M.Container style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-
             <M.ProfileSection>
             <M.ProfileImage $profileImage={userData[0].profileImage}/>
             <M.ProfileInfo>
                 <M.Username>{userData[0].name} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span>
                 </M.Username>
-                <M.EvaluationButton>동료평가</M.EvaluationButton>
+                {projectData.map((project, index) => (
+                    <Link key={project.project_id} href="/project/${project.project_id}/feedback">
+                    <M.EvaluationButton>동료평가</M.EvaluationButton>
+                    </Link>
+                ))}
             </M.ProfileInfo>
             </M.ProfileSection>
-
+            
             {projectData.map((project, index) => (
             <div key={`project-${index}`} style={{ width: '750px', textAlign: 'left'}}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '100px' }}>

@@ -32,13 +32,13 @@ export const NavLinks = styled.div`
 
 export const StyledLink = styled(Link)`
   text-decoration: none;
-  color: #2E1A86;
+  color: #796AD9;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 550;
   transition: color 0.2s;
 
   &:hover {
-    color: #2E1A86;
+    color: #007bff;
   }
 `;
 
