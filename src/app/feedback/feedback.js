@@ -1,5 +1,6 @@
-"use-client";
+"use client";
 
+import { useState } from "react";
 import * as PR from './feedback_s';
 import { ContentContainer, Space } from '@/components/common_s';
 
@@ -78,6 +79,13 @@ const feedbackData = [
 
 export default function PeerReview() {
 
+    const [openFeedback, setOpenFeedback] = useState(null);
+
+    const toggleFeedback = (sprintNum) => {
+        setOpenFeedback(openFeedback === sprintNum ? null : sprintNum);
+    };
+
+
     return (
         <ContentContainer>
             <PR.PageContainer>
@@ -85,7 +93,12 @@ export default function PeerReview() {
 
                 {feedbackData[0].sprint.map((sprint) => (
                     <div key={sprint.sprint_num}>
-                        <PR.SprintTitle>Sprint {sprint.sprint_num}</PR.SprintTitle>
+                        <PR.SprintTitle onClick={() => toggleFeedback(sprint.sprint_num)}>
+                            <span>{openFeedback === sprint.sprint_num ? "▼" : "▶"}</span>
+                            Sprint {sprint.sprint_num}
+                        </PR.SprintTitle>
+
+                        {openFeedback === sprint.sprint_num && (
                         <PR.Table>
                             <PR.TableHead>
                                 <tr>
@@ -136,6 +149,7 @@ export default function PeerReview() {
                                 ))}
                             </tbody>
                         </PR.Table>
+                        )}
                     </div>
                 ))}
             </PR.PageContainer>

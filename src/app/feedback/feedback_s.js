@@ -1,5 +1,3 @@
-"use client";
-
 import styled from "styled-components";
 
 export const PageContainer = styled.div`
@@ -18,10 +16,19 @@ export const Header = styled.h1`
 `;
 
 export const SprintTitle = styled.h2`
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 22px;
     font-weight: bold;
-    color: #2E1A86;
+    color: #6959AC;
     margin-top: 40px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+    
+    }
 `;
 
 export const Table = styled.table`
