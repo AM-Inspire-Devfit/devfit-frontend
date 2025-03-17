@@ -23,6 +23,14 @@ const colorPalette = [
     "#27AE60", "#D35400"
 ];
 
+const userData = [
+    {   
+        id: 4,
+        name: "채민주",
+        profileImage: "/img/profile.png", 
+    }
+]
+
 const projectData = [
     {   
         project_id: 1,

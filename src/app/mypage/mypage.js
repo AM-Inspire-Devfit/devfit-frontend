@@ -100,7 +100,7 @@ export default function My() {
                 </M.Username>
                 {projectData.map((project, index) => (
                     <Link key={project.project_id} href="/project/${project.project_id}/feedback">
-                    <M.EvaluationButton>동료평가</M.EvaluationButton>
+                    <M.EvaluationButton>동료평가 메세지</M.EvaluationButton>
                     </Link>
                 ))}
             </M.ProfileInfo>
@@ -130,7 +130,7 @@ export default function My() {
 
                     <M.ContributionWrapper>
                         <M.ContributionTitle>기여도</M.ContributionTitle>
-                        <ContributionCircle percentage={75} />
+                        <ContributionCircle percentage={55} />
                     </M.ContributionWrapper>
 
                     <M.BoxDivider />

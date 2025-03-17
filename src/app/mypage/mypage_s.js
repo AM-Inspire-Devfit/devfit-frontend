@@ -42,7 +42,7 @@ export const Username = styled.h2`
 `;
 
 export const EvaluationButton = styled.button`
-    width: 70px;
+    width: 110px;
     height: 35px;
     font-size: 14px;
     font-weight: bold;

@@ -18,7 +18,6 @@ export const ContributionCircle = ({ percentage }) => {
     const radius = 40; 
     const circumference = 2 * Math.PI * radius; 
     const offset = circumference * (1 - percentage / 100);
-    const rotation = 0;
 
     return (
         <StyledContributionCircle viewBox="0 0 100 100">
@@ -32,6 +31,7 @@ export const ContributionCircle = ({ percentage }) => {
                 strokeDasharray={circumference}
                 strokeDashoffset={offset}
                 strokeLinecap="round"
+                transform="rotate(-90 50 50)"
             />
             <ContributionText x="50" y="55">{percentage}%</ContributionText>
         </StyledContributionCircle>
