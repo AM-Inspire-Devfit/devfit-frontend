@@ -47,13 +47,33 @@ export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeeting
                         <m.DateInput 
                             type="time" 
                             value={startTime} 
-                            onChange={(e) => setStartTime(e.target.value)}
+                            onChange={(e) => {
+                                const selectedTime = e.target.value;
+                                const hour = parseInt(selectedTime.split(":")[0], 10);
+                                
+                                // 오전 12시 ~ 7시를 선택할 경우, 8시로 자동 변경
+                                if ((hour >= 1 && hour < 8 ) || hour === 0) {
+                                    setStartTime("08:00");
+                                } else {
+                                    setStartTime(selectedTime);
+                                }
+                            }}
                         />
                         <span> ~ </span>
                         <m.DateInput 
                             type="time" 
                             value={endTime} 
-                            onChange={(e) => setEndTime(e.target.value)}
+                            onChange={(e) => {
+                                const selectedTime = e.target.value;
+                                const hour = parseInt(selectedTime.split(":")[0], 10);
+                                
+                                // 오전 12시 ~ 7시를 선택할 경우, 8시로 자동 변경
+                                if ((hour >= 1 && hour < 8 ) || hour === 0) {
+                                    setEndTime("08:00");
+                                } else {
+                                    setEndTime(selectedTime);
+                                }
+                            }}
                         />
                     </m.DateInputContainer>
                 </m.InputWrapper>
