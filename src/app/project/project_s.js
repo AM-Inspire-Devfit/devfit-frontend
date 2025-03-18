@@ -13,6 +13,16 @@ export const BoxContainer = styled.div`
     margin: 50px 0;
 `;
 
+export const StyledInput = styled.input`
+    font-size: 16px;
+    color: #432CA4;
+    border: 1px #432CA4;
+    padding: 5px;
+    border-radius: 3px;
+    outline: none;
+    width: 60%;
+`;
+
 export const ChartWrapper = styled.div`
     width: 80%;
     height: auto;

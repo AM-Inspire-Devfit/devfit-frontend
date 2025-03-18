@@ -258,7 +258,12 @@ export default function Team() {
                     }}
                 >
                         {chosenEmoji}
-                        <Image src="/img/emoji_edit.png" alt="Edit" width={35} height={35} />
+                        <Image 
+                            src="/img/emoji_edit.png" 
+                            alt="Edit" 
+                            width={35} 
+                            height={35} 
+                        />
                         </T.EmojiBox>
                 </T.TitleLeft>
                     
@@ -271,9 +276,22 @@ export default function Team() {
                                 onChange={(e) => setTitle(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 autoFocus
+                                style={{
+                                    height: "35px",
+                                    fontSize: "27px",
+                                    fontWeight: "bold",
+                                    color: "#432CA4",
+                                    marginBottom: "5px",
+                                    marginLeft: "5px",
+                                    border: "none",
+                                    outline: "none",
+                                    background: "transparent",
+                                    padding: "0",
+                                    lineHeight: "35px",
+                                }}
                             />
                         ) : (
-                            <T.Title>{title}</T.Title>
+                            <T.Title style={{ height: "35px", lineHeight: "35px", marginBottom: "5px", marginLeft: "5px",}}>{title}</T.Title>
                         )}
                         <Image
                             src="/img/edit.png"
@@ -291,9 +309,20 @@ export default function Team() {
                                 value={subtitle}
                                 onChange={(e) => setSubtitle(e.target.value)}
                                 onKeyDown={handleKeyDown}
+                                style={{
+                                    height: "25px", 
+                                    fontSize: "15px",
+                                    color: "#796AD9",
+                                    marginTop: "5px",
+                                    marginLeft: "10px",
+                                    border: "none",
+                                    outline: "none",
+                                    background: "transparent",
+                                    padding: "0",
+                                }}
                             />
                         ) : (
-                            <T.Subtitle>{subtitle}</T.Subtitle>
+                            <T.Subtitle style={{ height: "25px", lineHeight: "25px", marginTop: "5px" }}>{subtitle}</T.Subtitle>
                         )}
                     </T.TitleRight>
             </T.TitleContainer>

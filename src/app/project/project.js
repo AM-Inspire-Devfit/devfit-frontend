@@ -236,6 +236,9 @@ export default function Project() {
     const [goal, setGoal] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState(projectData[0].projectName);
+    const [description, setDescription] = useState(projectData[0].projectDescription);
 
     const project = projectData[0]; 
     const project_id = project.project_id; 
@@ -251,6 +254,17 @@ export default function Project() {
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
+
+    // 수정 버튼 클릭 시 편집 모드 전환
+    const handleEditClick = () => {
+        setIsEditing((prev) => !prev);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            setIsEditing(false);
+        }
+    };
 
     // sprint 모달 열기/닫기 함수
     const handleModal = () => setIsModalOpen(prev => !prev);
@@ -295,7 +309,7 @@ export default function Project() {
             // 먼저 색상을 배정
             const membersWithColors = sprint.member.map((member, index) => ({
                 ...member,
-                color: colorPalette[index % colorPalette.length] // 색상 배정
+                color: colorPalette[index % colorPalette.length] 
             }));
     
             // value 기준으로 내림차순 정렬
@@ -377,14 +391,77 @@ export default function Project() {
         <ContentContainer>
             {projectData.map((project, index) => (
             <div key={`project-${index}`} style={{ width: '750px', textAlign: 'left' }}>
-                <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
-                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px' }}>{project.teamName} </span> 
-                    <span>{project.projectName}</span>
+                <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
+                    <div style={{ display: "flex", alignItems: "left" }}>
+                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{project.teamName} </span> 
+                    {isEditing ? (
+                        <P.StyledInput
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            autoFocus
+                            style={{
+                                height: "40px",
+                                fontSize: "32px", 
+                                fontWeight: "bold",
+                                border: "none",
+                                outline: "none",
+                                background: "transparent",
+                                width: "auto",
+                                padding: "0",
+                                lineHeight: "40px"
+                            }}
+                        />
+                    ) : (
+                        <span style={{ height: "40px", lineHeight: "40px" }}>{title}</span>
+                    )}
+                    </div>
+                    <Image
+                        src="/img/edit.png"
+                        alt="Edit"
+                        width={20}
+                        height={20}
+                        onClick={handleEditClick}
+                        style={{ cursor: "pointer" }}
+                    />
                 </h2>
                 <Divider1/>
-                <p style={{ fontSize: '15px', color: '#4F3DBD', marginTop: '10px', marginLeft: '20px' }}>
-                    {project.projectDescription}
-                </p>
+                {isEditing ? (
+                    <P.StyledInput
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        style={{ 
+                            height: "30px",
+                            fontSize: "15px", 
+                            border: "none",
+                            outline: "none",
+                            background: "transparent",
+                            width: "100%",
+                            padding: "0",
+                            lineHeight: "30px", 
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: "30px"
+                        }}
+                    />
+                ) : (
+                    <p 
+                        style={{ 
+                            fontSize: "15px", 
+                            color: "#4F3DBD", 
+                            height: "30px", 
+                            lineHeight: "30px", 
+                            padding: "0", 
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: "30px"
+                        }}>
+                        {description}
+                    </p>
+                )}
             </div>
             ))}
             <P.BoxContainer>
