@@ -232,7 +232,8 @@ const meetingData = [
 export default function Project() {
     const [isClient, setIsClient] = useState(false);
     const [chartSize, setChartSize] = useState(300); // chart의 기본값 설정
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSprintModalOpen, setIsSprintModalOpen] = useState(false);
+    const [isCreateSprintModalOpen, setIsCreateSprintModalOpen] = useState(false);
     const [goal, setGoal] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -266,8 +267,16 @@ export default function Project() {
         }
     };
 
-    // sprint 모달 열기/닫기 함수
-    const handleModal = () => setIsModalOpen(prev => !prev);
+    // sprint 수정 모달 열기/닫기 함수
+    const handleSprintModal = () => setIsSprintModalOpen(prev => !prev);
+
+    // sprint 생성 모달
+    const handleCreateSprintModal = () => {
+        setIsCreateSprintModalOpen(true);
+        setGoal("");        
+        setStartDate("");   
+        setEndDate("");     
+    };
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -281,14 +290,14 @@ export default function Project() {
             document.body.style.overflow = "auto";
         };
     
-        if (isModalOpen || isMeetingModalOpen) {
+        if (isSprintModalOpen || isCreateSprintModalOpen || isMeetingModalOpen) {
             disableScroll();
         } else {
             enableScroll();
         }
     
         return enableScroll;
-    }, [isModalOpen, isMeetingModalOpen]);
+    }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -360,12 +369,12 @@ export default function Project() {
     const lastSprintNum = sprintData[sprintData.length - 1].sprint_num; 
 
     useEffect(() => {
-        if (!isModalOpen || !currentSprint) return;
+        if (!isSprintModalOpen || !currentSprint) return;
     
         setGoal(currentSprint.goal);
         setStartDate(currentSprint.sprint_start);
         setEndDate(currentSprint.sprint_end);
-    }, [isModalOpen, currentSprint]);
+    }, [isSprintModalOpen, currentSprint]);
 
     // 신규 미팅 생성
     const openMeetingModalForCreate = () => {
@@ -531,7 +540,7 @@ export default function Project() {
                                     {currentSprint.sprint_start} ~ {currentSprint.sprint_end}
                                 </span>
                             </h2>
-                            <div onClick={handleModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
+                            <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
                                 <Image
                                     src="/img/edit.png" 
                                     alt="icon"
@@ -541,8 +550,8 @@ export default function Project() {
                                 />
                             </div>
                             <SprintModal 
-                                isOpen={isModalOpen}
-                                onClose={handleModal}
+                                isOpen={isSprintModalOpen}
+                                onClose={handleSprintModal}
                                 sprint={currentSprint.sprint_num}
                                 goal={goal}
                                 setGoal={setGoal}
@@ -605,6 +614,7 @@ export default function Project() {
                     }}>
                         <div>Sprint {lastSprintNum + 1}을(를) 생성해보세요!</div>
                         <button 
+                            onClick={handleCreateSprintModal} 
                             style={{
                                 marginTop: '20px', 
                                 padding: '7px 15px',
@@ -619,6 +629,17 @@ export default function Project() {
                         >
                             생성하기
                         </button>
+                        <SprintModal 
+                            isOpen={isCreateSprintModalOpen}
+                            onClose={() => setIsCreateSprintModalOpen(false)}
+                            sprint={lastSprintNum + 1} 
+                            goal={goal}
+                            setGoal={setGoal}
+                            startDate={startDate}
+                            setStartDate={setStartDate}  
+                            endDate={endDate}
+                            setEndDate={setEndDate}  
+                        />
                     </div>
                 )}
             
