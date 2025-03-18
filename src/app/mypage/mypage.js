@@ -15,6 +15,7 @@ export default function My() {
         {
             name: "채민주",
             profileImage: "/img/profile.png", 
+            percentage: 50
         }
     ]
 
@@ -130,7 +131,7 @@ export default function My() {
 
                     <M.ContributionWrapper>
                         <M.ContributionTitle>기여도</M.ContributionTitle>
-                        <ContributionCircle percentage={55} />
+                        <ContributionCircle percentage={userData[0].percentage} />
                     </M.ContributionWrapper>
 
                     <M.BoxDivider />

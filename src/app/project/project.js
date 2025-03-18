@@ -31,7 +31,7 @@ const userData = [
     }
 ]
 
-const projectData = [
+const projectData = [  
     {   
         project_id: 1,
         teamName: "SideEffect",
@@ -409,7 +409,15 @@ export default function Project() {
                                     <P.ProfileIcon color={member.color} />
                                 </P.ProfileContainer>
                                 <span style={{ marginLeft: '10px' }}>{member.name}</span>
-                                {member.isTop && <P.TopBadge>🥇</P.TopBadge>}
+                                <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
+                                {member.id !== userData[0].id && ( // 본인 제외
+                                    <Link 
+                                        href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                                        <P.FeedbackButton>
+                                            동료 평가
+                                        </P.FeedbackButton>
+                                    </Link>
+                                )}
                             </P.ProjectMember>
                         ))}
                     </P.MemberList>

@@ -261,7 +261,7 @@ export const MeetingItem = styled.div`
     background-color: #FFFFFF;
     padding: 10px 15px;
     border-radius: 10px;
-    width: 200px; /* 일정 항목 크기 */
+    width: 200px; 
     font-size: 14px;
     color: #4F3DBD;
     font-weight: bold;
@@ -274,4 +274,21 @@ export const MeetingDate = styled.span`
     font-size: 12px;
     font-weight: bold;
     color: #4F3DBD;
+`;
+
+export const FeedbackButton = styled.button`
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background-color: #796AD9;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+        background-color: #3b2ea3;
+    }
 `;
