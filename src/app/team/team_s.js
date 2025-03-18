@@ -90,9 +90,10 @@ export const StyledInput = styled.input`
 
 export const Button = styled.button`
   font-size: 14px;
-  color: #432CA4;
+  font-weight: bold;
+  color: #796AD9;
   background: white;
-  border: 1px solid #432CA4;
+  border: 2px solid #796AD9;
   border-radius: 10px;
   padding: 5px 12px;
   cursor: pointer;
@@ -100,7 +101,7 @@ export const Button = styled.button`
   margin-left: 10px;
 
   &:hover {
-    background: #432CA4;
+    background: #796AD9;
     color: white;
   }
 `;

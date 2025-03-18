@@ -322,7 +322,7 @@ export default function Team() {
                 <S.SectionHeader>팀 멤버</S.SectionHeader>
                 </S.SectionHeaderContainer>
                 <T.Button onClick={handleInviteClick}>
-                    초대코드 생성
+                    초대코드 확인
                 </T.Button>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
