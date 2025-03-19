@@ -35,6 +35,7 @@ export const EmojiBox = styled.div`
   border-radius: 5px;
   padding: 5px;
   position: relative; 
+  transform: translateY(-5px);
 
   img {
     position: absolute;
