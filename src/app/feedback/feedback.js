@@ -79,12 +79,14 @@ const feedbackData = [
 
 export default function PeerReview() {
 
-    const [openFeedback, setOpenFeedback] = useState(null);
+    const [openFeedback, setOpenFeedback] = useState({});
 
     const toggleFeedback = (sprintNum) => {
-        setOpenFeedback(openFeedback === sprintNum ? null : sprintNum);
+        setOpenFeedback(prev => ({
+            ...prev,
+            [sprintNum]: !prev[sprintNum]
+        }));
     };
-
 
     return (
         <ContentContainer>
@@ -94,11 +96,11 @@ export default function PeerReview() {
                 {feedbackData[0].sprint.map((sprint) => (
                     <div key={sprint.sprint_num}>
                         <PR.SprintTitle onClick={() => toggleFeedback(sprint.sprint_num)}>
-                            <span>{openFeedback === sprint.sprint_num ? "▼" : "▶"}</span>
+                            <span>{openFeedback[sprint.sprint_num] ? "▼" : "▶"}</span>
                             Sprint {sprint.sprint_num}
                         </PR.SprintTitle>
 
-                        {openFeedback === sprint.sprint_num && (
+                        {openFeedback[sprint.sprint_num] && (
                         <PR.Table>
                             <PR.TableHead>
                                 <tr>
