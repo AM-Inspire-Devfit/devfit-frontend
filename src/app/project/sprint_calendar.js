@@ -42,7 +42,13 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingCli
     const handleNextWeek = () => {
         const newStart = new Date(currentWeekStart);
         newStart.setDate(newStart.getDate() + 7);
-        if (newStart <= new Date(sprintEnd)) setCurrentWeekStart(newStart);
+
+        const nextWeekEnd = new Date(newStart);
+        nextWeekEnd.setDate(nextWeekEnd.getDate() + 6);
+
+        if (nextWeekEnd >= new Date(sprintStart)) {
+            setCurrentWeekStart(newStart);
+        }
     };
 
     const lastValidDate = weekData.findLast((item) => item.date !== " ")?.date;

@@ -225,7 +225,15 @@ const meetingData = [
         startTime: "14:00:00",
         endTime: "16:00:00",
         toDoStatus: "STATUS_COMPLETED"
+    },
+    {   sprint_num: 2,
+        title: "프론트 회의",
+        date: "2025-03-17",
+        startTime: "14:00:00",
+        endTime: "16:00:00",
+        toDoStatus: "STATUS_COMPLETED"
     }
+
 ]
 
 
