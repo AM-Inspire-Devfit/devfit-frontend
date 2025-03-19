@@ -46,7 +46,7 @@ const sprintData = [
         sprint_num: 1,
         goal: "UI 디자인을 완료하고 핵심 기능 단위를 정리합니다.",
         sprint_start: "2025-01-20",
-        sprint_end: "2025-02-20",
+        sprint_end: "2025-02-19",
         progress: 70,
         member: [
             {
@@ -108,7 +108,7 @@ const sprintData = [
         sprint_num: 2,
         goal: "리액트 프로젝트를 생성합니다.",
         sprint_start: "2025-02-20",
-        sprint_end: "2025-03-20",
+        sprint_end: "2025-03-19",
         progress: 30,
         member: [
             {
@@ -153,7 +153,7 @@ const sprintData = [
         sprint_num: 3,
         goal: "API 연결을 시작합니다.",
         sprint_start: "2025-03-20",
-        sprint_end: "2025-04-20",
+        sprint_end: "2025-04-19",
         progress: 30,
         member: [
             {
@@ -200,7 +200,7 @@ const sprintData = [
 const meetingData = [
     {   sprint_num: 1,
         title: "아이디어 회의",
-        date: "2025-02-20",
+        date: "2025-02-19",
         startTime: "14:30:00",
         endTime: "16:00:00",
         toDoStatus: "STATUS_COMPLETED"
@@ -355,6 +355,24 @@ export default function Project() {
     };
 
     const lastSprintNum = sprintData[sprintData.length - 1].sprint_num; 
+
+    useEffect(() => {
+        const today = new Date().toISOString().split('T')[0];
+        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
+            sprint.sprint_start <= today && sprint.sprint_end >= today
+        );
+    
+        if (sprintIndex !== -1) {
+            setCurrentSprintIndex(sprintIndex);
+        } else {
+            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
+            if (upcomingSprintIndex !== -1) {
+                setCurrentSprintIndex(upcomingSprintIndex);
+            } else {
+                setCurrentSprintIndex(sprintDataWithColors.length - 1);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if (!isSprintModalOpen || !currentSprint) return;
