@@ -13,7 +13,7 @@ export default function My() {
 
     const userData = {
         name: "채민주",
-        profileImage: "/img/profile.png",
+        profileImage: "/img/default_profile.png",
     };
 
     const projectData = {
