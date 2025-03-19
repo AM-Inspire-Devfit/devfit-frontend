@@ -299,18 +299,6 @@ export default function Project() {
         return enableScroll;
     }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen]);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setChartSize(Math.min(window.innerWidth * 0.3, 300)); // chart의 최소, 최대 크기 설정
-        };
-
-        handleResize(); // 초기 사이즈 설정
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
 
     // 멤버별 색상 배정 & value 기준 정렬
     const assignColorsToSprint = (sprints) => {
@@ -476,7 +464,7 @@ export default function Project() {
             <P.BoxContainer>
                 {/* 왼쪽 화살표 (첫 Sprint가 아닐 때만 표시) */}
                 {currentSprintIndex > 0 && (
-                    <div style={{ position: 'absolute', left: '-100px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handlePrevSprint}>
+                    <div style={{ position: 'absolute', left: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handlePrevSprint}>
                         <AiOutlineLeft size={80} color="#796AD9" />
                     </div>
                 )}
@@ -645,7 +633,7 @@ export default function Project() {
             
                 {/* 오른쪽 화살표 */}
                 {!showCreateSprintBox && (
-                    <div style={{ position: 'absolute', right: '-100px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
+                    <div style={{ position: 'absolute', right: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
                         <AiOutlineRight size={80} color="#796AD9" />
                     </div>
                 )}

@@ -154,19 +154,19 @@ export const CalendarContainer = styled.div`
     }
 
     .meeting-block {
-    position: absolute;
-    left: 0; 
-    right: 0; 
-    width: 100%; 
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    box-sizing: border-box;
-    z-index: 10;
+        position: absolute;
+        left: 0; 
+        right: 0; 
+        width: 100%; 
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px;
+        box-sizing: border-box;
+        z-index: 10;
 }
 `;
