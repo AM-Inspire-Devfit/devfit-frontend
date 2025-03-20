@@ -40,6 +40,7 @@ export default function My() {
                 task_end: "2025-03-01", 
                 toDoStatus: "ON_GOING", 
                 finish_date: "", 
+                taskDifficulty: "HIGH",
                 sos: false 
             },
             { 
@@ -50,6 +51,7 @@ export default function My() {
                 task_end: "2025-03-03", 
                 toDoStatus: "COMPLETED", 
                 finish_date: "2025-03-01", 
+                taskDifficulty: "LOW",
                 sos: false 
             },
             { 
@@ -60,6 +62,7 @@ export default function My() {
                 task_end: "2025-03-01", 
                 toDoStatus: "ON_GOING", 
                 finish_date: "", 
+                taskDifficulty: "HIGH",
                 sos: false 
             },
             { 
@@ -70,6 +73,7 @@ export default function My() {
                 task_end: "2025-03-03", 
                 toDoStatus: "COMPLETED", 
                 finish_date: "2025-03-01", 
+                taskDifficulty: "HIGH",
                 sos: false 
             },
             { 
@@ -80,6 +84,7 @@ export default function My() {
                 task_end: "2025-03-01", 
                 toDoStatus: "ON_GOING", 
                 finish_date: "", 
+                taskDifficulty: "MID",
                 sos: true 
             },
         ]},
@@ -93,6 +98,7 @@ export default function My() {
                 task_end: "2025-03-01", 
                 toDoStatus: "ON_GOING", 
                 finish_date: "", 
+                taskDifficulty: "LOW",
                 sos: false 
             },
             { 
@@ -103,6 +109,7 @@ export default function My() {
                 task_end: "2025-03-03", 
                 toDoStatus: "COMPLETED", 
                 finish_date: "2025-03-01", 
+                taskDifficulty: "LOW",
                 sos: false 
             },
         ]},
@@ -116,6 +123,7 @@ export default function My() {
                 task_end: "2025-04-01", 
                 toDoStatus: "ON_GOING", 
                 finish_date: "", 
+                taskDifficulty: "MID",
                 sos: false 
             },
         ]},

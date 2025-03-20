@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import * as m from '../../components/modal_s';
 import { IoClose } from 'react-icons/io5';
@@ -29,7 +30,21 @@ const RadioInput = styled.input`
     height: 16px;
 `;
 
-export default function TaskModal({ isOpen, onClose, sprintNum,}) {
+export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
+    const [titleInput, setTitleInput] = useState("");
+    const [difficulty, setDifficulty] = useState(""); 
+
+
+    useEffect(() => {
+        if (task) {
+            setTitleInput(task.title);
+            setDifficulty(task.taskDifficulty);
+        } else {
+            setTitleInput("");
+            setDifficulty("HIGH"); // 생성일 때 디폴트값
+        }
+    }, [task, isOpen]);
+
     if (!isOpen) return null;
 
     return (
@@ -54,26 +69,52 @@ export default function TaskModal({ isOpen, onClose, sprintNum,}) {
 
             <InputWrapper>
                     <m.Label>Task</m.Label>
-                    <m.Input />
+                    <m.Input 
+                        value={titleInput}
+                        onChange={(e) => setTitleInput(e.target.value)}
+                    />
             </InputWrapper>
 
             <InputWrapper>
                 <m.Label>난이도</m.Label>
                 <DifficultyGroup>
                     <DifficultyLabel>
-                        <RadioInput type="radio" name="difficulty" defaultChecked />상
+                        <RadioInput 
+                            type="radio" 
+                            name="difficulty" 
+                            checked={difficulty === "HIGH"}
+                            onChange={() => setDifficulty("HIGH")}
+                        />상
                     </DifficultyLabel>
                     <DifficultyLabel>
-                        <RadioInput type="radio" name="difficulty" />중
+                        <RadioInput 
+                            type="radio" 
+                            name="difficulty"
+                            checked={difficulty === "MID"}
+                            onChange={() => setDifficulty("MID")}
+                        />중
                     </DifficultyLabel>
                     <DifficultyLabel>
-                        <RadioInput type="radio" name="difficulty" />하
+                        <RadioInput 
+                            type="radio" 
+                            name="difficulty" 
+                            checked={difficulty === "LOW"}
+                            onChange={() => setDifficulty("LOW")}
+                        />하
                     </DifficultyLabel>
                 </DifficultyGroup>
             </InputWrapper>
 
-            <m.ButtonContainer style={{ marginTop: "-5px"}}>
-                <m.SubmitButton>생성</m.SubmitButton>
+            <m.ButtonContainer style={{ marginTop: "-5px", gap: "10px"}}>
+                <m.SubmitButton>
+                    {task ? "수정" : "생성"}
+                </m.SubmitButton>
+
+                {task && (
+                    <m.DeleteButton>
+                        삭제
+                    </m.DeleteButton>
+                )}
             </m.ButtonContainer>
 
             </m.ModalContent>
