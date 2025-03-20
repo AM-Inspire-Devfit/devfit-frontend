@@ -50,13 +50,19 @@ export const ChartTitle = styled.div`
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
 `;
 
-export const MemberList = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
+export const ScrollableMemberList = styled.div`
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 10px; 
 `;
+
+// export const MemberList = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     gap: 10px;
+//     width: 100%;
+// `;
 
 export const ProjectMember = styled.div`
     display: flex;

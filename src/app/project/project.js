@@ -126,12 +126,24 @@ const sprintData = [
             {
                 id: 3,
                 name: "정선우",
-                value: 0,
+                value: 35,
                 profileImage: "/img/profile.png" 
             },
             {
                 id: 4,
                 name: "채민주",
+                value: 10,
+                profileImage: "/img/profile.png" 
+            },
+            {
+                id: 5,
+                name: "김팀원",
+                value: 20,
+                profileImage: "/img/profile.png" 
+            },
+            {
+                id: 6,
+                name: "이팀원",
                 value: 10,
                 profileImage: "/img/profile.png" 
             }
@@ -318,14 +330,14 @@ export default function Project() {
     };
 
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0];
-        const lastSprintEndDate = sprintData[sprintData.length - 1].sprint_end;
-    
-        // 마지막 스프린트 종료 다음날 이후인지 확인
-        const isAfterLastSprint = new Date(today) > new Date(lastSprintEndDate);
-    
-        setCanShowNextArrow(isAfterLastSprint);
-    }, []);
+        if (currentSprint.last) {
+            const today = new Date().toISOString().split('T')[0];
+            const isAfterLastSprint = new Date(today) > new Date(currentSprint.sprint_end);
+            setCanShowNextArrow(isAfterLastSprint);
+        } else {
+            setCanShowNextArrow(true);
+        }
+    }, [currentSprint]);
 
     const lastSprintNum = sprintData[sprintData.length - 1].sprint_num; 
 
@@ -466,7 +478,7 @@ export default function Project() {
                     <P.ChartTitle>Sprint {currentSprint.sprint_num}</P.ChartTitle>
 
                     {/* 팀원 리스트 */}
-                    <P.MemberList>
+                    <P.ScrollableMemberList>
                         {currentSprint.member.map((member, index) => (
                             <P.ProjectMember key={`${member.id}-${index}`}> 
                                 <P.ProfileContainer>
@@ -485,7 +497,7 @@ export default function Project() {
                                 )}
                             </P.ProjectMember>
                         ))}
-                    </P.MemberList>
+                    </P.ScrollableMemberList>
 
                     {/* 기여도 차트 */}
                     <P.DonutChartContainer>
@@ -623,7 +635,7 @@ export default function Project() {
                 )}
             
                 {/* 오른쪽 화살표 */}
-                {canShowNextArrow && !showCreateSprintBox && currentSprint.last && (
+                {canShowNextArrow && !showCreateSprintBox && (
                     <div style={{ position: 'absolute', right: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
                         <AiOutlineRight size={80} color="#796AD9" />
                     </div>

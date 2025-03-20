@@ -51,7 +51,7 @@ export default function Task() {
             sos: false
         },
         { 
-            title: "유저 API 구현", 
+            title: "결제 페이지 디자인 구현결제 페이지 페", 
             assignee: "최현태", 
             profileImage: "/img/profile2.png", 
             task_start: "2025-01-21", 
