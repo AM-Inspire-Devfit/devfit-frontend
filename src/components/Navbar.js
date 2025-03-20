@@ -42,10 +42,26 @@ export const StyledLink = styled(Link)`
   }
 `;
 
+export const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #796AD9;
+  font-size: 16px;
+  font-weight: 550;
+  transition: color 0.2s;
+  padding: 0;
+
+  &:hover {
+    color: #007bff;
+  }
+`;
+
 const Navbar = () => {
+
   return (
     <NavbarContainer>
-      <Link href="/boarding" passHref>
+      <Link href="/boarding/" passHref>
       <LogoContainer>
         <Image 
           src="/img/devfit-logo.png" 
@@ -55,9 +71,9 @@ const Navbar = () => {
       </LogoContainer>
       </Link>
       <NavLinks>
-        <StyledLink href="/home">Home</StyledLink>
+        <StyledLink href="/project/${project_id}/">Home</StyledLink>
         <StyledLink href="/project/${project_id}/mypage">MyPage</StyledLink>
-        <StyledLink href="/">Logout</StyledLink>
+        <LogoutButton>Logout</LogoutButton>
       </NavLinks>
     </NavbarContainer>
   );
