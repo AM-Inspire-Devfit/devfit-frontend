@@ -223,8 +223,7 @@ export default function My() {
 
                                         <T.TaskTitle>{task.title}</T.TaskTitle>
                                     </div>
-
-                                        <T.TaskDate>{task.task_start} ~ {task.task_end}</T.TaskDate>
+                                        {/* <T.TaskDate>{task.task_start} ~ {task.task_end}</T.TaskDate> */}
                                 </T.TaskLeft>
                             </T.TaskBox>
 

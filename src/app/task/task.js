@@ -1,11 +1,12 @@
 "use client";  
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 import { ContentContainer, Divider1 } from '@/components/common_s';
 import * as P from '../project/project_s';
 import * as T from './task_s';
+import TaskModal from './task_modal';
 
 export default function Task() {
 
@@ -111,15 +112,34 @@ export default function Task() {
 
     const [currentSprint] = useState(sprintData[0]);
 
-    // modal 상태 관리
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isTaskModalOpen, setTaskModalOpen] = useState(false);
     const [goal, setGoal] = useState(currentSprint.goal);
     const [startDate, setStartDate] = useState(currentSprint.sprint_start);
     const [endDate, setEndDate] = useState(currentSprint.sprint_end);
 
-    const handleModal = () => setModalOpen(!isModalOpen);
+    const handleTaskModal = () => setTaskModalOpen(!isTaskModalOpen);
 
-
+    // 모달 상태에 따라 스크롤 제어
+        useEffect(() => {
+            const disableScroll = () => {
+                document.documentElement.style.overflow = "hidden"; 
+                document.body.style.overflow = "hidden";
+            };
+        
+            const enableScroll = () => {
+                document.documentElement.style.overflow = "auto"; 
+                document.body.style.overflow = "auto";
+            };
+        
+            if (isTaskModalOpen) {
+                disableScroll();
+            } else {
+                enableScroll();
+            }
+        
+            return enableScroll;
+        }, [isTaskModalOpen]);
+    
 
     return (
         <>
@@ -170,7 +190,12 @@ export default function Task() {
                 <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#2E1A86" }}>
                     Task
                 </h2>
-                <T.AddTaskButton>추가하기</T.AddTaskButton>
+                <T.AddTaskButton onClick={handleTaskModal}>추가하기</T.AddTaskButton>
+                <TaskModal
+                    isOpen={isTaskModalOpen} 
+                    onClose={() => setTaskModalOpen(false)}
+                    sprintNum={currentSprint.sprint_num}
+                />
             </T.TaskContainerWrapper>
 
                 <T.TaskContainer>
@@ -184,7 +209,7 @@ export default function Task() {
                                 />
                                 <T.TaskTitle>{task.title}</T.TaskTitle>
                             </div>
-                                <T.TaskDate>{task.task_start} ~ {task.task_end}</T.TaskDate>
+                                {/* <T.TaskDate>{task.task_start} ~ {task.task_end}</T.TaskDate> */}
                             </T.TaskLeft>
 
                             <T.TaskRight>

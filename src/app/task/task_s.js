@@ -92,7 +92,7 @@ export const TaskCheckbox = styled.input.attrs({ type: "checkbox" })`
 `;
 
 export const TaskTitle = styled.span`
-    font-size: 16px;
+    font-size: 17px;
     width: 310px;
     font-weight: bold;
     color: #4F3DBD;
