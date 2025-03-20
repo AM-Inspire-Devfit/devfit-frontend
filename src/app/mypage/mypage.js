@@ -8,12 +8,16 @@ import * as M from './mypage_s';
 import * as T from '../task/task_s';
 import * as P from '../project/project_s';
 import { ContributionCircle } from './contributionCircle';
+import ApproveModal from "./approve_modal";
+import LeaderModal from "./leader_modal";
 
 export default function My() {
+    const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
     const userData = {
         name: "채민주",
         profileImage: "/img/default_profile.png",
+        role: "ADMIN"
     };
 
     const projectData = {
@@ -160,16 +164,48 @@ export default function My() {
         }
     }, []); // 컴포넌트가 최초 마운트될 때만 실행
 
+    // 모달 상태에 따라 스크롤 제어
+    useEffect(() => {
+        const disableScroll = () => {
+            document.documentElement.style.overflow = "hidden"; 
+            document.body.style.overflow = "hidden";
+        };
+    
+        const enableScroll = () => {
+            document.documentElement.style.overflow = "auto"; 
+            document.body.style.overflow = "auto";
+        };
+    
+        if (isApproveModalOpen) {
+            disableScroll();
+        } else {
+            enableScroll();
+        }
+    
+        return enableScroll;
+    }, [isApproveModalOpen]);
+
     return (
+        <>
         <ContentContainer>
             <M.Container style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <M.ProfileSection>
                     <M.ProfileImage $profileImage={userData.profileImage} />
                     <M.ProfileInfo>
                         <M.Username>{userData.name} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
+                        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+
                         <Link href={`/project/${projectData.project_id}/feedback`}>
                             <M.EvaluationButton>동료평가 메세지</M.EvaluationButton>
                         </Link>
+                        
+                        {userData.role === "ADMIN" && (
+                            <>
+                            <M.ApproveButton onClick={() => setIsApproveModalOpen(true)}>가입 신청</M.ApproveButton>
+                            <M.LeaderButton>팀장 변경</M.LeaderButton>
+                            </>
+                        )}
+                        </div>
                     </M.ProfileInfo>
                 </M.ProfileSection>
 
@@ -257,5 +293,11 @@ export default function My() {
                 </T.TaskContainer>
             </M.Container>
         </ContentContainer>
+
+        <ApproveModal
+            isOpen={isApproveModalOpen}
+            onClose={() => setIsApproveModalOpen(false)}
+        />
+        </>
     );
 }

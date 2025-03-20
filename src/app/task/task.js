@@ -141,26 +141,27 @@ export default function Task() {
         setSelectedTask(task);
         setTaskModalOpen(true);
     };
+    
     // 모달 상태에 따라 스크롤 제어
-        useEffect(() => {
-            const disableScroll = () => {
-                document.documentElement.style.overflow = "hidden"; 
-                document.body.style.overflow = "hidden";
-            };
-        
-            const enableScroll = () => {
-                document.documentElement.style.overflow = "auto"; 
-                document.body.style.overflow = "auto";
-            };
-        
-            if (isTaskModalOpen || isAssignModalOpen) {
-                disableScroll();
-            } else {
-                enableScroll();
-            }
-        
-            return enableScroll;
-        }, [isTaskModalOpen, isAssignModalOpen]);
+    useEffect(() => {
+        const disableScroll = () => {
+            document.documentElement.style.overflow = "hidden"; 
+            document.body.style.overflow = "hidden";
+        };
+    
+        const enableScroll = () => {
+            document.documentElement.style.overflow = "auto"; 
+            document.body.style.overflow = "auto";
+        };
+    
+        if (isTaskModalOpen || isAssignModalOpen) {
+            disableScroll();
+        } else {
+            enableScroll();
+        }
+    
+        return enableScroll;
+    }, [isTaskModalOpen, isAssignModalOpen]);
     
 
     return (

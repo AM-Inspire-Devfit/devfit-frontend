@@ -59,6 +59,44 @@ export const EvaluationButton = styled.button`
     }
 `;
 
+export const ApproveButton = styled.button`
+    width: 80px;
+    height: 35px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background-color: #796AD9;
+    border: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background-color: #5A46C6;
+    }
+`;
+
+
+export const LeaderButton = styled.button`
+    width: 80px;
+    height: 35px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background-color: #4285F4;
+    border: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background-color: #4077D3;
+    }
+`;
+
+
 
 export const SprintBox = styled.div`
     width: 750px;
