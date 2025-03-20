@@ -331,6 +331,7 @@ export default function Project() {
 
     const today = new Date().toISOString().split('T')[0];
     const isFeedbackDay = today === currentSprint.sprint_end;
+    const sprintsWithFeedback = sprintData.filter(sprint => sprint.sprint_end === today);
 
     useEffect(() => {
         if (currentSprint.last) {
@@ -468,14 +469,15 @@ export default function Project() {
             </div>
             ))}
 
-            {isFeedbackDay && (
-            <P.AlertBox>
+            {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
+            <P.AlertBox key={sprint.sprint_num}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
-                    <span>Sprint {currentSprint.sprint_num} 동료평가를 잊지 마세요!</span>
+                    <span>Sprint {sprint.sprint_num} 동료평가를 잊지 마세요!</span>
                 </div>
             </P.AlertBox>
-            )}
+            ))}
+
             <P.BoxContainer>
                 {/* 왼쪽 화살표 (첫 Sprint가 아닐 때만 표시) */}
                 {currentSprintIndex > 0 && (
