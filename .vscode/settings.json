@@ -1,4 +1,5 @@
 {
     "prettier.requirePragma": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "devon-aide.resourcePath": "/Users/sunwoo/.vscode/extensions/lgcns-devon-aide.devon-aide-0.0.1/resource"
 }
