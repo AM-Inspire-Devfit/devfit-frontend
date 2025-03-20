@@ -48,7 +48,7 @@ export const ProfileImage = styled.img`
 `;
 
 export const MessageBox = styled.div`
-    width: 450px;
+    width: 500px;
     background: white;
     padding: 60px 30px 30px; 
     border-radius: 20px;
@@ -105,7 +105,7 @@ export const SendButton = styled.button`
 `;
 
 export const GPTMessageBox = styled.div`
-    width: 450px;
+    width: 500px;
     background: #E8E2FF; 
     padding: 60px 30px 30px; 
     border-radius: 20px;
@@ -138,12 +138,14 @@ export const ButtonWrapper = styled.div`
 export const EditButton = styled.button`
     background-color: #8A7CED;
     color: white;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: bold;
     padding: 8px 15px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
+    width: 48%;
 
     &:hover {
         background-color: #7560E0;

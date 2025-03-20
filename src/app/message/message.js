@@ -31,18 +31,26 @@ export default function Message({ }) {
                 <MS.MessageBox>
                     <MS.Title>{memberName}(님)에게 전할 메시지를 적어보세요!</MS.Title>
                     <MS.TextArea
-                        placeholder="메시지를 입력하세요..."
+                        placeholder="메세지를 입력하세요 (300자 이내)"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
+                        maxLength={300}
                     />
                     <MS.SendButton>작성완료</MS.SendButton>
                 </MS.MessageBox>
 
                 <MS.GPTMessageBox>
-                    <MS.Title>GPT 생성 답변</MS.Title>
+                    <MS.Title
+                        style={{
+                            color: "#4438a6"
+                        }}
+                    >
+                        GPT 생성 답변
+                    </MS.Title>
                     <MS.GPTTextArea
                         value={gptMessage}
                         onChange={(e) => setGptMessage(e.target.value)}
+                        maxLength={600}
                     />
                     <MS.ButtonWrapper>
                         <MS.EditButton>수정하기</MS.EditButton>
