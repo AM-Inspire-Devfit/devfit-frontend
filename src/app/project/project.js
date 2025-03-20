@@ -108,7 +108,7 @@ const sprintData = [
         sprint_num: 2,
         goal: "리액트 프로젝트를 생성합니다.",
         sprint_start: "2025-02-20",
-        sprint_end: "2025-03-19",
+        sprint_end: "2025-03-20",
         progress: 30,
         member: [
             {
@@ -329,9 +329,11 @@ export default function Project() {
         }
     };
 
+    const today = new Date().toISOString().split('T')[0];
+    const isFeedbackDay = today === currentSprint.sprint_end;
+
     useEffect(() => {
         if (currentSprint.last) {
-            const today = new Date().toISOString().split('T')[0];
             const isAfterLastSprint = new Date(today) > new Date(currentSprint.sprint_end);
             setCanShowNextArrow(isAfterLastSprint);
         } else {
@@ -342,7 +344,6 @@ export default function Project() {
     const lastSprintNum = sprintData[sprintData.length - 1].sprint_num; 
 
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0];
         const sprintIndex = sprintDataWithColors.findIndex(sprint =>
             sprint.sprint_start <= today && sprint.sprint_end >= today
         );
@@ -386,6 +387,8 @@ export default function Project() {
         setEndTime(meeting.endTime);
         setIsMeetingModalOpen(true);
     };
+
+
 
     return (
         <ContentContainer>
@@ -464,6 +467,15 @@ export default function Project() {
                 )}
             </div>
             ))}
+
+            {isFeedbackDay && (
+            <P.AlertBox>
+                <div>
+                    <P.AlertIcon>🔔</P.AlertIcon> 
+                    <span>Sprint {currentSprint.sprint_num} 동료평가를 잊지 마세요!</span>
+                </div>
+            </P.AlertBox>
+            )}
             <P.BoxContainer>
                 {/* 왼쪽 화살표 (첫 Sprint가 아닐 때만 표시) */}
                 {currentSprintIndex > 0 && (
@@ -490,7 +502,7 @@ export default function Project() {
                                 {member.id !== userData[0].id && ( // 본인 제외
                                     <Link 
                                         href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
-                                        <P.FeedbackButton>
+                                        <P.FeedbackButton hidden={!isFeedbackDay}>
                                             동료 평가
                                         </P.FeedbackButton>
                                     </Link>

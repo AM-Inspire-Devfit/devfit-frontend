@@ -1,5 +1,25 @@
 import styled from 'styled-components';
 
+export const AlertBox = styled.div`
+    width: 750px;
+    height: 60px;
+    background-color: #FFF3CD;
+    color: #856404;
+    font-weight: bold;
+    font-size: 17px;
+    border: 1px solid #FEEBC8;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+`;
+
+export const AlertIcon = styled.span`
+    margin-right: 10px;
+`;
+
 export const BoxContainer = styled.div`
     width: 750px;
     position: relative;
@@ -10,7 +30,8 @@ export const BoxContainer = styled.div`
     flex-direction: column; 
     align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    margin: 50px 0;
+    margin-top: 30px;
+    margin-bottom: 50px;
 `;
 
 export const StyledInput = styled.input`
