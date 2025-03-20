@@ -146,55 +146,8 @@ const sprintData = [
                 toDoStatus: "NOT_STARTED"
             },
         ],
-        last: false
-    },
-    {
-        sprint_id: 3,
-        sprint_num: 3,
-        goal: "API 연결을 시작합니다.",
-        sprint_start: "2025-03-20",
-        sprint_end: "2025-04-19",
-        progress: 30,
-        member: [
-            {
-                id: 1,
-                name: "최현태",
-                value: 30,
-                profileImage: "/img/profile2.png" 
-            },
-            {
-                id: 2,
-                name: "조수빈",
-                value: 25,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 4,
-                name: "채민주",
-                value: 45,
-                profileImage: "/img/profile.png" 
-            }
-        ],
-        taskData : [
-            { 
-                task: "API 명세서 작성",
-                toDoStatus: "COMPELTED"
-            },
-            { 
-                task: "피그마 UI 디자인 완료",
-                toDoStatus: "NOT_STARTED"
-            },
-            { 
-                task: "API 명세서 작성",
-                toDoStatus: "COMPELTED"
-            },
-            { 
-                task: "피그마 UI 디자인 완료",
-                toDoStatus: "NOT_STARTED"
-            },
-        ],
         last: true
-    }
+    },
 ];
 
 const meetingData = [
@@ -344,6 +297,8 @@ export default function Project() {
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
+    
+    const [canShowNextArrow, setCanShowNextArrow] = useState(false);
 
     const handleNextSprint = () => {
         if (currentSprint.last) {
@@ -361,6 +316,16 @@ export default function Project() {
             setCurrentSprintIndex(prevIndex => prevIndex - 1); // 이전 Sprint로 이동
         }
     };
+
+    useEffect(() => {
+        const today = new Date().toISOString().split('T')[0];
+        const lastSprintEndDate = sprintData[sprintData.length - 1].sprint_end;
+    
+        // 마지막 스프린트 종료 다음날 이후인지 확인
+        const isAfterLastSprint = new Date(today) > new Date(lastSprintEndDate);
+    
+        setCanShowNextArrow(isAfterLastSprint);
+    }, []);
 
     const lastSprintNum = sprintData[sprintData.length - 1].sprint_num; 
 
@@ -658,7 +623,7 @@ export default function Project() {
                 )}
             
                 {/* 오른쪽 화살표 */}
-                {!showCreateSprintBox && (
+                {canShowNextArrow && !showCreateSprintBox && currentSprint.last && (
                     <div style={{ position: 'absolute', right: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
                         <AiOutlineRight size={80} color="#796AD9" />
                     </div>
