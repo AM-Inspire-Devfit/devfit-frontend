@@ -13,6 +13,7 @@ import LeaderModal from "./leader_modal";
 
 export default function My() {
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+    const [isLeaderModalOpen, setIsLeaderModalOpen] = useState(false);
 
     const userData = {
         name: "채민주",
@@ -176,14 +177,14 @@ export default function My() {
             document.body.style.overflow = "auto";
         };
     
-        if (isApproveModalOpen) {
+        if (isApproveModalOpen || isLeaderModalOpen) {
             disableScroll();
         } else {
             enableScroll();
         }
     
         return enableScroll;
-    }, [isApproveModalOpen]);
+    }, [isApproveModalOpen, isLeaderModalOpen]);
 
     return (
         <>
@@ -202,7 +203,7 @@ export default function My() {
                         {userData.role === "ADMIN" && (
                             <>
                             <M.ApproveButton onClick={() => setIsApproveModalOpen(true)}>가입 신청</M.ApproveButton>
-                            <M.LeaderButton>팀장 변경</M.LeaderButton>
+                            <M.LeaderButton onClick={() => setIsLeaderModalOpen(true)}>팀장 변경</M.LeaderButton>
                             </>
                         )}
                         </div>
@@ -298,6 +299,11 @@ export default function My() {
             isOpen={isApproveModalOpen}
             onClose={() => setIsApproveModalOpen(false)}
         />
+
+        <LeaderModal 
+            isOpen={isLeaderModalOpen}
+            onClose={() => setIsLeaderModalOpen(false)}
+        />;
         </>
     );
 }
