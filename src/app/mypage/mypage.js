@@ -11,128 +11,397 @@ import { ContributionCircle } from './contributionCircle';
 import ApproveModal from "./approve_modal";
 import LeaderModal from "./leader_modal";
 
+const projectUserData = {
+    "success": true,
+    "status": 200,
+    "data": {
+        "projectParticipantId": 4,
+        "projectNickname": "최현태",
+        "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+        "role": "ADMIN" 
+    },
+    "timestamp": "2025-03-19T21:42:40.59254"
+}
+
+const teamData = {
+    "success": true,
+    "status": 200,
+    "data": {
+        "teamId": "1",
+        "teamName": "Side Effect",
+        "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
+        "teamEmoji": "🍇"
+    },
+    "timestamp": "2025-02-10T14:18:46.135007"
+}
+
+const projectData = 
+{
+    "success": true,
+    "status": 200,
+    "data": 
+        {
+            "projectId": 1,
+            "projectTitle": "Devfit",
+            "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
+            "projectGoal": "개발자 건강을 위한 협업 툴 개발",
+            "startDt": "2024-01-01",
+            "dueDt": "2026-01-01"
+        },
+    "timestamp": "2025-02-06T09:56:45.150727"
+}
+
+const sprintData = [
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "id": 1,
+            "title": "1",
+            "goal": "MVP 개발",
+            "startDt": "2025-03-21",
+            "dueDt": "2026-03-01",
+            "status": "COMPLETED",
+            "progress": 33
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 1,
+            "sort": [],
+            "offset": 0,
+            "unpaged": false,
+            "paged": true
+        },
+        "first": true,
+        "last": false,
+        "size": 1,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 1,
+        "empty": false
+        },
+        "timestamp": "2025-03-21T22:34:50.563296"
+    },
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+            "content": [
+            {
+                "id": 1,
+                "title": "2",
+                "goal": "MVP 개발222222",
+                "startDt": "2025-03-21",
+                "dueDt": "2026-03-01",
+                "status": "ON_GOING",
+                "progress": 50
+            }
+            ],
+            "pageable": {
+            "pageNumber": 0,
+            "pageSize": 1,
+            "sort": [],
+            "offset": 0,
+            "unpaged": false,
+            "paged": true
+            },
+            "first": false,
+            "last": true,
+            "size": 1,
+            "number": 0,
+            "sort": [],
+            "numberOfElements": 1,
+            "empty": false
+        },
+        "timestamp": "2025-03-21T22:34:50.563296"
+    }
+];
+
+const taskData = [
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "taskId": 1,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 3,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+            },
+            {
+            "taskId": 4,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+            },
+            {
+            "taskId": 5,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": "2025-03-01",
+            "taskStatus": "COMPLETED",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+            },
+            {
+            "taskId": 6,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 6,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+        },
+        "first": true,
+        "last": false,
+        "size": 6,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 6,
+        "empty": false
+        },
+        "timestamp": "2025-03-20T16:38:14.792466"
+    },
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "taskId": 1,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 2,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 3,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 4,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 5,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": "2025-03-01",
+            "taskStatus": "COMPLETED",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 6,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 6,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+        },
+        "first": false,
+        "last": false,
+        "size": 6,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 6,
+        "empty": false
+        },
+        "timestamp": "2025-03-20T16:38:14.792466"
+    },
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "taskId": 1,
+            "description": "피그마 화면 설계 수정ㅎ",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 2,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 3,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 4,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 5,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": "2025-03-01",
+            "taskStatus": "COMPLETED",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            },
+            {
+            "taskId": 6,
+            "description": "피그마 화면 설계 수정ㅎㅎㅎ",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "ON_GOING",
+            "assignedStatus": "ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": 4,
+            "projectNickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 6,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+        },
+        "first": false,
+        "last": true,
+        "size": 6,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 6,
+        "empty": false
+        },
+        "timestamp": "2025-03-20T16:38:14.792466"
+    }
+]
+
 export default function My() {
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
     const [isLeaderModalOpen, setIsLeaderModalOpen] = useState(false);
-
-    const userData = {
-        name: "채민주",
-        profileImage: "/img/default_profile.png",
-        role: "ADMIN"
-    };
-
-    const projectData = {
-        project_id: 1,
-        teamName: "SideEffect",
-        projectName: "devFit",
-        projectDescription: "개발자들의 성공적인 협업을 돕는 웹서비스",
-    };
-
-    const sprintData = [
-        { sprint_num: 1, goal: "UI 디자인을 완료하고 핵심 기능 단위를 정리합니다.", sprint_start: "2025-01-20", sprint_end: "2025-02-19", percentage: 50 },
-        { sprint_num: 2, goal: "리액트 프로젝트 생성 및 초기 개발을 진행합니다.", sprint_start: "2025-02-20", sprint_end: "2025-03-19", percentage: 70 },
-        { sprint_num: 3, goal: "API 연결을 시작하고 전체 기능 구현을 마무리합니다.", sprint_start: "2025-03-20", sprint_end: "2025-03-19",percentage: 90 },
-    ];
-
-    const taskData = [
-        { sprint_num: 1, 
-            tasks: [
-            { 
-                title: "로그인 페이지 API 연동", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-20", 
-                task_end: "2025-03-01", 
-                toDoStatus: "ON_GOING", 
-                finish_date: "", 
-                taskDifficulty: "HIGH",
-                sos: false 
-            },
-            { 
-                title: "회원가입 페이지 개발", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-21", 
-                task_end: "2025-03-03", 
-                toDoStatus: "COMPLETED", 
-                finish_date: "2025-03-01", 
-                taskDifficulty: "LOW",
-                sos: false 
-            },
-            { 
-                title: "로그인 페이지 API 연동", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-20", 
-                task_end: "2025-03-01", 
-                toDoStatus: "ON_GOING", 
-                finish_date: "", 
-                taskDifficulty: "HIGH",
-                sos: false 
-            },
-            { 
-                title: "회원가입 페이지 개발", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-21", 
-                task_end: "2025-03-03", 
-                toDoStatus: "COMPLETED", 
-                finish_date: "2025-03-01", 
-                taskDifficulty: "HIGH",
-                sos: false 
-            },
-            { 
-                title: "로그인 페이지 API 연동", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-20", 
-                task_end: "2025-03-01", 
-                toDoStatus: "ON_GOING", 
-                finish_date: "", 
-                taskDifficulty: "MID",
-                sos: true 
-            },
-        ]},
-        { sprint_num: 2, 
-            tasks: [
-            { 
-                title: "로그인 페이지 API 연동", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-20", 
-                task_end: "2025-03-01", 
-                toDoStatus: "ON_GOING", 
-                finish_date: "", 
-                taskDifficulty: "LOW",
-                sos: false 
-            },
-            { 
-                title: "회원가입 페이지 개발", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-02-21", 
-                task_end: "2025-03-03", 
-                toDoStatus: "COMPLETED", 
-                finish_date: "2025-03-01", 
-                taskDifficulty: "LOW",
-                sos: false 
-            },
-        ]},
-        { sprint_num: 3, 
-            tasks: [
-            { 
-                title: "대시보드 페이지 구현", 
-                assignee: "채민주", 
-                profileImage: "/img/profile.png", 
-                task_start: "2025-03-22", 
-                task_end: "2025-04-01", 
-                toDoStatus: "ON_GOING", 
-                finish_date: "", 
-                taskDifficulty: "MID",
-                sos: false 
-            },
-        ]},
-    ];
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
 
@@ -144,8 +413,44 @@ export default function My() {
         setCurrentSprintIndex((prev) => Math.min(prev + 1, sprintData.length - 1));
     };
 
-    const currentSprint = sprintData[currentSprintIndex];
-    const currentTasks = taskData.find(s => s.sprint_num === currentSprint.sprint_num)?.tasks || [];
+    const [visibleTasks, setVisibleTasks] = useState([]);
+    const [taskPage, setTaskPage] = useState(0);
+    const [hasMoreTasks, setHasMoreTasks] = useState(true);
+
+    const loadMoreTasks = () => {
+        if (taskPage < taskData.length) {
+            const newTasks = taskData[taskPage].data.content;
+            setVisibleTasks((prev) => [...prev, ...newTasks]);
+            setTaskPage((prev) => prev + 1);
+    
+            if (taskPage + 1 >= taskData.length) {
+                setHasMoreTasks(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + document.documentElement.scrollTop >=
+                document.documentElement.offsetHeight - 100
+            ) {
+                loadMoreTasks();
+            }
+        };
+    
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [taskPage, hasMoreTasks]);
+
+    const currentSprint = sprintData[currentSprintIndex].data.content[0];
+    const currentTasks = taskData[currentSprintIndex]?.data.content || [];
+
+    useEffect(() => {
+        if (visibleTasks.length === 0 && taskData.length > 0) {
+            loadMoreTasks();
+        }
+    }, []);
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
@@ -191,16 +496,16 @@ export default function My() {
         <ContentContainer>
             <M.Container style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <M.ProfileSection>
-                    <M.ProfileImage $profileImage={userData.profileImage} />
+                    <M.ProfileImage $profileImage={projectUserData.data.profileImageUrl} />
                     <M.ProfileInfo>
-                        <M.Username>{userData.name} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
+                        <M.Username>{projectUserData.data.projectNickname} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
                         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
 
-                        <Link href={`/project/${projectData.project_id}/feedback`}>
+                        <Link href={`/project/${projectData.data.projectId}/feedback`}>
                             <M.EvaluationButton>동료평가 메세지</M.EvaluationButton>
                         </Link>
                         
-                        {userData.role === "ADMIN" && (
+                        {projectUserData.data.role === "ADMIN" && (
                             <>
                             <M.ApproveButton onClick={() => setIsApproveModalOpen(true)}>가입 신청</M.ApproveButton>
                             <M.LeaderButton onClick={() => setIsLeaderModalOpen(true)}>팀장 변경</M.LeaderButton>
@@ -212,25 +517,26 @@ export default function My() {
 
                 <div style={{ width: '750px', textAlign: 'left', position: 'relative', marginTop: '10px'}}>
                     <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '100px' }}>
-                        <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px' }}>{projectData.teamName}</span>
-                        <span>{projectData.projectName}</span>
+                        <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px' }}>{teamData.data.teamName}</span>
+                        <span>{projectData.data.projectTitle}</span>
                     </h2>
                     <Divider1 />
                     <p style={{ fontSize: '15px', color: '#4F3DBD', marginTop: '10px', marginLeft: '20px' }}>
-                        {projectData.projectDescription}
+                        {projectData.data.projectDescription}
                     </p>
 
                     <M.SprintBox id="sprint-box" style={{ position: 'relative' }}>
 
                         {/* 왼쪽 화살표 */}
                         {currentSprintIndex > 0 && (
-                            <div style={{ position: 'absolute', left: '-60px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handlePrevSprint}>
+                            <div style={{ position: 'absolute', left: '-60px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} 
+                            onClick={handlePrevSprint}>
                             <AiOutlineLeft size={50} color="#796AD9" />
                             </div>
                         )}
 
                         <M.SprintInfo>
-                            <M.SprintTitle>Sprint {currentSprint.sprint_num}</M.SprintTitle>
+                            <M.SprintTitle>Sprint {currentSprint.title}</M.SprintTitle>
                             <M.SprintDescription>{currentSprint.goal}</M.SprintDescription>
                         </M.SprintInfo>
 
@@ -238,14 +544,16 @@ export default function My() {
 
                         <M.ContributionWrapper>
                             <M.ContributionTitle>기여도</M.ContributionTitle>
-                            <ContributionCircle percentage={currentSprint.percentage} />
+                            <ContributionCircle percentage={currentSprint.progress} />
                         </M.ContributionWrapper>
 
                         <M.BoxDivider />
 
                         <M.RoleWrapper>
                             <M.RoleTitle>역할</M.RoleTitle>
-                            <M.RoleText>팀장</M.RoleText>
+                            <M.RoleText>
+                            {projectUserData.data.role === "ADMIN" ? "팀장" : "팀원"}
+                            </M.RoleText>
                         </M.RoleWrapper>
 
                         {/* 오른쪽 화살표 */}
@@ -259,34 +567,37 @@ export default function My() {
 
                 <M.TaskHeader>Todo</M.TaskHeader>
                 <T.TaskContainer>
-                    {currentTasks.map((task, index) => (
+                    {visibleTasks.map((task, index) => (
                         <T.TaskWrapper key={index}>
-                            <T.TaskBox $isCompleted={task.toDoStatus === "COMPLETED"} $isSOS={task.sos}>
+                            <T.TaskBox 
+                                $isCompleted={task.taskStatus === "COMPLETED"} 
+                                $isSOS={task.sosStatus === "SOS"}
+                            >
                                 <T.TaskLeft>
                                     <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                                        <P.TaskCheckbox checked={task.toDoStatus === "COMPLETED"} readOnly />
+                                        <P.TaskCheckbox checked={task.taskStatus === "COMPLETED"} readOnly />
 
-                                        <T.TaskTitle>{task.title}</T.TaskTitle>
+                                        <T.TaskTitle>{task.description}</T.TaskTitle>
                                     </div>
                                         {/* <T.TaskDate>{task.task_start} ~ {task.task_end}</T.TaskDate> */}
                                 </T.TaskLeft>
                             </T.TaskBox>
 
-                            {task.toDoStatus === "COMPLETED" && (
+                            {task.taskStatus === "COMPLETED" && (
                                 <T.NCButton>
-                                미완료
+                                    미완료
                                 </T.NCButton>
                             )}
-                            {task.toDoStatus === "ON_GOING" && !task.sos && (
+                            {task.taskStatus === "ON_GOING" && task.sosStatus !== "SOS" && (
                                 <T.ButtonContainer>
                                 <T.CButton>완료</T.CButton>
                                 <T.SButton>SOS</T.SButton>
                                 </T.ButtonContainer>
                             )}
-                            {task.toDoStatus === "ON_GOING" && task.sos && (
+                            {task.taskStatus === "ON_GOING" && task.sosStatus === "SOS" && (
                                 <T.ButtonContainer>
                                 <T.CButton>완료</T.CButton>
-                                <T.SButton $isSOS={task.sos}>SOS</T.SButton>
+                                <T.SButton $isSOS={true}>SOS</T.SButton>
                                 </T.ButtonContainer>
                             )}
                         </T.TaskWrapper>
