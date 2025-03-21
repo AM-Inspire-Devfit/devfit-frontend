@@ -1067,7 +1067,11 @@ export default function Project() {
                             };
                             })
                         }
-                        onMeetingClick={openMeetingModalForEdit}
+                        onMeetingClick={(meeting) => {
+                            if (projectUserData.data?.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED") {
+                                openMeetingModalForEdit(meeting);
+                            }
+                        }}
                     />
                 </P.MeetingContainer>
             </div>
