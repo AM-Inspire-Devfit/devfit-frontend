@@ -66,8 +66,8 @@ export default function Team() {
             "content": [
             {
                 "memberId": 1,
-                "nickname": "채민주",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "nickname": "",
+                "profileImageUrl": "",
             },
             {
                 "memberId": 2,
@@ -607,11 +607,17 @@ export default function Team() {
                         {teamMembers.slice(0, 3).map((member, index) => (
                             <S.MemberItem key={member.id} style={{ position: "relative", marginLeft: index === 0 ? "0" : "-15px" }}>
                                 <S.MemberProfile>
-                                    <Image src={member.profileImage} alt={member.name} width={50} height={50} />
+                                    <Image 
+                                        src={member.profileImage ? member.profileImage : "/img/default_profile.png"}
+                                        alt={member.name}
+                                        width={50} 
+                                        height={50} />
                                 </S.MemberProfile>
-                                <S.MemberName style={{ visibility: member.name ? "hidden" : "visible" }}>
-                                    {member.name}
-                                </S.MemberName>
+                                {member.name ? (
+                                <S.MemberName style={{ visibility: "hidden" }}>{member.name}</S.MemberName>
+                                ) : (
+                                <S.MemberName style={{ visibility: "hidden" }}>사용자</S.MemberName>
+                                )}
                             </S.MemberItem>
                         ))}
                     </div>
@@ -625,12 +631,19 @@ export default function Team() {
                             <S.ToggleMemberImage>
                                 <Image
                                     src={member.profileImage ? member.profileImage : "/img/default_profile.png"}
-                                    alt={member.name || "이름 없음"}
+                                    alt={member.name || "사용자"}
                                     width={40}
                                     height={40}
+                                    style={{
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                        objectPosition: 'center', 
+                                        width: '36px',
+                                        height: '36px'
+                                    }}
                                 />
                             </S.ToggleMemberImage>
-                            <S.ToggleMemberText>{member.name}</S.ToggleMemberText>
+                            <S.ToggleMemberText>{member.name || "사용자"}</S.ToggleMemberText>
                         </S.ToggleMemberItem>
                         ))}
                         </S.ToggleMemberList>
