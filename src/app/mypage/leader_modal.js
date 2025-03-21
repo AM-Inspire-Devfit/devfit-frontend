@@ -3,7 +3,7 @@ import * as m from '../../components/modal_s';
 import { IoClose } from 'react-icons/io5';
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const Header = styled.div`
     display: flex;
@@ -94,7 +94,7 @@ const projectUserData = {
     "timestamp": "2025-03-19T21:42:40.59254"
 }
 
-const projectMemberData = 
+const projectMemberData = [
     { 
         "success": true,
         "status": 200,
@@ -142,20 +142,89 @@ const projectMemberData =
             "empty": false
         },
         "timestamp": "2025-03-19T21:49:27.631511"
-    };
-
+    },
+    { 
+        "success": true,
+        "status": 200,
+        "data": {
+            "content": [
+            {
+                "projectParticipantId": 5,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "role": "ADMIN"
+            },
+            {
+                "projectParticipantId": 6,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+                "role": "MEMBER"
+            },
+            {
+                "projectParticipantId": 7,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "role": "MEMBER"
+            },
+            {
+                "projectParticipantId": 8,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "role": "MEMBER"
+            }
+            ],
+            "pageable": {
+            "pageNumber": 0,
+            "pageSize": 3,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+            },
+            "first": true,
+            "last": true,
+            "size": 3,
+            "number": 0,
+            "sort": [],
+            "numberOfElements": 3,
+            "empty": false
+        },
+        "timestamp": "2025-03-19T21:49:27.631511"
+    }
+]
 export default function LeaderModal({ isOpen, onClose, }) {
     const [selectedMember, setSelectedMember] = useState(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [members, setMembers] = useState([]);
+    const listRef = useRef();
 
-    if (!isOpen) return null;
-
-    // 현재 유저 ID
     const currentUserId = projectUserData.data.projectParticipantId;
 
-    // 현재 유저가 아닌 멤버만 필터링
-    const members = projectMemberData.data.content.filter(
-        (member) => member.projectParticipantId !== currentUserId
-    );
+    useEffect(() => {
+        const pageData = projectMemberData[currentPage];
+        if (pageData?.data?.content) {
+            const filtered = pageData.data.content.filter(
+                (member) => member.projectParticipantId !== currentUserId
+            );
+            setMembers((prev) => [...prev, ...filtered]);
+        }
+    }, [currentPage]);
+
+    // 스크롤 핸들러
+    const handleScroll = () => {
+        const container = listRef.current;
+        if (!container) return;
+
+        const isBottom =
+            container.scrollTop + container.clientHeight >=
+            container.scrollHeight - 10;
+
+        if (isBottom && currentPage + 1 < projectMemberData.length) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+
+    if (!isOpen) return null;
 
     return (
         <m.ModalOverlay>
@@ -168,7 +237,7 @@ export default function LeaderModal({ isOpen, onClose, }) {
                 </Header>
 
                 <InstructionText>양도할 팀원을 선택해주세요.</InstructionText>
-                <MemberList>
+                <MemberList ref={listRef} onScroll={handleScroll}>
                     {members.map((member) => (
                         <MemberItem key={member.projectParticipantId}>
                             <MemberInfo>

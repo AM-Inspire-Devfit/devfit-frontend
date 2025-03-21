@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styled from "styled-components";
 import * as m from '../../components/modal_s';
 import { IoClose } from 'react-icons/io5';
@@ -280,43 +280,27 @@ export default function ApproveModal({ isOpen, onClose}) {
 
     const [currentPage, setCurrentPage] = useState(0);
     const [requestList, setRequestList] = useState(requestData[0].content);
-    const observerRef = useRef();
+    const listRef = useRef();
+
+    const handleScroll = () => {
+        const container = listRef.current;
+        if (!container) return;
+
+        const isBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10;
+
+        if (isBottom && currentPage + 1 < requestData.length) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
     useEffect(() => {
         if (currentPage === 0) return;
 
-        // 새 페이지의 content를 기존 requestList에 추가
         const nextPage = requestData[currentPage];
         if (nextPage) {
             setRequestList((prev) => [...prev, ...nextPage.content]);
         }
     }, [currentPage]);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setCurrentPage((prev) => {
-                        if (prev + 1 < requestData.length) {
-                            return prev + 1;
-                        }
-                        return prev;
-                    });
-                }
-            },
-            { threshold: 1 }
-        );
-
-        if (observerRef.current) {
-            observer.observe(observerRef.current);
-        }
-
-        return () => {
-            if (observerRef.current) {
-                observer.unobserve(observerRef.current);
-            }
-        };
-    }, []);
 
     const getStatusMessage = (projectRegistrationStatus) => {
         switch (projectRegistrationStatus) {
@@ -353,16 +337,9 @@ export default function ApproveModal({ isOpen, onClose}) {
                     </CloseButton>
                 </Header>
 
-                <RequestList>
-                {requestList.map((request, index) => {
-                const isLast = index === requestList.length - 1;
-
-                return (
-                    <div
-                        key={`request-${request.registrationId}-${index}`}
-                        ref={isLast ? observerRef : null} 
-                    >
-                        <RequestItem>
+                <RequestList ref={listRef} onScroll={handleScroll}>
+                    {requestList.map((request) => (
+                        <RequestItem key={request.registrationId}>
                             <Image
                                 src={request.requesterProfileUrl}
                                 alt="프로필 이미지"
@@ -396,10 +373,8 @@ export default function ApproveModal({ isOpen, onClose}) {
                                 )}
                             </ButtonGroup>
                         </RequestItem>
-                    </div>
-                );
-            })}
-            </RequestList>
+                    ))}
+                </RequestList>
             </m.ModalContent>
         </m.ModalOverlay>
     );
