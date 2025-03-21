@@ -108,7 +108,7 @@ const sprintData = [
         sprint_num: 2,
         goal: "리액트 프로젝트를 생성합니다.",
         sprint_start: "2025-02-20",
-        sprint_end: "2025-03-20",
+        sprint_end: "2025-03-19",
         progress: 30,
         member: [
             {

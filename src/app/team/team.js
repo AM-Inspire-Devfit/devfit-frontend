@@ -21,15 +21,167 @@ import EmojiPicker from "emoji-picker-react";
 
 export default function Team() {
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [title, setTitle] = useState("SideEffect");
-    const [subtitle, setSubtitle] = useState("Lg CNS AM Inspire Camp 1기 스터디그룹 2조");
+    const userData = {
+        "success": true,
+        "status": 200,
+        "data": {
+            "memberId": 1,
+            "nickname": "최현태",
+            "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            "status": "NORMAL",
+            "role": "USER"
+        },
+        "timestamp": "2025-02-11T17:08:20.340403"
+    }
 
-    const [chosenEmoji, setChosenEmoji] = useState("🍇"); // sideEffect 디폴트 이모지
+    const teamData = {
+        "success": true,
+        "status": 200,
+        "data": {
+            "teamId": "1",
+            "teamName": "Side Effect",
+            "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
+            "teamEmoji": "🍇"
+        },
+        "timestamp": "2025-02-10T14:18:46.135007"
+    }
+
+    const teamLeaderData = [
+        {
+            "success": true,
+            "status": 200,
+            "data": {
+                "memberId": 44,
+                "nickname": "최현태",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg"
+            },
+            "timestamp": "2025-03-02T14:52:05.54385"
+        }
+    ]
+
+    const teamMemberData = [
+        {
+            "success": true,
+            "status": 200,
+            "data": {
+            "content": [
+            {
+                "memberId": 11,
+                "nickname": "채민주",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+            {
+                "memberId": 22,
+                "nickname": "조수빈",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+            {
+                "memberId": 33,
+                "nickname": "정선우",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+
+            ],
+            "pageable": {
+            "pageNumber": 0,
+            "pageSize": 3,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+            },
+            "first": true,
+            "last": true,
+            "size": 3,
+            "number": 0,
+            "sort": [],
+            "numberOfElements": 1,
+            "empty": false
+        },
+        "timestamp": "2025-03-02T14:57:03.879893"
+        }
+    ]
+
+    const projectData = [
+        {
+            "first": true,
+            "last": true,
+            "size": 1073741824,
+            "content": [
+                {
+                    "projectInfo": {
+                        "projectId": 1,
+                        "projectTitle": "Devfit",
+                        "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트",
+                        "startDt": "2024-01-01",
+                        "dueDt": "2025-01-01"
+                    },
+                    "isAdmin":true,
+                    "isParticipant": true
+                },
+                {
+                    "projectInfo": {
+                        "projectId": 2,
+                        "projectTitle": "Devfit",
+                        "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트",
+                        "startDt": "2024-01-01",
+                        "dueDt": "2025-01-01"
+                    },
+                    "isAdmin": false,
+                    "isParticipant": true
+                },
+                {
+                    "projectInfo": {
+                        "projectId": 3,
+                        "projectTitle": "Devfit",
+                        "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트",
+                        "startDt": "2024-01-01",
+                        "dueDt": "2025-01-01"
+                    },
+                    "isAdmin": false,
+                    "isParticipant": false
+                },
+            ],
+            "number": 1073741824,
+            "sort": {
+                "empty": true,
+                "unsorted": true,
+                "sorted": true
+            },
+            "pageable": {
+                "offset": 9007199254740991,
+                "sort": {
+                    "empty": true,
+                    "unsorted": true,
+                    "sorted": true
+                },
+                "paged": true,
+                "unpaged": true,
+                "pageNumber": 1073741824,
+                "pageSize": 1073741824
+            },
+            "numberOfElements": 1073741824,
+            "empty": true
+        },
+    ]
+
+
+    const [myProjects, setMyProjects] = useState([]);
+    const [otherProjects, setOtherProjects] = useState([]);
+
+
+    const [isEditing, setIsEditing] = useState(false);
+    
+    const [teamInfo, setTeamInfo] = useState(teamData.data);
+    // const [chosenEmoji, setChosenEmoji] = useState(teamInfo.teamEmoji);
+    // const [title, setTitle] = useState(teamInfo.teamName);
+    // const [subtitle, setSubtitle] = useState(teamInfo.teamDescription);
+
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const emojiBoxRef = useRef(null);
     const emojiPickerRef = useRef(null);
     const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+    
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [pendingProjects, setPendingProjects] = useState({});
 
@@ -40,94 +192,52 @@ export default function Team() {
     const [adminLModal, setAdminLModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
-    const userData = { memberId: 1234 };
-
-    const [members, setMembers] = useState([
-        {
-            id: 1,
-            name: "김팀장",
-            role: "leader",
-            profileImage: "/img/profile2.png"
-        },
-        {
-            id: 2,
-            name: "박팀원",
-            role: "member",
-            profileImage: "/img/profile.png"
-        },
-        {
-            id: 3,
-            name: "이팀원",
-            role: "member",
-            profileImage: "/img/profile.png"
-        },
-        {
-            id: 4,
-            name: "정팀원",
-            role: "member",
-            profileImage: "/img/profile.png"
-        },
-        {
-            id: 5,
-            name: "강팀원",
-            role: "member",
-            profileImage: "/img/profile.png"
-        }
-    ]);
-
-    const [projects, setProjects] = useState([
-        {
-            project_id: 1,
-            title: "devFit",
-            description: "개발자들을 위한 협업 도구 제공 프로젝트",
-            my_project: true,
-            adminId: 1234
-        },
-        {
-            project_id: 2,
-            title: "AWS",
-            description: "클라우드 기반 웹서비스 구축 프로젝트",
-            my_project: true,
-            adminId: 5678
-        },
-        {
-            project_id: 3,
-            title: "KING",
-            description: "유니티 기반 게임 개발 동아리",
-            my_project: false,
-            adminId: 5678
-        },
-        {
-            project_id: 4,
-            title: "CodeSync",
-            description: "실시간 코드 공유 및 협업을 위한 플랫폼",
-            my_project: false,
-            adminId: 5678
-        },
-        {
-            project_id: 5,
-            title: "AI Scholar",
-            description: "AI를 활용한 맞춤형 장학금 추천 서비스",
-            my_project: true,
-            adminId: 1234
-        },
-        {
-            project_id: 6,
-            title: "DevMatch",
-            description: "개발자 매칭 및 협업을 지원하는 플랫폼",
-            my_project: false,
-            adminId: 5678
-        }
-    ]);
 
 
-    const leaders = members.filter(member => member.role === "leader");
-    const teamMembers = members.filter(member => member.role === "member");
+
+    const [leaders, setLeaders] = useState([]);
+    const [teamMembers, setTeamMembers] = useState([]);
+    
+    useEffect(() => {
+        // 팀 리더 데이터 변환
+        const leader = {
+            id: teamLeaderData[0].data.memberId,
+            name: teamLeaderData[0].data.nickname,
+            profileImage: teamLeaderData[0].data.profileImageUrl,
+            role: "leader"
+        };
+        
+        // 팀원 데이터 변환
+        const members = teamMemberData[0].data.content.map(member => ({
+            id: member.memberId,
+            name: member.nickname,
+            profileImage: member.profileImageUrl,
+            role: "member"
+        }));
+    
+        setLeaders([leader]);
+        setTeamMembers(members);
+    }, []);
+
     const allMembers = [...leaders, ...teamMembers];    
-
-    // 내 프로젝트 / 타 프로젝트
-    const myProjects = projects.filter(project => project.my_project);
-    const otherProjects = projects.filter(project => !project.my_project);
+    
+    useEffect(() => {
+        const myProjectsArray = [];
+        const otherProjectsArray = [];
+    
+        projectData.forEach(projectSet => {
+            projectSet.content.forEach(project => {
+                if (project.isParticipant) {
+                    myProjectsArray.push(project);
+                } else {
+                    otherProjectsArray.push(project);
+                }
+            });
+        });
+    
+        setMyProjects(myProjectsArray);
+        setOtherProjects(otherProjectsArray);
+    }, []);
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -206,6 +316,11 @@ export default function Team() {
         };
     }, [showEmojiPicker]);
 
+    const handleEmojiClick = (emojiData) => {
+        setTeamInfo((prev) => ({ ...prev, teamEmoji: emojiData.emoji }));
+        setShowEmojiPicker(false); // 이모지 선택 후 Picker 닫기
+    };
+
     // 초대코드 생성 모달
     const handleInviteClick = () => {
         setInviteModal(true);
@@ -257,14 +372,14 @@ export default function Team() {
                         setShowEmojiPicker((prev) => !prev);
                     }}
                 >
-                        {chosenEmoji}
-                        <Image 
-                            src="/img/emoji_edit.png" 
-                            alt="Edit" 
-                            width={35} 
-                            height={35} 
-                        />
-                        </T.EmojiBox>
+                    {teamInfo.teamEmoji}
+                    <Image 
+                        src="/img/emoji_edit.png" 
+                        alt="Edit" 
+                        width={35} 
+                        height={35} 
+                    />
+                    </T.EmojiBox>
                 </T.TitleLeft>
                     
                     <T.TitleRight>
@@ -272,8 +387,8 @@ export default function Team() {
                         {isEditing ? (
                             <T.StyledInput
                                 type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                value={teamInfo.teamName}
+                                onChange={(e) => setTeamInfo({ ...teamInfo, teamName: e.target.value })} 
                                 onKeyDown={handleKeyDown}
                                 autoFocus
                                 style={{
@@ -291,7 +406,9 @@ export default function Team() {
                                 }}
                             />
                         ) : (
-                            <T.Title style={{ height: "35px", lineHeight: "35px", marginBottom: "5px", marginLeft: "5px",}}>{title}</T.Title>
+                            <T.Title style={{ height: "35px", lineHeight: "35px", marginBottom: "5px", marginLeft: "5px",}}>
+                                {teamInfo.teamName}
+                            </T.Title>
                         )}
                         <Image
                             src="/img/edit.png"
@@ -306,8 +423,8 @@ export default function Team() {
                         {isEditing ? (
                             <T.StyledInput
                                 type="text"
-                                value={subtitle}
-                                onChange={(e) => setSubtitle(e.target.value)}
+                                value={teamInfo.teamDescription}
+                                onChange={(e) => setTeamInfo({ ...teamInfo, teamDescription: e.target.value })} 
                                 onKeyDown={handleKeyDown}
                                 style={{
                                     height: "25px", 
@@ -319,10 +436,13 @@ export default function Team() {
                                     outline: "none",
                                     background: "transparent",
                                     padding: "0",
+                                    lineHeight: "25px"
                                 }}
                             />
                         ) : (
-                            <T.Subtitle style={{ height: "25px", lineHeight: "25px", marginTop: "5px" }}>{subtitle}</T.Subtitle>
+                            <T.Subtitle style={{ height: "25px", lineHeight: "25px", marginTop: "5px" }}>
+                                {teamInfo.teamDescription}
+                            </T.Subtitle>
                         )}
                     </T.TitleRight>
             </T.TitleContainer>
@@ -341,7 +461,7 @@ export default function Team() {
                         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                     }}
                 >
-                    <EmojiPicker onEmojiClick={(emojiData) => setChosenEmoji(emojiData.emoji)} />
+                    <EmojiPicker onEmojiClick={handleEmojiClick}/>
                 </div>
             )}
 
@@ -406,23 +526,24 @@ export default function Team() {
                 <T.Button onClick={() => handleAddClick()}>추가하기</T.Button>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
-            {myProjects.map((project) => (
-                <S.ProjectBox key={project.project_id}>
+            {myProjects.length > 0 ? (
+                myProjects.map(project => (
+                <S.ProjectBox key={project.projectInfo.projectId}>
                     <S.ProjectContent>
-                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                    <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
                     <S.ProjectInfo>
                         <S.ProjectDescription>
-                            {project.description}
+                            {project.projectInfo.projectDescription}
                         </S.ProjectDescription>
                     </S.ProjectInfo>
                     </S.ProjectContent>
 
                     {/* 유저가 프로젝트 팀장일 경우 */}
-                    {project.adminId === userData.memberId ? (
+                    {project.isAdmin ? (
                         <>
                         <S.ProjectDivider1 />
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                        <Link href={`/project/${project.project_id}`}>
+                        <Link href={`/project/${project.projectInfo.projectId}`}>
                             <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                         </Link>
                         <LeaveProjectButton onClick={() => handleAdminLClick(project)} />
@@ -434,7 +555,7 @@ export default function Team() {
                         <>
                         <S.ProjectDivider2 />
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                            <Link href={`/project/${project.project_id}`}>
+                            <Link href={`/project/${project.projectInfo.projectId}`}>
                                 <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                             </Link>
                             <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
@@ -442,7 +563,17 @@ export default function Team() {
                         </>
                     )}
                 </S.ProjectBox>
-                ))}
+                ))
+            ) : (
+                <p style={{
+                    marginTop: "30px",
+                    textAlign: "center", 
+                    fontSize: "16px", 
+                    color: "#432CA4" 
+                }}>
+                    참여 중인 프로젝트가 없습니다.
+                </p>
+            )}
             </S.SectionContainer>
 
             {/* 타 프로젝트 */}
@@ -460,26 +591,37 @@ export default function Team() {
                 </S.SectionHeaderContainer>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
-                {otherProjects.map((project) => (
-                <S.ProjectBox key={project.project_id}>
-                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+            {otherProjects.length > 0 ? (
+                otherProjects.map((project) => (
+                <S.ProjectBox key={project.projectInfo.projectId}>
+                    <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
                     <S.ProjectInfo>
                         <S.ProjectDescription>
-                            {project.description}
+                            {project.projectInfo.projectDescription}
                         </S.ProjectDescription>
                     </S.ProjectInfo>
                     <S.ProjectDivider2 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <Link href={`/project/${project.project_id}/view`}>
+                    <Link href={`/project/${project.projectInfo.projectId}/view`}>
                         <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                     </Link>
                     <JoinProjectButton 
-                        onClick={() => handleClick(project.project_id)} 
-                        isPending={pendingProjects[project.project_id]}
+                        onClick={() => handleClick(project.projectInfo.projectId)} 
+                        isPending={pendingProjects[project.projectInfo.projectId]}
                     />
                     </div>
                 </S.ProjectBox>
-            ))}
+            ))
+        ) : (
+            <p style={{
+                marginTop: "30px",
+                textAlign: "center",  
+                fontSize: "16px",
+                color: "#432CA4"
+            }}>
+                참여하지 않은 타 프로젝트가 없습니다.
+            </p>
+        )}
         </S.SectionContainer>
         <c.Space />
 
