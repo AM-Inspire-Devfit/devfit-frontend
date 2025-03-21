@@ -279,7 +279,7 @@ export default function Project() {
     const [isCreateSprintModalOpen, setIsCreateSprintModalOpen] = useState(false);
     const [goal, setGoal] = useState("");
     const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [dueDate, setDueDate] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(projectData.data.projectName);
     const [description, setDescription] = useState(projectData.data.projectDescription);
@@ -301,16 +301,6 @@ export default function Project() {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
 
-    // 수정 버튼 클릭 시 편집 모드 전환
-    const handleEditClick = () => {
-        setIsEditing((prev) => !prev);
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            setIsEditing(false);
-        }
-    };
 
     // sprint 수정 모달 열기/닫기 함수
     const handleSprintModal = () => setIsSprintModalOpen(prev => !prev);
@@ -318,9 +308,14 @@ export default function Project() {
     // sprint 생성 모달
     const handleCreateSprintModal = () => {
         setIsCreateSprintModalOpen(true);
-        setGoal("");        
-        setStartDate("");   
-        setEndDate("");     
+        setGoal("");    
+
+        if (sprintData.length === 0) {
+            // Sprint 생성이면 오늘 날짜
+            const today = new Date().toISOString().split("T")[0];
+            setStartDate(today);
+        }
+        setDueDate(""); // 사용자가 입력하게 비워두기 
     };
 
     // 모달 상태에 따라 스크롤 제어
@@ -434,12 +429,22 @@ export default function Project() {
     }, []);
 
     useEffect(() => {
-        if (!isSprintModalOpen || !currentSprint) return;
-    
-        setGoal(currentSprint.goal);
-        setStartDate(currentSprint.sprint_start);
-        setEndDate(currentSprint.sprint_end);
-    }, [isSprintModalOpen, currentSprint]);
+        if (isSprintModalOpen && !isCreateSprintModalOpen && currentSprint) {
+            setGoal(currentSprint.goal);
+            setStartDate(currentSprint.sprint_start);
+            setDueDate(currentSprint.sprint_end);
+        }
+    }, [isSprintModalOpen, isCreateSprintModalOpen, currentSprint]);
+
+    // Sprint 새로 만들 때는 오늘 날짜로
+    useEffect(() => {
+        if (isCreateSprintModalOpen) {
+            const today = new Date().toISOString().split("T")[0];
+            setStartDate(today);
+            setGoal("");
+            setDueDate(""); 
+        }
+    }, [isCreateSprintModalOpen]);
 
     // 신규 미팅 생성
     const openMeetingModalForCreate = () => {
@@ -590,8 +595,9 @@ export default function Project() {
                                 setGoal={setGoal}
                                 startDate={startDate}
                                 setStartDate={setStartDate}  
-                                endDate={endDate}
-                                setEndDate={setEndDate}  
+                                dueDate={dueDate}
+                                setDueDate={setDueDate}  
+                                isLastSprint={currentSprint.last} 
                             />
                         </div>
                         <Divider1 />
@@ -670,8 +676,9 @@ export default function Project() {
                             setGoal={setGoal}
                             startDate={startDate}
                             setStartDate={setStartDate}  
-                            endDate={endDate}
-                            setEndDate={setEndDate}  
+                            dueDate={dueDate}
+                            setDueDate={setDueDate}  
+                            isLastSprint={true} 
                         />
                     </div>
                 )}

@@ -65,10 +65,24 @@ export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeeting
                             value={endTime} 
                             onChange={(e) => {
                                 const selectedTime = e.target.value;
-                                const hour = parseInt(selectedTime.split(":")[0], 10);
-                                
+
+                                const [startHour, startMin] = startTime.split(":").map(Number);
+                                const [endHour, endMin] = selectedTime.split(":").map(Number);
+
+                                const start = new Date();
+                                const end = new Date();
+
+                                start.setHours(startHour, startMin, 0);
+                                end.setHours(endHour, endMin, 0);
+
+                                // 만약 마감시간이 시작시간보다 빠르거나 같으면 무시
+                                if (end <= start) {
+                                    alert("마감 시간은 시작 시간보다 이후여야 합니다.");
+                                    return;
+                                }
+
                                 // 오전 12시 ~ 7시를 선택할 경우, 8시로 자동 변경
-                                if ((hour >= 1 && hour < 8 ) || hour === 0) {
+                                if ((endHour >= 1 && endHour < 8) || endHour === 0) {
                                     setEndTime("08:00");
                                 } else {
                                     setEndTime(selectedTime);

@@ -46,7 +46,7 @@ const DateInputWrapper = styled.div`
 `;
 
 
-export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, startDate, setStartDate, endDate, setEndDate }) {
+export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, startDate, setStartDate, dueDate, setDueDate, isLastSprint  }) {
     if (!isOpen) return null;
 
     return (
@@ -70,13 +70,27 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
                         <m.DateInput 
                             type="date" 
                             value={startDate} 
-                            onChange={(e) => setStartDate(e.target.value)}
+                            readOnly
+                            style={{ 
+                                flex: 1, 
+                                backgroundColor: "#f5f5f5", 
+                                color: "#555", 
+                                cursor: "not-allowed" 
+                            }}
                         />
                         <span> ~ </span>
                         <m.DateInput 
                             type="date" 
-                            value={endDate} 
-                            onChange={(e) => setEndDate(e.target.value)}
+                            value={dueDate} 
+                            onChange={(e) => setDueDate(e.target.value)}
+                            readOnly={!isLastSprint}
+                            min={startDate}
+                            style={{
+                                flex: 1,
+                                backgroundColor: isLastSprint ? "white" : "#f5f5f5",
+                                color: isLastSprint ? "#000" : "#555",
+                                cursor: isLastSprint ? "text" : "not-allowed"
+                            }}
                         />
                     </m.DateInputContainer>
                 </DateInputWrapper>
