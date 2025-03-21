@@ -23,11 +23,17 @@ import Image from "next/image";
         "#27AE60", "#D35400"
     ];
 
-    const userData =
-    {   
-        id: 4,
-        name: "채민주",
-        profileImage: "/img/profile.png", 
+    const userData = {
+        "success": true,
+        "status": 200,
+        "data": {
+            "memberId": 4,
+            "nickname": "최현태",
+            "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            "status": "NORMAL",
+            "role": "USER"
+        },
+        "timestamp": "2025-02-11T17:08:20.340403"
     }
 
     const teamData = 
@@ -154,7 +160,7 @@ import Image from "next/image";
             "title": "2",
             "goal": "MVP2 개발",
             "startDt": "2025-03-01",
-            "dueDt": "2025-03-20",
+            "dueDt": "2025-03-21",
             "status": "NOT_STARTED",
             "progress": 50.0
             }
@@ -817,7 +823,7 @@ export default function Project() {
                         </P.ProfileContainer>
                         <span style={{ marginLeft: '10px' }}>{member.name}</span>
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
-                        {member.id !== userData.id && (
+                        {member.id !== userData.data.memberId && member.name !== "알수없음" && (
                             <Link 
                             href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
                             <P.FeedbackButton hidden={!isFeedbackDay}>
