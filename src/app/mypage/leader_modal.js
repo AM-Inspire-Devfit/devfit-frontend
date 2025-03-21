@@ -82,19 +82,80 @@ const ButtonGroup = styled.div`
     gap: 20px;
 `;
 
+const projectUserData = {
+    "success": true,
+    "status": 200,
+    "data": {
+        "projectParticipantId": 4,
+        "projectNickname": "최현태",
+        "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+        "role": "ADMIN" 
+    },
+    "timestamp": "2025-03-19T21:42:40.59254"
+}
+
+const projectMemberData = 
+    { 
+        "success": true,
+        "status": 200,
+        "data": {
+            "content": [
+            {
+                "projectParticipantId": 1,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "role": "ADMIN"
+            },
+            {
+                "projectParticipantId": 2,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+                "role": "MEMBER"
+            },
+            {
+                "projectParticipantId": 3,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "role": "MEMBER"
+            },
+            {
+                "projectParticipantId": 4,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "role": "MEMBER"
+            }
+            ],
+            "pageable": {
+            "pageNumber": 0,
+            "pageSize": 3,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+            },
+            "first": true,
+            "last": true,
+            "size": 3,
+            "number": 0,
+            "sort": [],
+            "numberOfElements": 3,
+            "empty": false
+        },
+        "timestamp": "2025-03-19T21:49:27.631511"
+    };
+
 export default function LeaderModal({ isOpen, onClose, }) {
     const [selectedMember, setSelectedMember] = useState(null);
 
     if (!isOpen) return null;
 
-    const members = [
-        { id: 1, name: "정선우", profileImage: "/img/profile.png" },
-        { id: 2, name: "조수빈", profileImage: "/img/profile.png" },
-        { id: 3, name: "최현태", profileImage: "/img/profile2.png" },
-        { id: 4, name: "정선우", profileImage: "/img/profile.png" },
-        { id: 5, name: "조수빈", profileImage: "/img/profile.png" },
-        { id: 6, name: "최현태", profileImage: "/img/profile2.png" }
-    ];
+    // 현재 유저 ID
+    const currentUserId = projectUserData.data.projectParticipantId;
+
+    // 현재 유저가 아닌 멤버만 필터링
+    const members = projectMemberData.data.content.filter(
+        (member) => member.projectParticipantId !== currentUserId
+    );
 
     return (
         <m.ModalOverlay>
@@ -109,21 +170,27 @@ export default function LeaderModal({ isOpen, onClose, }) {
                 <InstructionText>양도할 팀원을 선택해주세요.</InstructionText>
                 <MemberList>
                     {members.map((member) => (
-                        <MemberItem key={member.id}>
+                        <MemberItem key={member.projectParticipantId}>
                             <MemberInfo>
-                            <ProfileImage 
-                                src={member.profileImage} 
+                            <Image 
+                                src={member.profileImageUrl} 
                                 alt="프로필 이미지" 
                                 width={35} 
                                 height={35} 
+                                style={{
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    width: '35px',
+                                    height: '35px'
+                                }}
                             />
-                            <span style = {{marginLeft: "20px"}}>{member.name}</span>
+                            <span style = {{marginLeft: "20px"}}>{member.projectNickname}</span>
                             </MemberInfo>
                             <RadioButton 
                                 type="radio" 
                                 name="teamMember" 
-                                checked={selectedMember === member.id} 
-                                onChange={() => setSelectedMember(member.id)} 
+                                checked={selectedMember === member.projectParticipantId} 
+                                onChange={() => setSelectedMember(member.projectParticipantId)} 
                             />
                         </MemberItem>
                     ))}

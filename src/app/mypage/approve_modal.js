@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from 'react';
 import styled from "styled-components";
 import * as m from '../../components/modal_s';
 import { IoClose } from 'react-icons/io5';
@@ -41,13 +42,6 @@ const RequestItem = styled.div`
     margin-bottom: 10px;
 `;
 
-const ProfileImage = styled(Image)`
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    object-fit: cover;
-`;
-
 const RequestText = styled.p`
     flex: 1;
     font-size: 15px;
@@ -68,7 +62,6 @@ const ApproveButton = styled.button`
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
-    visibility: ${(props) => (props.visible === "true" ? "visible" : "hidden")}; 
 `;
 
 const RejectButton = styled.button`
@@ -78,29 +71,264 @@ const RejectButton = styled.button`
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
-    visibility: ${(props) => (props.visible === "true" ? "visible" : "hidden")}; 
 `;
+
+
+// <--------------------여기부터 더미데이터 ------------------------>
+
+const projectData = 
+    {
+        "success": true,
+        "status": 200,
+        "data": 
+            {
+                "projectId": 1,
+                "projectTitle": "Devfitt",
+                "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
+                "projectGoal": "개발자 건강을 위한 협업 툴 개발",
+                "startDt": "2024-01-01",
+                "dueDt": "2026-01-01"
+            },
+        "timestamp": "2025-02-06T09:56:45.150727"
+    }
+
+
+    const requestData = [
+    {
+        "first": true,
+        "last": false,
+        "size": 1073741824,
+        "content": [
+            {
+                "projectId": 1, 
+                "registrationId": 1, 
+                "requesterId": 1, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_PENDING"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 2, 
+                "requesterId": 2, 
+                "requesterName": "조수빈", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_ACCEPTED"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 3, 
+                "requesterId": 3, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_REJECTED"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 4, 
+                "requesterId": 4, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_PENDING"
+            }
+        ],
+        "number": 1073741824,
+        "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+        },
+        "pageable": {
+            "offset": 9007199254740991,
+            "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+            },
+            "paged": true,
+            "unpaged": true,
+            "pageNumber": 1073741824,
+            "pageSize": 1073741824
+        },
+        "numberOfElements": 1073741824,
+        "empty": true
+    },
+    {
+        "first": false,
+        "last": false,
+        "size": 1073741824,
+        "content": [
+            {
+                "projectId": 1, 
+                "registrationId": 5, 
+                "requesterId": 5, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_PENDING"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 6, 
+                "requesterId": 6, 
+                "requesterName": "조수빈", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_ACCEPTED"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 7, 
+                "requesterId": 7, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_REJECTED"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 8, 
+                "requesterId": 8, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_PENDING"
+            }
+        ],
+        "number": 1073741824,
+        "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+        },
+        "pageable": {
+            "offset": 9007199254740991,
+            "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+            },
+            "paged": true,
+            "unpaged": true,
+            "pageNumber": 1073741824,
+            "pageSize": 1073741824
+        },
+        "numberOfElements": 1073741824,
+        "empty": true
+    },
+    {
+        "first": false,
+        "last": true,
+        "size": 1073741824,
+        "content": [
+            {
+                "projectId": 1, 
+                "registrationId": 9, 
+                "requesterId": 9, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_PENDING"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 10, 
+                "requesterId": 10, 
+                "requesterName": "조수빈", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_ACCEPTED"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 11, 
+                "requesterId": 11, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_REJECTED"
+            },
+            {
+                "projectId": 1, 
+                "registrationId": 12, 
+                "requesterId": 12, 
+                "requesterName": "채민주", 
+                "requesterProfileUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "projectRegistrationStatus": "REQUEST_PENDING"
+            }
+        ],
+        "number": 1073741824,
+        "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+        },
+        "pageable": {
+            "offset": 9007199254740991,
+            "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+            },
+            "paged": true,
+            "unpaged": true,
+            "pageNumber": 1073741824,
+            "pageSize": 1073741824
+        },
+        "numberOfElements": 1073741824,
+        "empty": true
+    }
+]
+
+// <--------------------여기까지 더미데이터 ------------------------>
 
 export default function ApproveModal({ isOpen, onClose}) {
     if (!isOpen) return null;
 
-    const projectData = {
-        name: "devFit"
-    };
+    const [currentPage, setCurrentPage] = useState(0);
+    const [requestList, setRequestList] = useState(requestData[0].content);
+    const observerRef = useRef();
 
-    const requests = [
-        { id: 1, name: "김땡땡", profileImage: "/img/profile2.png", pending: true, approved: false },
-        { id: 2, name: "이땡땡", profileImage: "/img/profile.png", pending: false, approved: false },
-        { id: 3, name: "김땡땡", profileImage: "/img/profile.png", pending: false, approved: true },
-        { id: 4, name: "김땡땡", profileImage: "/img/profile2.png", pending: true, approved: false },
-        { id: 5, name: "이땡땡", profileImage: "/img/profile.png", pending: false, approved: false },
-        { id: 6, name: "김땡땡", profileImage: "/img/profile2.png", pending: false, approved: true },
-    ];
+    useEffect(() => {
+        if (currentPage === 0) return;
 
-    const getStatusMessage = (pending, approved) => {
-        if (pending) return "님이 가입을 신청했습니다.";
-        if (!pending && !approved) return "님의 신청이 거절되었습니다.";
-        if (!pending && approved) return "님의 가입이 승인되었습니다.";
+        // 새 페이지의 content를 기존 requestList에 추가
+        const nextPage = requestData[currentPage];
+        if (nextPage) {
+            setRequestList((prev) => [...prev, ...nextPage.content]);
+        }
+    }, [currentPage]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setCurrentPage((prev) => {
+                        if (prev + 1 < requestData.length) {
+                            return prev + 1;
+                        }
+                        return prev;
+                    });
+                }
+            },
+            { threshold: 1 }
+        );
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observer.unobserve(observerRef.current);
+            }
+        };
+    }, []);
+
+    const getStatusMessage = (projectRegistrationStatus) => {
+        switch (projectRegistrationStatus) {
+            case "REQUEST_PENDING":
+                return "님이 가입을 신청했습니다.";
+            case "REQUEST_REJECTED":
+                return "님의 신청이 거절되었습니다.";
+            case "REQUEST_ACCEPTED":
+                return "님의 가입이 승인되었습니다.";
+            default:
+                return "";
+        }
     };
 
     const handleApprove = (id) => {
@@ -119,42 +347,59 @@ export default function ApproveModal({ isOpen, onClose}) {
                 }}
             >
                 <Header>
-                    <Title>{projectData.name} 가입 신청</Title>
+                    <Title>{projectData.data.projectTitle} 가입 신청</Title>
                     <CloseButton onClick={onClose}>
                         <IoClose size={22} />
                     </CloseButton>
                 </Header>
 
                 <RequestList>
-                    {requests.map((request) => (
-                        <RequestItem key={request.id}>
-                            <ProfileImage 
-                                src={request.profileImage} 
-                                alt="프로필 이미지" 
-                                width={35} 
-                                height={35} 
+                {requestList.map((request, index) => {
+                const isLast = index === requestList.length - 1;
+
+                return (
+                    <div
+                        key={`request-${request.registrationId}-${index}`}
+                        ref={isLast ? observerRef : null} 
+                    >
+                        <RequestItem>
+                            <Image
+                                src={request.requesterProfileUrl}
+                                alt="프로필 이미지"
+                                width={35}
+                                height={35}
+                                style={{
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    width: '35px',
+                                    height: '35px'
+                                }}
                             />
                             <RequestText>
-                                <strong>{request.name}</strong> {getStatusMessage(request.pending, request.approved)}
+                                <strong>{request.requesterName}</strong> {getStatusMessage(request.projectRegistrationStatus)}
                             </RequestText>
-                                <ButtonGroup>
-                                    <ApproveButton
-                                        visible={(request.pending || (!request.pending && !request.approved)).toString()}
-                                        onClick={() => handleApprove(request.id)}
-                                    >
+                            <ButtonGroup>
+                                {request.projectRegistrationStatus === "REQUEST_PENDING" && (
+                                    <>
+                                        <ApproveButton onClick={() => handleApprove(request.registrationId)}>
+                                            승인
+                                        </ApproveButton>
+                                        <RejectButton onClick={() => handleReject(request.registrationId)}>
+                                            거절
+                                        </RejectButton>
+                                    </>
+                                )}
+                                {request.projectRegistrationStatus === "REQUEST_REJECTED" && (
+                                    <ApproveButton onClick={() => handleApprove(request.registrationId)}>
                                         승인
                                     </ApproveButton>
-
-                                    <RejectButton
-                                        visible={(request.pending).toString()}
-                                        onClick={() => handleReject(request.id)}
-                                    >
-                                        거절
-                                    </RejectButton>
-                                </ButtonGroup>
+                                )}
+                            </ButtonGroup>
                         </RequestItem>
-                        ))}
-                </RequestList>
+                    </div>
+                );
+            })}
+            </RequestList>
             </m.ModalContent>
         </m.ModalOverlay>
     );

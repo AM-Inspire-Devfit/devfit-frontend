@@ -169,7 +169,7 @@ import Image from "next/image";
             "title": "2",
             "goal": "MVP2 개발",
             "startDt": "2025-03-01",
-            "dueDt": "2025-03-21",
+            "dueDt": "2025-03-22",
             "status": "NOT_STARTED",
             "progress": 50.0
             }
