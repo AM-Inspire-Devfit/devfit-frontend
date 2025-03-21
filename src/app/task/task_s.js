@@ -30,8 +30,7 @@ export const AddTaskButton = styled.button`
 
 export const TaskContainer = styled.div`
     width: 720px;
-    height: auto;
-    min-height: 500px;
+    height: 482px;
     background-color: #ffffff;
     border-radius: 10px;
     padding: 20px;
@@ -42,6 +41,9 @@ export const TaskContainer = styled.div`
     padding-top: 20px; 
     margin-bottom: 70px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.45);
+
+    overflow-y: auto; 
+    scroll-behavior: smooth;
 `;
 
 export const TaskWrapper = styled.div`

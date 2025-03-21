@@ -23,7 +23,7 @@ const Button = styled.button`
 `;
 
 
-export default function AssignModal({ isOpen, onClose, taskTitle }) {
+export default function AssignModal({ isOpen, onClose, task }) {
     if (!isOpen) return null;
 
     return (
@@ -37,7 +37,7 @@ export default function AssignModal({ isOpen, onClose, taskTitle }) {
             >
                 <div style={{ fontSize: '20px', marginBottom: '10px', lineHeight: '1.5' }}>
                     <div style={{ marginBottom: '5px' }}>
-                        <strong>'{taskTitle}'</strong> 을
+                        <strong>'{task.description}'</strong> 을
                     </div>
                     할당 받으시겠습니까?
                 </div>

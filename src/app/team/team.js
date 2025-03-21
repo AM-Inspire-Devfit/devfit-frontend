@@ -58,24 +58,24 @@ export default function Team() {
             "timestamp": "2025-03-02T14:52:05.54385"
         }
 
-    const teamMemberData = 
+    const teamMemberData = [
         {
             "success": true,
             "status": 200,
             "data": {
             "content": [
             {
-                "memberId": 11,
+                "memberId": 1,
                 "nickname": "채민주",
                 "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
             },
             {
-                "memberId": 22,
+                "memberId": 2,
                 "nickname": "조수빈",
                 "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
             },
             {
-                "memberId": 33,
+                "memberId": 3,
                 "nickname": "정선우",
                 "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
             },
@@ -90,6 +90,86 @@ export default function Team() {
             "unpaged": false
             },
             "first": true,
+            "last": false,
+            "size": 3,
+            "number": 0,
+            "sort": [],
+            "numberOfElements": 1,
+            "empty": false
+        },
+        "timestamp": "2025-03-02T14:57:03.879893"
+        },
+        {
+            "success": true,
+            "status": 200,
+            "data": {
+            "content": [
+            {
+                "memberId": 4,
+                "nickname": "채민주",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+            {
+                "memberId": 5,
+                "nickname": "조수빈",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+            {
+                "memberId": 6,
+                "nickname": "정선우",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+
+            ],
+            "pageable": {
+            "pageNumber": 0,
+            "pageSize": 3,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+            },
+            "first": false,
+            "last": false,
+            "size": 3,
+            "number": 0,
+            "sort": [],
+            "numberOfElements": 1,
+            "empty": false
+        },
+        "timestamp": "2025-03-02T14:57:03.879893"
+        },
+        {
+            "success": true,
+            "status": 200,
+            "data": {
+            "content": [
+            {
+                "memberId": 7,
+                "nickname": "채민주",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+            {
+                "memberId": 8,
+                "nickname": "조수빈",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+            {
+                "memberId": 9,
+                "nickname": "정선우",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+            },
+
+            ],
+            "pageable": {
+            "pageNumber": 0,
+            "pageSize": 3,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+            },
+            "first": false,
             "last": true,
             "size": 3,
             "number": 0,
@@ -99,6 +179,8 @@ export default function Team() {
         },
         "timestamp": "2025-03-02T14:57:03.879893"
         }
+
+    ]
 
     const projectData = 
         {
@@ -190,6 +272,10 @@ export default function Team() {
 
     const [leaders, setLeaders] = useState([]);
     const [teamMembers, setTeamMembers] = useState([]);
+
+    const [displayedMembers, setDisplayedMembers] = useState(teamMemberData[0].data.content);
+    const [currentPageIndex, setCurrentPageIndex] = useState(0);
+    const [hasMore, setHasMore] = useState(!teamMemberData[0].data.last);
     
     useEffect(() => {
         // 팀 리더 데이터 변환
@@ -201,7 +287,7 @@ export default function Team() {
         };
         
         // 팀원 데이터 변환
-        const members = teamMemberData.data.content.map(member => ({
+        const members = teamMemberData[0].data.content.map(member => ({
             id: member.memberId,
             name: member.nickname,
             profileImage: member.profileImageUrl,
@@ -210,9 +296,46 @@ export default function Team() {
     
         setLeaders([leader]);
         setTeamMembers(members);
+        setDisplayedMembers(members);
     }, []);
 
-    const allMembers = [...leaders, ...teamMembers];    
+
+    const [allMembers, setAllMembers] = useState([]);
+
+    useEffect(() => {
+    setAllMembers([...leaders, ...displayedMembers]);
+    }, [leaders, displayedMembers]);
+
+    const toggleListRef = useRef(null);
+
+    // 팀원 스크롤 이벤트
+    useEffect(() => {
+        const listEl = toggleListRef.current;
+        if (!listEl) return;
+    
+        const handleScroll = () => {
+            const { scrollTop, scrollHeight, clientHeight } = listEl;
+            if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
+                const nextPageIndex = currentPageIndex + 1;
+                if (nextPageIndex < teamMemberData.length) {
+                    const nextPage = teamMemberData[nextPageIndex];
+                    const newMembers = nextPage.data.content.map(member => ({
+                        id: member.memberId,
+                        name: member.nickname,
+                        profileImage: member.profileImageUrl,
+                        role: "member"
+                    }));
+                    setDisplayedMembers(prev => [...prev, ...newMembers]);
+                    setAllMembers(prev => [...prev, ...newMembers]);
+                    setCurrentPageIndex(nextPageIndex);
+                    setHasMore(!nextPage.data.last);
+                }
+            }
+        };
+    
+        listEl.addEventListener('scroll', handleScroll);
+        return () => listEl.removeEventListener('scroll', handleScroll);
+    }, [hasMore, currentPageIndex]);
     
     useEffect(() => {
         if (projectData && projectData.content) {
@@ -496,15 +619,20 @@ export default function Team() {
                     <div style={{ position: "relative", display: "inline-block" }}>
                         <S.MemberDetail onClick={() => setIsDetailOpen(prev => !prev)}>더보기 </S.MemberDetail>
                         <S.MemberName style={{ visibility: "hidden" }}></S.MemberName>
-                        <S.ToggleMemberList isOpen={isDetailOpen}>
-                            {allMembers.map(member => (
-                                <S.ToggleMemberItem key={member.id}>
-                                <S.ToggleMemberImage>
-                                    <Image src={member.profileImage} alt={member.name} width={40} height={40} />
-                                </S.ToggleMemberImage>
-                                <S.ToggleMemberText>{member.name}</S.ToggleMemberText>
-                            </S.ToggleMemberItem>
-                            ))}
+                        <S.ToggleMemberList isOpen={isDetailOpen} ref={toggleListRef}>
+                        {allMembers.map((member, index) => (
+                        <S.ToggleMemberItem key={`${member.id}-${index}`}>
+                            <S.ToggleMemberImage>
+                                <Image
+                                    src={member.profileImage ? member.profileImage : "/img/default_profile.png"}
+                                    alt={member.name || "이름 없음"}
+                                    width={40}
+                                    height={40}
+                                />
+                            </S.ToggleMemberImage>
+                            <S.ToggleMemberText>{member.name}</S.ToggleMemberText>
+                        </S.ToggleMemberItem>
+                        ))}
                         </S.ToggleMemberList>
                     </div>
                 </S.MemberList>

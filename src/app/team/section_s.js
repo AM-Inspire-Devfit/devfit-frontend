@@ -106,7 +106,7 @@ export const ToggleMemberList = styled.div.withConfig({
   border-radius: 5px;
   padding: 10px;
   width: 130px;
-  height: 215px; 
+  height: 160px; 
   overflow-y: auto; /* 스크롤 */
   position: absolute;
   top: 100%; 

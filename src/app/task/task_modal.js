@@ -37,7 +37,7 @@ export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
 
     useEffect(() => {
         if (task) {
-            setTitleInput(task.title);
+            setTitleInput(task.description);
             setDifficulty(task.taskDifficulty);
         } else {
             setTitleInput("");
@@ -106,15 +106,15 @@ export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
             </InputWrapper>
 
             <m.ButtonContainer style={{ marginTop: "-5px", gap: "10px"}}>
-                <m.SubmitButton>
-                    {task ? "수정" : "생성"}
-                </m.SubmitButton>
-
                 {task && (
                     <m.DeleteButton>
                         삭제
                     </m.DeleteButton>
                 )}
+                <m.SubmitButton>
+                    {task ? "수정" : "생성"}
+                </m.SubmitButton>
+
             </m.ButtonContainer>
 
             </m.ModalContent>
