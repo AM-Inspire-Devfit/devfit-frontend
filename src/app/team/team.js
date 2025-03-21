@@ -11,7 +11,7 @@ import * as S from '@/app/team/section_s'
 import { LeaveProjectButton, JoinProjectButton } from "@/app/team/section_s";
 
 import InviteModal from "./invite_modal";
-import AddModal from "./add_modal";
+import ProjectModal from "./project_modal";
 import LeaveModal from "./leave_modal";
 import DeleteModal from "./delete_modal";
 import AdminLModal from "./admin_leave_modal";
@@ -46,7 +46,7 @@ export default function Team() {
         "timestamp": "2025-02-10T14:18:46.135007"
     }
 
-    const teamLeaderData = [
+    const teamLeaderData = 
         {
             "success": true,
             "status": 200,
@@ -57,9 +57,8 @@ export default function Team() {
             },
             "timestamp": "2025-03-02T14:52:05.54385"
         }
-    ]
 
-    const teamMemberData = [
+    const teamMemberData = 
         {
             "success": true,
             "status": 200,
@@ -100,9 +99,8 @@ export default function Team() {
         },
         "timestamp": "2025-03-02T14:57:03.879893"
         }
-    ]
 
-    const projectData = [
+    const projectData = 
         {
             "first": true,
             "last": true,
@@ -162,13 +160,11 @@ export default function Team() {
             },
             "numberOfElements": 1073741824,
             "empty": true
-        },
-    ]
+        }
 
 
     const [myProjects, setMyProjects] = useState([]);
     const [otherProjects, setOtherProjects] = useState([]);
-
 
     const [isEditing, setIsEditing] = useState(false);
     
@@ -192,23 +188,20 @@ export default function Team() {
     const [adminLModal, setAdminLModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
-
-
-
     const [leaders, setLeaders] = useState([]);
     const [teamMembers, setTeamMembers] = useState([]);
     
     useEffect(() => {
         // 팀 리더 데이터 변환
         const leader = {
-            id: teamLeaderData[0].data.memberId,
-            name: teamLeaderData[0].data.nickname,
-            profileImage: teamLeaderData[0].data.profileImageUrl,
+            id: teamLeaderData.data.memberId,
+            name: teamLeaderData.data.nickname,
+            profileImage: teamLeaderData.data.profileImageUrl,
             role: "leader"
         };
         
         // 팀원 데이터 변환
-        const members = teamMemberData[0].data.content.map(member => ({
+        const members = teamMemberData.data.content.map(member => ({
             id: member.memberId,
             name: member.nickname,
             profileImage: member.profileImageUrl,
@@ -222,21 +215,21 @@ export default function Team() {
     const allMembers = [...leaders, ...teamMembers];    
     
     useEffect(() => {
-        const myProjectsArray = [];
-        const otherProjectsArray = [];
+        if (projectData && projectData.content) {
+            const myProjectsArray = [];
+            const otherProjectsArray = [];
     
-        projectData.forEach(projectSet => {
-            projectSet.content.forEach(project => {
+            projectData.content.forEach(project => {
                 if (project.isParticipant) {
                     myProjectsArray.push(project);
                 } else {
                     otherProjectsArray.push(project);
                 }
             });
-        });
     
-        setMyProjects(myProjectsArray);
-        setOtherProjects(otherProjectsArray);
+            setMyProjects(myProjectsArray);
+            setOtherProjects(otherProjectsArray);
+        }
     }, []);
 
     // 모달 상태에 따라 스크롤 제어
@@ -634,7 +627,7 @@ export default function Team() {
 
         {/* 프로젝트 생성 modal */}
         {addModal && 
-        <AddModal  
+        <ProjectModal  
             onClose={() => setAddModal(false)} 
         />}
 

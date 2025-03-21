@@ -13,7 +13,7 @@ import * as P from './project_s';
 
 import SprintModal from "./sprint_modal"; 
 import MeetingModal from "./meeting_modal";
-
+import ProjectModal from "../team/project_modal";
 
 import Image from "next/image";
 
@@ -23,22 +23,92 @@ const colorPalette = [
     "#27AE60", "#D35400"
 ];
 
-const userData = [
+const userData =
     {   
         id: 4,
         name: "채민주",
         profileImage: "/img/profile.png", 
     }
-]
 
-const projectData = [  
-    {   
-        project_id: 1,
-        teamName: "SideEffect",
-        projectName: "devFit",
-        projectDescription: "개발자들의 성공적인 협업을 돕는 웹서비스",
+const teamData = 
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+            "teamId": 1,
+            "teamName": "Side Effect",
+            "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
+            "teamEmoji": "🍇"
+        },
+        "timestamp": "2025-02-10T14:18:46.135007"
     }
-]
+
+
+const projectData = 
+    {
+        "success": true,
+        "status": 200,
+        "data": 
+            {
+                "projectId": 1,
+                "projectTitle": "Devfit-",
+                "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
+                "projectGoal": "개발자 건강을 위한 협업 툴 개발",
+                "startDt": "2024-01-01",
+                "dueDt": "2025-01-01"
+            },
+        "timestamp": "2025-02-06T09:56:45.150727"
+    }
+
+const projectMemberData = 
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+                "projectParticipantId": 1,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
+                "role": "ADMIN"
+            },
+            {
+                "projectParticipantId": 2,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
+                "role": "MEMBER"
+            },
+            {
+                "projectParticipantId": 3,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "role": "MEMBER"
+            },
+            {
+                "projectParticipantId": 3,
+                "projectNickname": "최현태",
+                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "role": "MEMBER"
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 3,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+        },
+        "first": true,
+        "last": true,
+        "size": 3,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 3,
+        "empty": false
+        },
+        "timestamp": "2025-03-19T21:49:27.631511"
+    }
 
 const sprintData = [
     {
@@ -211,11 +281,13 @@ export default function Project() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [isEditing, setIsEditing] = useState(false);
-    const [title, setTitle] = useState(projectData[0].projectName);
-    const [description, setDescription] = useState(projectData[0].projectDescription);
+    const [title, setTitle] = useState(projectData.data.projectName);
+    const [description, setDescription] = useState(projectData.data.projectDescription);
 
-    const project = projectData[0]; 
-    const project_id = project.project_id; 
+    const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
+
+    const project = projectData.data; 
+    const project_id = project.projectId; 
 
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -263,14 +335,14 @@ export default function Project() {
             document.body.style.overflow = "auto";
         };
     
-        if (isSprintModalOpen || isCreateSprintModalOpen || isMeetingModalOpen) {
+        if (isSprintModalOpen || isCreateSprintModalOpen || isMeetingModalOpen || isProjectEditModalOpen) {
             disableScroll();
         } else {
             enableScroll();
         }
     
         return enableScroll;
-    }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen]);
+    }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen, isProjectEditModalOpen]);
 
 
     // 멤버별 색상 배정 & value 기준 정렬
@@ -392,66 +464,24 @@ export default function Project() {
 
 
     return (
+        <>
         <ContentContainer>
-            {projectData.map((project, index) => (
-            <div key={`project-${index}`} style={{ width: '750px', textAlign: 'left' }}>
+            <div style={{ width: '750px', textAlign: 'left' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
-                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{project.teamName} </span> 
-                    {isEditing ? (
-                        <P.StyledInput
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            autoFocus
-                            style={{
-                                height: "40px",
-                                fontSize: "32px", 
-                                fontWeight: "bold",
-                                border: "none",
-                                outline: "none",
-                                background: "transparent",
-                                width: "auto",
-                                padding: "0",
-                                lineHeight: "40px"
-                            }}
-                        />
-                    ) : (
-                        <span style={{ height: "40px", lineHeight: "40px" }}>{title}</span>
-                    )}
+                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamData.data.teamName} </span> 
+                        <span style={{ height: "40px", lineHeight: "40px" }}>{projectData.data.projectTitle}</span>
                     </div>
                     <Image
                         src="/img/edit.png"
                         alt="Edit"
                         width={20}
                         height={20}
-                        onClick={handleEditClick}
+                        onClick={() => setIsProjectEditModalOpen(true)} 
                         style={{ cursor: "pointer" }}
                     />
                 </h2>
                 <Divider1/>
-                {isEditing ? (
-                    <P.StyledInput
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        style={{ 
-                            height: "30px",
-                            fontSize: "15px", 
-                            border: "none",
-                            outline: "none",
-                            background: "transparent",
-                            width: "100%",
-                            padding: "0",
-                            lineHeight: "30px", 
-                            display: "flex",
-                            alignItems: "center",
-                            marginLeft: "30px"
-                        }}
-                    />
-                ) : (
                     <p 
                         style={{ 
                             fontSize: "15px", 
@@ -465,9 +495,7 @@ export default function Project() {
                         }}>
                         {description}
                     </p>
-                )}
             </div>
-            ))}
 
             {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
             <P.AlertBox key={sprint.sprint_num}>
@@ -501,7 +529,7 @@ export default function Project() {
                                 </P.ProfileContainer>
                                 <span style={{ marginLeft: '10px' }}>{member.name}</span>
                                 <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
-                                {member.id !== userData[0].id && ( // 본인 제외
+                                {member.id !== userData.id && ( // 본인 제외
                                     <Link 
                                         href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
                                         <P.FeedbackButton hidden={!isFeedbackDay}>
@@ -697,7 +725,17 @@ export default function Project() {
                 </P.MeetingContainer>
             </div>
             )}
-            
         </ContentContainer>
+        {isProjectEditModalOpen && (
+            <ProjectModal
+                onClose={() => setIsProjectEditModalOpen(false)}
+                isEditing={true}
+                currentTitle={projectData.data.projectTitle}
+                currentDescription={projectData.data.projectDescription}
+                currentStartDate={projectData.data.startDt}
+                currentDueDate={projectData.data.dueDt}
+            />
+        )}
+        </>
     );
 }

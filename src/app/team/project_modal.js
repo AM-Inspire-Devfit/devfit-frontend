@@ -1,28 +1,31 @@
 import * as m from '@/components/modal_s';
-import { IoClose } from "react-icons/io5";  // 닫기 아이콘
+import { IoClose } from "react-icons/io5";  
 
 import { useState, useEffect } from 'react';
 
-export default function AddModal({ onClose }) {
-    const [projectName, setProjectName] = useState("");
-    const [projectDescription, setProjectDescription] = useState("");
+export default function ProjectModal({ onClose, isEditing = false, currentTitle = "", currentDescription = "", currentStartDate = "", currentDueDate = "" }) {
+    const [projectName, setProjectName] = useState(currentTitle);
+    const [projectDescription, setProjectDescription] = useState(currentDescription);
     const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [dueDate, setDueDate] = useState(currentDueDate); 
 
     useEffect(() => {
-        const today = new Date().toISOString().split("T")[0];
-        setStartDate(today);
-    }, []);
+        if (isEditing && currentStartDate) {
+            setStartDate(currentStartDate); // 프로젝트 수정이면 기존 날짜 유지
+        } else {
+            setStartDate(new Date().toISOString().split("T")[0]); // 프로젝트 생성이면 오늘 날짜
+            setStartDate(today);
+            setDueDate(""); 
+        }
+    }, [isEditing, currentStartDate, currentDueDate]);
 
     const isButtonDisabled = 
         projectName.trim() === "" || 
         projectDescription.trim() === "" || 
-        startDate === "" || 
-        endDate === "";
+        dueDate === "";
 
     const handleSubmit = () => {
         if (!isButtonDisabled) {
-            console.log("프로젝트 생성 완료:", { projectName, projectDescription });
             onClose(); // 모달 닫기
         }
     };
@@ -40,7 +43,7 @@ export default function AddModal({ onClose }) {
             >
 
                 <m.Title style={{ textAlign: "left", fontSize: "28px", marginBottom: "10px", color: "#6A50C5" }}>
-                    프로젝트 생성
+                    {isEditing ? "프로젝트 수정" : "프로젝트 생성"}
                 </m.Title>
                 <p style={{ textAlign: "left", fontSize: "14px", color: "#706767", marginBottom: "20px" }}>
                     * 표시 항목은 필수 항목입니다.
@@ -98,13 +101,13 @@ export default function AddModal({ onClose }) {
                     </m.Label>
                     <m.Input
                         type="date"
-                        value={endDate}
+                        value={dueDate}
                         min={startDate}
                         onChange={(e) => {
                             if (e.target.value < startDate) {
-                                setEndDate(startDate);
+                                setDueDate(startDate);
                             } else {
-                                setEndDate(e.target.value);
+                                setDueDate(e.target.value);
                             }
                         }}
                         style={{ flex: 1 }}
@@ -120,7 +123,8 @@ export default function AddModal({ onClose }) {
                             cursor: isButtonDisabled ? "not-allowed" : "pointer"
                         }}
                     >
-                        프로젝트 생성</m.SubmitButton>
+                        {isEditing ? "프로젝트 수정" : "프로젝트 생성"}
+                    </m.SubmitButton>
                 </m.ButtonContainer>
             </m.ModalContent>
         </m.ModalOverlay>
