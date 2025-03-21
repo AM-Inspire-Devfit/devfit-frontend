@@ -13,7 +13,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
         if (isEditing && currentStartDate) {
             setStartDate(currentStartDate); // 프로젝트 수정이면 기존 날짜 유지
         } else {
-            setStartDate(new Date().toISOString().split("T")[0]); // 프로젝트 생성이면 오늘 날짜
+            const today = new Date().toISOString().split("T")[0];  // 프로젝트 생성이면 오늘 날짜
             setStartDate(today);
             setDueDate(""); 
         }

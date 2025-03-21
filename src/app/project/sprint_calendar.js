@@ -4,9 +4,11 @@ import { CalendarContainer } from "../../components/calander_s";
 
 const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingClick }) => {
     const [currentWeekStart, setCurrentWeekStart] = useState(new Date(sprintStart));
+    const [isFirstWeek, setIsFirstWeek] = useState(true);
 
     useEffect(() => {
         setCurrentWeekStart(new Date(sprintStart));
+        setIsFirstWeek(true);
     }, [sprintStart]);
 
     const weekDays = useMemo(() => ["월", "화", "수", "목", "금", "토", "일"], []);
@@ -33,21 +35,56 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingCli
             };
         });
     }, [currentWeekStart, sprintStart, sprintEnd, meetingData, weekDays]);
+
     const handlePrevWeek = () => {
-        const newStart = new Date(currentWeekStart);
-        newStart.setDate(newStart.getDate() - 7);
-        if (newStart >= new Date(sprintStart)) setCurrentWeekStart(newStart);
+        if (!isFirstWeek) {
+            const newStart = new Date(currentWeekStart);
+            newStart.setDate(newStart.getDate() - 7);
+    
+            // 되돌아가서 sprintStart와 같은 주인지 확인
+            const start = new Date(sprintStart);
+            const day = start.getDay();
+            const monday = new Date(start);
+            monday.setDate(start.getDate() - (day === 0 ? 6 : day - 1));
+    
+            if (newStart <= monday) {
+                setCurrentWeekStart(new Date(sprintStart));
+                setIsFirstWeek(true);
+            } else {
+                setCurrentWeekStart(newStart);
+            }
+        }
     };
 
     const handleNextWeek = () => {
-        const newStart = new Date(currentWeekStart);
-        newStart.setDate(newStart.getDate() + 7);
+        const sprintEndDate = new Date(sprintEnd);
 
-        const nextWeekEnd = new Date(newStart);
-        nextWeekEnd.setDate(nextWeekEnd.getDate() + 6);
+        if (isFirstWeek) {
+            // 첫 주 → 다음 주는 sprintStart 기준으로 월요일 이동
+            const start = new Date(sprintStart);
+            const day = start.getDay();
+            const nextMonday = new Date(start);
+            nextMonday.setDate(start.getDate() + (day === 0 ? 1 : 8 - day));
 
-        if (nextWeekEnd >= new Date(sprintStart)) {
-            setCurrentWeekStart(newStart);
+            // 다음 주가 sprintEnd가 포함된 주 이하인지 확인
+            const nextWeekEnd = new Date(nextMonday);
+            nextWeekEnd.setDate(nextWeekEnd.getDate() + 6);
+
+            if (sprintEndDate >= nextMonday) {
+                setCurrentWeekStart(nextMonday);
+                setIsFirstWeek(false);
+            }
+        } else {
+            const newStart = new Date(currentWeekStart);
+            newStart.setDate(newStart.getDate() + 7);
+
+            const newEnd = new Date(newStart);
+            newEnd.setDate(newEnd.getDate() + 6);
+
+            // 다음 주가 sprintEnd가 포함된 주 이하인지 확인
+            if (sprintEndDate >= newStart) {
+                setCurrentWeekStart(newStart);
+            }
         }
     };
 
@@ -67,6 +104,42 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingCli
         }
     };
 
+    const getWeekEndDate = (date, isFirst, sprintEnd) => {
+        const start = new Date(date);
+    
+        // 현재 주의 월요일 계산
+        const day = start.getDay();
+        const monday = new Date(start);
+        monday.setDate(start.getDate() - (day === 0 ? 6 : day - 1));
+    
+        // 현재 주의 일요일
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+    
+        const sprintEndDate = new Date(sprintEnd);
+    
+        // 이번 주가 sprintEnd를 포함하고 있다면, 그 날짜까지만
+        if (sprintEndDate >= monday && sprintEndDate <= sunday) {
+            return sprintEndDate;
+        }
+    
+        // 첫 주이면 sprintStart ~ 일요일
+        if (isFirst) {
+            return sunday;
+        }
+    
+        // 일반적인 주이면 월요일~일요일
+        return sunday;
+    };
+
+    const formatDateString = (date, includeYear = false) => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = d.getMonth() + 1;
+        const day = d.getDate();
+        return includeYear ? `${year}.${month}.${day}` : `${month}.${day}`;
+    };
+
     return (
         <CalendarContainer>
             <div className="calendar-header">
@@ -74,7 +147,7 @@ const SprintCalendar = ({ sprintStart, sprintEnd, meetingData = [], onMeetingCli
                     <AiOutlineLeft size={20} />
                 </button>
                 <span className="date-range">
-                    {currentWeekStart.toLocaleDateString().replace(/\.$/, "")} - {lastValidDate}
+                    {formatDateString(currentWeekStart, true)} - {formatDateString(getWeekEndDate(currentWeekStart, isFirstWeek, sprintEnd))}
                 </span>
                 <button onClick={handleNextWeek} className="nav-button">
                     <AiOutlineRight size={20} />

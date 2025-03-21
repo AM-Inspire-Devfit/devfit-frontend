@@ -17,20 +17,20 @@ import ProjectModal from "../team/project_modal";
 
 import Image from "next/image";
 
-const colorPalette = [
-    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-    "#9966FF", "#FF9F40", "#C9CBCF", "#8D44AD",
-    "#27AE60", "#D35400"
-];
+    const colorPalette = [
+        "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
+        "#9966FF", "#FF9F40", "#C9CBCF", "#8D44AD",
+        "#27AE60", "#D35400"
+    ];
 
-const userData =
+    const userData =
     {   
         id: 4,
         name: "채민주",
         profileImage: "/img/profile.png", 
     }
 
-const teamData = 
+    const teamData = 
     {
         "success": true,
         "status": 200,
@@ -44,7 +44,7 @@ const teamData =
     }
 
 
-const projectData = 
+    const projectData = 
     {
         "success": true,
         "status": 200,
@@ -55,12 +55,12 @@ const projectData =
                 "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
                 "projectGoal": "개발자 건강을 위한 협업 툴 개발",
                 "startDt": "2024-01-01",
-                "dueDt": "2025-01-01"
+                "dueDt": "2026-01-01"
             },
         "timestamp": "2025-02-06T09:56:45.150727"
     }
 
-const projectMemberData = 
+    const projectMemberData = 
     {
         "success": true,
         "status": 200,
@@ -68,24 +68,24 @@ const projectMemberData =
         "content": [
             {
                 "projectParticipantId": 1,
-                "projectNickname": "최현태",
+                "projectNickname": "정선우",
                 "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
                 "role": "ADMIN"
             },
             {
                 "projectParticipantId": 2,
-                "projectNickname": "최현태",
+                "projectNickname": "조수빈",
                 "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
                 "role": "MEMBER"
             },
             {
                 "projectParticipantId": 3,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
+                "projectNickname": "UNKNOWN_PROJECT_NICKNAME",
+                "profileImageUrl": "UNKNOWN_PROJECT_PROFILE_URL",
                 "role": "MEMBER"
             },
             {
-                "projectParticipantId": 3,
+                "projectParticipantId": 4,
                 "projectNickname": "최현태",
                 "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
                 "role": "MEMBER"
@@ -110,166 +110,412 @@ const projectMemberData =
         "timestamp": "2025-03-19T21:49:27.631511"
     }
 
-const sprintData = [
+    const sprintData = [
     {
-        sprint_id: 1,
-        sprint_num: 1,
-        goal: "UI 디자인을 완료하고 핵심 기능 단위를 정리합니다.",
-        sprint_start: "2025-01-20",
-        sprint_end: "2025-02-19",
-        progress: 70,
-        member: [
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
             {
-                id: 1,
-                name: "최현태",
-                value: 30,
-                profileImage: "/img/profile2.png" 
-            },
-            {
-                id: 2,
-                name: "조수빈",
-                value: 25,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 3,
-                name: "정선우",
-                value: 20,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 4,
-                name: "채민주",
-                value: 20,
-                profileImage: "/img/profile.png" 
-            },
-            
-        ],
-        taskData : [
-            { 
-                task: "API 명세서 작성",
-                toDoStatus: "COMPELTED"
-            },
-            { 
-                task: "피그마 UI 디자인 완료",
-                toDoStatus: "NOT_STARTED"
-            },
-            { 
-                task: "백/프론트 깃레포 생성",
-                toDoStatus: "COMPELTED"
-            },
-            { 
-                task: "회의록 작성",
-                toDoStatus: "NOT_STARTED"
-            },
-            { 
-                task: "로고 디자인",
-                toDoStatus: "NOT_STARTED"
-            },
-            { 
-                task: "API 명세서 작성",
-                toDoStatus: "COMPELTED"
-            },
-        ],
-        last: false
-    },
-    {
-        sprint_id: 2,
-        sprint_num: 2,
-        goal: "리액트 프로젝트를 생성합니다.",
-        sprint_start: "2025-02-20",
-        sprint_end: "2025-03-19",
-        progress: 30,
-        member: [
-            {
-                id: 1,
-                name: "최현태",
-                value: 5,
-                profileImage: "/img/profile2.png" 
-            },
-            {
-                id: 2,
-                name: "조수빈",
-                value: 15,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 3,
-                name: "정선우",
-                value: 35,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 4,
-                name: "채민주",
-                value: 10,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 5,
-                name: "김팀원",
-                value: 20,
-                profileImage: "/img/profile.png" 
-            },
-            {
-                id: 6,
-                name: "이팀원",
-                value: 10,
-                profileImage: "/img/profile.png" 
+            "id": 1,
+            "title": "1",
+            "goal": "MVP 개발",
+            "startDt": "2025-02-01",
+            "dueDt": "2025-03-01",
+            "status": "NOT_STARTED",
+            "progress": 20.0
             }
         ],
-        taskData : [
-            { 
-                task: "API 명세서 작성",
-                toDoStatus: "COMPELTED"
-            },
-            { 
-                task: "피그마 UI 디자인 완료",
-                toDoStatus: "NOT_STARTED"
-            },
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 1,
+            "sort": [],
+            "offset": 0,
+            "unpaged": false,
+            "paged": true
+        },
+        "first": true,
+        "last": false,
+        "size": 1,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 1,
+        "empty": false
+        },
+        "timestamp": "2025-03-06T22:22:06.395628"
+    },
+    {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "id": 2,
+            "title": "2",
+            "goal": "MVP2 개발",
+            "startDt": "2025-03-01",
+            "dueDt": "2025-03-20",
+            "status": "NOT_STARTED",
+            "progress": 50.0
+            }
         ],
-        last: true
-    },
-];
-
-const meetingData = [
-    {   sprint_num: 1,
-        title: "아이디어 회의",
-        date: "2025-02-19",
-        startTime: "14:30:00",
-        endTime: "16:00:00",
-        toDoStatus: "STATUS_COMPLETED"
-    },
-    {   sprint_num: 2,
-        title: "아이디어 2차 회의",
-        date: "2025-02-20",
-        startTime: "18:30:00",
-        endTime: "20:00:00",
-        toDoStatus: "STATUS_COMPLETED"
-    },
-    {   sprint_num: 2,
-        title: "백엔드 회의",
-        date: "2025-02-23",
-        startTime: "14:00:00",
-        endTime: "16:00:00",
-        toDoStatus: "STATUS_COMPLETED"
-    },
-    {   sprint_num: 2,
-        title: "프론트 회의",
-        date: "2025-02-28",
-        startTime: "14:00:00",
-        endTime: "16:00:00",
-        toDoStatus: "STATUS_COMPLETED"
-    },
-    {   sprint_num: 2,
-        title: "프론트 회의",
-        date: "2025-03-17",
-        startTime: "14:00:00",
-        endTime: "16:00:00",
-        toDoStatus: "STATUS_COMPLETED"
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 1,
+            "sort": [],
+            "offset": 0,
+            "unpaged": false,
+            "paged": true
+        },
+        "first": true,
+        "last": true,
+        "size": 1,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 1,
+        "empty": false
+        },
+        "timestamp": "2025-03-06T22:23:36.017048"
     }
-
 ]
+
+const sprintContributionData = [
+    {
+        "success": true,
+        "status": 200,
+        "data": [
+        {
+            "contributionId": 3,
+            "sprintId": 1,
+            "memberId": 4,
+            "nickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            "score": 54
+        },
+        {
+            "contributionId": 1,
+            "sprintId": 1,
+            "memberId": 2,
+            "nickname": "조수빈",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            "score": 47
+        },
+        {
+            "contributionId": 2,
+            "sprintId": 1,
+            "memberId": 3,
+            "nickname": null,
+            "profileImageUrl": null,
+            "score": 19
+        }
+        ],
+        "timestamp": "2025-03-20T21:45:31.228694"
+    },
+    {
+        "success": true,
+        "status": 200,
+        "data": [
+        {
+            "contributionId": 3,
+            "sprintId": 2,
+            "memberId": 4,
+            "nickname": "최현태",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            "score": 54
+        },
+        {
+            "contributionId": 1,
+            "sprintId": 2,
+            "memberId": 2,
+            "nickname": "조수빈",
+            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
+            "score": 47
+        },
+        {
+            "contributionId": 2,
+            "sprintId": 2,
+            "memberId": 3,
+            "nickname": "채민주",
+            "profileImageUrl": 10,
+            "score": 19
+        },
+        {
+            "contributionId": 2,
+            "sprintId": 2,
+            "memberId": 1,
+            "nickname": "정선우",
+            "profileImageUrl": 30,
+            "score": 19
+        },
+        ],
+        "timestamp": "2025-03-20T21:45:31.228694"
+    }
+]
+
+const taskData = {
+    1: {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "taskId": 1,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 2,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "COMPELTED",
+            "assignedStatus": "COMPELTED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 3,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 4,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 5,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 6,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 6,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+        },
+        "first": true,
+        "last": false,
+        "size": 6,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 6,
+        "empty": false
+        },
+        "timestamp": "2025-03-20T16:38:14.792466"
+    },
+
+    2: {
+        "success": true,
+        "status": 200,
+        "data": {
+        "content": [
+            {
+            "taskId": 1,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "COMPELTED",
+            "assignedStatus": "COMPELTED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 2,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 3,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "MID",
+            "dueDt": null,
+            "taskStatus": "COMPELTED",
+            "assignedStatus": "COMPELTED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 4,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 5,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            },
+            {
+            "taskId": 6,
+            "description": "피그마 화면 설계 수정",
+            "taskDifficulty": "HIGH",
+            "dueDt": null,
+            "taskStatus": "NOT_STARTED",
+            "assignedStatus": "NOT_ASSIGNED",
+            "sosStatus": "NOT_SOS",
+            "memberId": null,
+            "projectNickname": null,
+            "profileImageUrl": null
+            }
+        ],
+        "pageable": {
+            "pageNumber": 0,
+            "pageSize": 6,
+            "sort": [],
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+        },
+        "first": true,
+        "last": false,
+        "size": 6,
+        "number": 0,
+        "sort": [],
+        "numberOfElements": 6,
+        "empty": false
+        },
+        "timestamp": "2025-03-20T16:38:14.792466"
+    }
+}
+
+
+const meetingData = {
+    1: {
+        "first": true,
+        "last": true,
+        "size": 1073741824,
+        "content": [
+            {
+            "meetingTitle": "미팅 타이틀",
+            "meetingStart": "2025-02-20T16:38:14.792466",
+            "meetingEnd": "2025-02-20T18:38:14.792466"
+            }
+        ],
+        "number": 1073741824,
+        "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+        },
+        "pageable": {
+            "offset": 9007199254740991,
+            "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+            },
+            "paged": true,
+            "unpaged": true,
+            "pageNumber": 1073741824,
+            "pageSize": 1073741824
+        },
+        "numberOfElements": 1073741824,
+        "empty": true
+    },
+
+    2: {
+        "first": true,
+        "last": true,
+        "size": 1073741824,
+        "content": [
+            {
+            "meetingTitle": "미팅 타이틀",
+            "meetingStart": "2025-03-20T16:00:14.792466",
+            "meetingEnd": "2025-03-20T18:00:14.792466",
+            }
+        ],
+        "number": 1073741824,
+        "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+        },
+        "pageable": {
+            "offset": 9007199254740991,
+            "sort": {
+            "empty": true,
+            "unsorted": true,
+            "sorted": true
+            },
+            "paged": true,
+            "unpaged": true,
+            "pageNumber": 1073741824,
+            "pageSize": 1073741824
+        },
+        "numberOfElements": 1073741824,
+        "empty": true
+    }
+};
 
 
 export default function Project() {
@@ -340,33 +586,55 @@ export default function Project() {
     }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen, isProjectEditModalOpen]);
 
 
-    // 멤버별 색상 배정 & value 기준 정렬
-    const assignColorsToSprint = (sprints) => {
-        return sprints.map(sprint => {
-            // 먼저 색상을 배정
-            const membersWithColors = sprint.member.map((member, index) => ({
-                ...member,
-                color: colorPalette[index % colorPalette.length] 
-            }));
+    const mergeProjectMembersWithContributions = (projectMembers, contributionData) => {
+        return projectMembers.map((member, index) => {
+            const contribution = contributionData.find(
+                c => c.memberId === member.projectParticipantId
+            );
     
-            // value 기준으로 내림차순 정렬
-            const sortedMembers = [...membersWithColors].sort((a, b) => b.value - a.value);
-    
-            // 최고 기여도 멤버의 value 값 저장
-            const highestValue = sortedMembers[0]?.value;
+            const score = contribution?.score ?? 0;
+            const nickname = member.projectNickname === "UNKNOWN_PROJECT_NICKNAME" ? "알수없음" : member.projectNickname;
+            const profileImage = member.profileImageUrl === "UNKNOWN_PROJECT_PROFILE_URL" ? "/img/default_profile.png" : member.profileImageUrl;
     
             return {
-                ...sprint,
-                member: sortedMembers.map(member => ({
-                    ...member,
-                    isTop: highestValue > 0 && member.value === highestValue // 최고 기여자에게 🥇 배지 추가
-                }))
+                id: member.projectParticipantId,
+                name: nickname,
+                profileImage: profileImage,
+                value: score,
+                color: colorPalette[index % colorPalette.length],
             };
-        });
+        }).sort((a, b) => b.value - a.value).map((member, _, array) => ({
+            ...member,
+            isTop: member.value > 0 && member.value === array[0].value
+        }));
     };
 
     // 색상 적용된 Sprint 데이터
-    const sprintDataWithColors = assignColorsToSprint(sprintData);
+    const sprintDataWithColors = sprintData.map((sprintObj, idx) => {
+        const sprintContent = sprintObj.data.content[0]; 
+        if (!sprintContent) return null; 
+
+        const sprintContributionsForSprint = sprintContributionData.find(item =>
+            item.data?.[0]?.sprintId === sprintContent.id
+        )?.data ?? [];
+    
+        return {
+            sprint_id: sprintContent.id,
+            sprint_num: sprintContent.title,
+            goal: sprintContent.goal,
+            sprint_start: sprintContent.startDt,
+            sprint_end: sprintContent.dueDt,
+            progress: sprintContent.progress ?? 0,
+            last: sprintObj.data.last,
+            title: sprintContent.title,
+            startDt: sprintContent.startDt,
+            dueDt: sprintContent.dueDt,
+            member: mergeProjectMembersWithContributions(
+                projectMemberData.data.content,
+                sprintContributionsForSprint
+            ),
+        };
+    }).filter(Boolean); 
 
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
@@ -378,6 +646,19 @@ export default function Project() {
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
     
     const [canShowNextArrow, setCanShowNextArrow] = useState(false);
+
+    const getTaskDataBySprintId = (sprintId) => {
+        const task = taskData[sprintId];
+        if (!task || !task.data || !task.data.content) return [];
+
+        return task.data.content.map(item => ({
+            task: item.description,
+            toDoStatus: item.taskStatus
+        }));
+    };
+
+    const currentSprintTasks = getTaskDataBySprintId(currentSprint.sprint_id);
+
 
     const handleNextSprint = () => {
         if (currentSprint.last) {
@@ -409,7 +690,9 @@ export default function Project() {
         }
     }, [currentSprint]);
 
-    const lastSprintNum = sprintData[sprintData.length - 1].sprint_num; 
+    const lastSprint = sprintDataWithColors[sprintDataWithColors.length - 1];
+
+    const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
 
     useEffect(() => {
         const sprintIndex = sprintDataWithColors.findIndex(sprint =>
@@ -503,7 +786,7 @@ export default function Project() {
             </div>
 
             {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
-            <P.AlertBox key={sprint.sprint_num}>
+            <P.AlertBox key={sprint.id}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
                     <span>Sprint {sprint.sprint_num} 동료평가를 잊지 마세요!</span>
@@ -526,24 +809,24 @@ export default function Project() {
 
                     {/* 팀원 리스트 */}
                     <P.ScrollableMemberList>
-                        {currentSprint.member.map((member, index) => (
-                            <P.ProjectMember key={`${member.id}-${index}`}> 
-                                <P.ProfileContainer>
-                                    <P.ProfileMain $profileImage={member.profileImage} />
-                                    <P.ProfileIcon color={member.color} />
-                                </P.ProfileContainer>
-                                <span style={{ marginLeft: '10px' }}>{member.name}</span>
-                                <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
-                                {member.id !== userData.id && ( // 본인 제외
-                                    <Link 
-                                        href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
-                                        <P.FeedbackButton hidden={!isFeedbackDay}>
-                                            동료 평가
-                                        </P.FeedbackButton>
-                                    </Link>
-                                )}
-                            </P.ProjectMember>
-                        ))}
+                    {currentSprint.member.map((member, index) => (
+                        <P.ProjectMember key={`${member.id}-${index}`}> 
+                        <P.ProfileContainer>
+                            <P.ProfileMain $profileImage={member.profileImage} />
+                            <P.ProfileIcon color={member.color} />
+                        </P.ProfileContainer>
+                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
+                        <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
+                        {member.id !== userData.id && (
+                            <Link 
+                            href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                            <P.FeedbackButton hidden={!isFeedbackDay}>
+                                동료 평가
+                            </P.FeedbackButton>
+                            </Link>
+                        )}
+                        </P.ProjectMember>
+                    ))}
                     </P.ScrollableMemberList>
 
                     {/* 기여도 차트 */}
@@ -573,9 +856,9 @@ export default function Project() {
                 <div style={{ width: '80%', minWidth: '400px', textAlign: 'left', marginTop: '5px', position: 'relative', }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', flex: 1 }}>
-                                <span style={{ fontSize: '23px', marginLeft: '20px' }}>Sprint {currentSprint.sprint_num}</span>
+                                <span style={{ fontSize: '23px', marginLeft: '20px' }}>Sprint {currentSprint.title}</span>
                                 <span style={{ fontSize: '12px', marginLeft: '15px' }}>
-                                    {currentSprint.sprint_start} ~ {currentSprint.sprint_end}
+                                    {currentSprint.startDt} ~ {currentSprint.dueDt}
                                 </span>
                             </h2>
                             <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
@@ -590,12 +873,12 @@ export default function Project() {
                             <SprintModal 
                                 isOpen={isSprintModalOpen}
                                 onClose={handleSprintModal}
-                                sprint={currentSprint.sprint_num}
-                                goal={goal}
+                                sprint={currentSprint.title}
+                                goal={currentSprint.goal}
                                 setGoal={setGoal}
-                                startDate={startDate}
+                                startDate={currentSprint.startDt}
                                 setStartDate={setStartDate}  
-                                dueDate={dueDate}
+                                dueDate={currentSprint.dueDt}
                                 setDueDate={setDueDate}  
                                 isLastSprint={currentSprint.last} 
                             />
@@ -620,7 +903,7 @@ export default function Project() {
                 <P.SprintBox>
                     Task
                     <P.TaskGrid>
-                        {currentSprint.taskData.map((item, index) => (
+                        {currentSprintTasks?.map((item, index) => (
                             <P.TaskItem key={`task-${index}`}> 
                                 <P.TaskCheckbox
                                     checked={item.toDoStatus === "COMPELTED"} readOnly
@@ -726,7 +1009,21 @@ export default function Project() {
                     <SprintCalendar 
                         sprintStart={currentSprint.sprint_start} 
                         sprintEnd={currentSprint.sprint_end}
-                        meetingData={meetingData.filter(meet => meet.sprint_num === currentSprint.sprint_num)}
+                        meetingData={
+                            (meetingData[currentSprint.sprint_num]?.content || []).map(meeting => {
+                            const [date, startTime] = meeting.meetingStart.split("T");
+                            const [, endTime] = meeting.meetingEnd.split("T");
+                        
+                            return {
+                                sprint_num: Number(currentSprint.sprint_num),
+                                title: meeting.meetingTitle,
+                                date: date,
+                                startTime: startTime.slice(0, 5),
+                                endTime: endTime.slice(0, 5),
+                                toDoStatus: "STATUS_COMPLETED", // 기본값
+                            };
+                            })
+                        }
                         onMeetingClick={openMeetingModalForEdit}
                     />
                 </P.MeetingContainer>

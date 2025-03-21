@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import * as m from "../../components/modal_s";
+import { IoClose } from "react-icons/io5";  
 
 const ModalContent = styled.div`
     background: white;
@@ -10,15 +11,44 @@ const ModalContent = styled.div`
     height: auto;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #796AD9;
+    position: relative; 
 `;
 
 export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeetingTitle, meetingDate, setMeetingDate, startTime, setStartTime, endTime, setEndTime, sprintNum, isEditing }) {
     if (!isOpen) return null;
 
+    const formatMeetingData = (meetingDate, startTime, endTime) => {
+        if (!meetingDate || !startTime || !endTime) return null;
+    
+        // 날짜와 시간을 합쳐서 ISO 형식으로 변환
+        const meetingStart = `${meetingDate}T${startTime}:00`;
+        const meetingEnd = `${meetingDate}T${endTime}:00`;
+    
+        return { meetingStart, meetingEnd };
+    };
+
+    const handleSaveMeeting = () => {
+        const formattedMeeting = formatMeetingData(meetingDate, startTime, endTime);
+    
+        if (!formattedMeeting) {
+            alert("모든 필드를 입력해주세요.");
+            return;
+        }
+    
+        console.log("저장할 미팅 데이터:", formattedMeeting);
+        
+        // 여기에 API 관련 코드 추가하면 될듯?
+        onClose(); 
+    };
+
     return (
-        <m.ModalOverlay onClick={onClose}>
+        <m.ModalOverlay>
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <m.Title>Sprint {sprintNum} 팀 미팅</m.Title>
+
+                <m.CloseButton onClick={onClose}>
+                    <IoClose size={24} />
+                </m.CloseButton>
                 
                 {/* 미팅 제목 입력 */}
                 <m.InputWrapper>
@@ -93,11 +123,9 @@ export default function MeetingModal({ isOpen, onClose, meetingTitle, setMeeting
                 </m.InputWrapper>
 
                 <m.ButtonContainer
-                    style={{
-                        gap: "10px"
-                    }}
+                    style={{ gap: "10px"}}
                 >
-                    <m.SubmitButton onClick={onClose}>
+                    <m.SubmitButton onClick={handleSaveMeeting}>
                         {isEditing ? "수정 완료" : "미팅 생성"}
                     </m.SubmitButton>
 

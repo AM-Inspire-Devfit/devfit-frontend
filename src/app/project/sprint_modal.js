@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import * as m from '../../components/modal_s';
+import { IoClose } from "react-icons/io5";  
 
 const ModalContent = styled.div`
     background: white;
@@ -10,6 +11,7 @@ const ModalContent = styled.div`
     height: auto;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #796AD9;
+    position: relative; 
 `;
 
 const SprintTitle = styled.h2`
@@ -50,9 +52,13 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
     if (!isOpen) return null;
 
     return (
-        <m.ModalOverlay onClick={onClose}>
+        <m.ModalOverlay>
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <SprintTitle>Sprint {sprint}</SprintTitle>
+
+                <m.CloseButton onClick={onClose}>
+                    <IoClose size={24} />
+                </m.CloseButton>
                 
                 {/* 중간목표 입력 */}
                 <GoalInputWrapper>
