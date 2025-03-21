@@ -1,13 +1,24 @@
 import * as m from '@/components/modal_s';
 import { IoClose } from "react-icons/io5";  // 닫기 아이콘
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AddModal({ onClose }) {
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
-    const isButtonDisabled = projectName.trim() === "" || projectDescription.trim() === "";
+    useEffect(() => {
+        const today = new Date().toISOString().split("T")[0];
+        setStartDate(today);
+    }, []);
+
+    const isButtonDisabled = 
+        projectName.trim() === "" || 
+        projectDescription.trim() === "" || 
+        startDate === "" || 
+        endDate === "";
 
     const handleSubmit = () => {
         if (!isButtonDisabled) {
@@ -22,7 +33,7 @@ export default function AddModal({ onClose }) {
             <m.ModalContent
                 style = {{
                     width: "600px",
-                    height: "390px",
+                    height: "450px",
                     position: "relative",
                     border: "4px solid #6A50C5",
                 }}
@@ -55,7 +66,7 @@ export default function AddModal({ onClose }) {
                     <textarea
                         style={{
                             flex: 1,
-                            height: "120px",
+                            height: "60px",
                             padding: "10px",
                             border: "2px solid #796AD9",
                             borderRadius: "8px",
@@ -66,6 +77,37 @@ export default function AddModal({ onClose }) {
                         }}
                         value={projectDescription}
                         onChange={(e) => setProjectDescription(e.target.value)}
+                    />
+                </m.InputWrapper>
+
+                <m.InputWrapper style={{ marginTop: "20px" }}>
+                    <m.Label style={{ color: "black", fontWeight: "bold", width: "90px" }}>
+                        시작 날짜
+                    </m.Label>
+                    <m.Input
+                        type="date"
+                        value={startDate}
+                        readOnly
+                        style={{ flex: 1, backgroundColor: "#f5f5f5", color: "#555" }}
+                    />
+                </m.InputWrapper>
+
+                <m.InputWrapper style={{ marginTop: "10px" }}>
+                    <m.Label style={{ color: "black", fontWeight: "bold", width: "90px" }}>
+                        마감 날짜 *
+                    </m.Label>
+                    <m.Input
+                        type="date"
+                        value={endDate}
+                        min={startDate}
+                        onChange={(e) => {
+                            if (e.target.value < startDate) {
+                                setEndDate(startDate);
+                            } else {
+                                setEndDate(e.target.value);
+                            }
+                        }}
+                        style={{ flex: 1 }}
                     />
                 </m.InputWrapper>
 
