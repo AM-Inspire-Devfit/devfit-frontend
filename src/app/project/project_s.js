@@ -1,5 +1,25 @@
 import styled from 'styled-components';
 
+export const AlertBox = styled.div`
+    width: 750px;
+    height: 60px;
+    background-color: #FFF3CD;
+    color: #856404;
+    font-weight: bold;
+    font-size: 17px;
+    border: 1px solid #FEEBC8;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+`;
+
+export const AlertIcon = styled.span`
+    margin-right: 10px;
+`;
+
 export const BoxContainer = styled.div`
     width: 750px;
     position: relative;
@@ -10,7 +30,18 @@ export const BoxContainer = styled.div`
     flex-direction: column; 
     align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    margin: 50px 0;
+    margin-top: 30px;
+    margin-bottom: 50px;
+`;
+
+export const StyledInput = styled.input`
+    font-size: 16px;
+    color: #432CA4;
+    border: 1px #432CA4;
+    padding: 5px;
+    border-radius: 3px;
+    outline: none;
+    width: 60%;
 `;
 
 export const ChartWrapper = styled.div`
@@ -40,13 +71,19 @@ export const ChartTitle = styled.div`
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
 `;
 
-export const MemberList = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
+export const ScrollableMemberList = styled.div`
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 10px; 
 `;
+
+// export const MemberList = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     gap: 10px;
+//     width: 100%;
+// `;
 
 export const ProjectMember = styled.div`
     display: flex;
@@ -97,6 +134,13 @@ export const TopBadge = styled.span`
     margin-left: 5px;
 `;
 
+export const MemberInfoWrapper = styled.div`
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;  
+`;
+
 export const DonutChartContainer = styled.div`
     flex: 1; 
     width: 100%; 
@@ -139,7 +183,7 @@ export const ProgressBarWrapper = styled.div`
     height: 100%;
     position: relative;
     background-color: #e0e0e0; 
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
 `;
 
@@ -194,7 +238,6 @@ export const TaskItem = styled.label`
 export const TaskCheckbox = styled.input.attrs({ type: "checkbox" })`
     width: 16px;
     height: 16px;
-    cursor: pointer;
     appearance: none; 
     border: 1px solid #4F3DBD;
     border-radius: 4px;
@@ -255,7 +298,7 @@ export const MeetingItem = styled.div`
     background-color: #FFFFFF;
     padding: 10px 15px;
     border-radius: 10px;
-    width: 200px; /* 일정 항목 크기 */
+    width: 200px; 
     font-size: 14px;
     color: #4F3DBD;
     font-weight: bold;
@@ -268,4 +311,21 @@ export const MeetingDate = styled.span`
     font-size: 12px;
     font-weight: bold;
     color: #4F3DBD;
+`;
+
+export const FeedbackButton = styled.button`
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background-color: #796AD9;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+        background-color: #3b2ea3;
+    }
 `;

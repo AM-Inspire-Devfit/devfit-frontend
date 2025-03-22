@@ -6,7 +6,7 @@ export const ContentContainer = styled.div`
   align-items: center;
   width: 100%;
   padding-top: 150px; /* Navbar 높이만큼 여백 */
-  min-height: 100vh; 
+  min-height: 1500px; 
   box-sizing: border-box;
 `;
 

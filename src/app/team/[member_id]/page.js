@@ -1,11 +1,11 @@
 import Team from '../team';
-import Navbar from '@/components/Navbar';
+import Navbar_ from '@/components/Navbar_b';
 
 
 export default function TeamPage(){
     return(
         <>
-        <Navbar />
+        <Navbar_ />
         <Team/>
         </>
         

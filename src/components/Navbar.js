@@ -16,7 +16,7 @@ export const NavbarContainer = styled.nav`
   padding: 0 30px;
   top: 0;
   left: 0;
-  border-bottom: 2px solid #796AD9;
+  border-bottom: 1px solid #D9D9D9;
   z-index: 1000;
 `;
 
@@ -32,20 +32,36 @@ export const NavLinks = styled.div`
 
 export const StyledLink = styled(Link)`
   text-decoration: none;
-  color: #2E1A86;
+  color: #796AD9;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 550;
   transition: color 0.2s;
 
   &:hover {
-    color: #2E1A86;
+    color: #007bff;
+  }
+`;
+
+export const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #796AD9;
+  font-size: 16px;
+  font-weight: 550;
+  transition: color 0.2s;
+  padding: 0;
+
+  &:hover {
+    color: #007bff;
   }
 `;
 
 const Navbar = () => {
+
   return (
     <NavbarContainer>
-      <Link href="/boarding" passHref>
+      <Link href="/boarding/" passHref>
       <LogoContainer>
         <Image 
           src="/img/devfit-logo.png" 
@@ -55,13 +71,12 @@ const Navbar = () => {
       </LogoContainer>
       </Link>
       <NavLinks>
-        <StyledLink href="/home">Home</StyledLink>
-        <StyledLink href="/mypage">MyPage</StyledLink>
-        <StyledLink href="/">Logout</StyledLink>
+        <StyledLink href="/project/${project_id}/">Home</StyledLink>
+        <StyledLink href="/project/${project_id}/mypage">MyPage</StyledLink>
+        <LogoutButton>Logout</LogoutButton>
       </NavLinks>
     </NavbarContainer>
   );
 };
 
 export default Navbar;
-

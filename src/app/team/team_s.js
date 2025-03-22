@@ -32,9 +32,10 @@ export const EmojiBox = styled.div`
   justify-content: center;
   cursor: pointer;
   border: 2px solid #796AD9;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 5px;
-  position: relative;
+  position: relative; 
+  transform: translateY(-5px);
 
   img {
     position: absolute;
@@ -44,20 +45,6 @@ export const EmojiBox = styled.div`
     height: 25px;
     object-fit: contain; 
   }
-`;
-
-export const EmojiPickerContainer = styled.div`
-  position: absolute;
-  top: 100%; 
-  left: 50%; 
-  transform: translateX(-50%);
-  width: 370px;
-  height: 480px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 200; 
-  padding: 10px;
 `;
 
 
@@ -104,9 +91,10 @@ export const StyledInput = styled.input`
 
 export const Button = styled.button`
   font-size: 14px;
-  color: #432CA4;
+  font-weight: bold;
+  color: #796AD9;
   background: white;
-  border: 1px solid #432CA4;
+  border: 2px solid #796AD9;
   border-radius: 10px;
   padding: 5px 12px;
   cursor: pointer;
@@ -114,7 +102,7 @@ export const Button = styled.button`
   margin-left: 10px;
 
   &:hover {
-    background: #432CA4;
+    background: #796AD9;
     color: white;
   }
 `;

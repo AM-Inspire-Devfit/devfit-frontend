@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import * as m from '../../components/modal_s';
+import { IoClose } from "react-icons/io5";  
 
 const ModalContent = styled.div`
     background: white;
@@ -10,6 +11,7 @@ const ModalContent = styled.div`
     height: auto;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #796AD9;
+    position: relative; 
 `;
 
 const SprintTitle = styled.h2`
@@ -46,13 +48,17 @@ const DateInputWrapper = styled.div`
 `;
 
 
-export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, startDate, setStartDate, endDate, setEndDate }) {
+export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, startDate, setStartDate, dueDate, setDueDate, isLastSprint  }) {
     if (!isOpen) return null;
 
     return (
-        <m.ModalOverlay onClick={onClose}>
+        <m.ModalOverlay>
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <SprintTitle>Sprint {sprint}</SprintTitle>
+
+                <m.CloseButton onClick={onClose}>
+                    <IoClose size={24} />
+                </m.CloseButton>
                 
                 {/* 중간목표 입력 */}
                 <GoalInputWrapper>
@@ -70,13 +76,27 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
                         <m.DateInput 
                             type="date" 
                             value={startDate} 
-                            onChange={(e) => setStartDate(e.target.value)}
+                            readOnly
+                            style={{ 
+                                flex: 1, 
+                                backgroundColor: "#f5f5f5", 
+                                color: "#555", 
+                                cursor: "not-allowed" 
+                            }}
                         />
                         <span> ~ </span>
                         <m.DateInput 
                             type="date" 
-                            value={endDate} 
-                            onChange={(e) => setEndDate(e.target.value)}
+                            value={dueDate} 
+                            onChange={(e) => setDueDate(e.target.value)}
+                            readOnly={!isLastSprint}
+                            min={startDate}
+                            style={{
+                                flex: 1,
+                                backgroundColor: isLastSprint ? "white" : "#f5f5f5",
+                                color: isLastSprint ? "#000" : "#555",
+                                cursor: isLastSprint ? "text" : "not-allowed"
+                            }}
                         />
                     </m.DateInputContainer>
                 </DateInputWrapper>
