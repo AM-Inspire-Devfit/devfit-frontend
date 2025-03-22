@@ -599,6 +599,8 @@ export default function Project() {
     }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen, isProjectEditModalOpen]);
 
 
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 아래부터 시작------------------------------------>
     const mergeProjectMembersWithContributions = (projectMembers, contributionData) => {
         return projectMembers.map((member, index) => {
             const contribution = contributionData.find(
@@ -675,6 +677,9 @@ export default function Project() {
     };
 
     const currentSprintTasks = getTaskDataBySprintId(currentSprint.sprint_id);
+
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
 
     const handleNextSprint = () => {
@@ -810,7 +815,8 @@ export default function Project() {
                         {description}
                     </p>
             </div>
-
+            {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+             <--------------------------------------map 함수 부분--------------------------------------> */}
             {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
             <P.AlertBox key={sprint.id}>
                 <div>
@@ -835,6 +841,8 @@ export default function Project() {
 
                     {/* 팀원 리스트 */}
                     <P.ScrollableMemberList>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                     {currentSprint.member.map((member, index) => (
                         <P.ProjectMember key={`${member.id}-${index}`}> 
                         <P.ProfileContainer>
@@ -859,6 +867,8 @@ export default function Project() {
 
                     {/* 기여도 차트 */}
                     <P.DonutChartContainer>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {isClient && (
                         <PieChart width={300} height={300}>
                             <Pie
@@ -932,6 +942,8 @@ export default function Project() {
                 <P.SprintBox>
                     Task
                     <P.TaskGrid>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {currentSprintTasks?.map((item, index) => (
                             <P.TaskItem key={`task-${index}`}> 
                                 <P.TaskCheckbox
@@ -1015,7 +1027,7 @@ export default function Project() {
                     </div>
                 )}
             </P.BoxContainer>
-
+                
             {!showCreateSprintBox && (
             <div style={{ width: '750px', textAlign: 'left', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
@@ -1049,6 +1061,8 @@ export default function Project() {
                 
                 <Divider1/>
                 <P.MeetingContainer>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                     <SprintCalendar 
                         sprintStart={currentSprint.sprint_start} 
                         sprintEnd={currentSprint.sprint_end}

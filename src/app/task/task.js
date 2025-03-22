@@ -317,6 +317,8 @@ const taskData = [
 
 
 export default function Task() {
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 아래부터 시작------------------------------------>
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [tasks, setTasks] = useState(taskData[0].data.content);
     const [hasMore, setHasMore] = useState(!taskData[0].data.last);
@@ -348,6 +350,9 @@ export default function Task() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
     }, [hasMore, currentPageIndex]);
+
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
     const searchParams = useSearchParams();
 
@@ -457,6 +462,8 @@ export default function Task() {
             </T.TaskContainerWrapper>
 
                 <T.TaskContainer>
+                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                <--------------------------------------map 함수 부분--------------------------------------> */}
                 {tasks.map((task, index) => {
                     const isCompleted = task.taskStatus === "COMPLETED";
                     const isOnGoing = task.taskStatus === "ON_GOING";

@@ -413,6 +413,9 @@ export default function My() {
         setCurrentSprintIndex((prev) => Math.min(prev + 1, sprintData.length - 1));
     };
 
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 아래부터 시작------------------------------------>
+
     const [visibleTasks, setVisibleTasks] = useState([]);
     const [taskPage, setTaskPage] = useState(0);
     const [hasMoreTasks, setHasMoreTasks] = useState(true);
@@ -451,6 +454,8 @@ export default function My() {
             loadMoreTasks();
         }
     }, []);
+     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
@@ -567,6 +572,8 @@ export default function My() {
 
                 <M.TaskHeader>Todo</M.TaskHeader>
                 <T.TaskContainer>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                    <--------------------------------------map 함수 부분--------------------------------------> */}
                     {visibleTasks.map((task, index) => (
                         <T.TaskWrapper key={index}>
                             <T.TaskBox 

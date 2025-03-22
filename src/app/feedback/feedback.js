@@ -121,7 +121,8 @@ const feedbackData = {
 }
 
 export default function PeerReview() {
-
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 아래부터 시작------------------------------------>
     const [openFeedback, setOpenFeedback] = useState({});
 
     const toggleFeedback = (sprintNum) => {
@@ -130,12 +131,16 @@ export default function PeerReview() {
             [sprintNum]: !prev[sprintNum]
         }));
     };
+     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
     return (
         <ContentContainer>
             <PR.PageContainer>
                 <PR.Header>동료평가</PR.Header>
 
+                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                <--------------------------------------map 함수 부분--------------------------------------> */}
                 {Object.entries(feedbackData).map(([sprintNum, sprintData]) => {
                     const feedbackList = sprintData.data.content;
 
@@ -172,6 +177,8 @@ export default function PeerReview() {
                                 </tr>
                             </PR.TableHead>
                             <tbody>
+                                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                                <--------------------------------------map 함수 부분--------------------------------------> */}
                                 {feedbackList.map((feedback, index) => (
                                     <PR.TableRow key={feedback.feedbackId}>
                                         <PR.TableCell

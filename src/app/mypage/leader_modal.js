@@ -192,7 +192,9 @@ const projectMemberData = [
         "timestamp": "2025-03-19T21:49:27.631511"
     }
 ]
-export default function LeaderModal({ isOpen, onClose, }) {
+export default function LeaderModal({ isOpen, onClose, }) { 
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 아래부터 시작------------------------------------>
     const [selectedMember, setSelectedMember] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [members, setMembers] = useState([]);
@@ -223,6 +225,8 @@ export default function LeaderModal({ isOpen, onClose, }) {
             setCurrentPage((prev) => prev + 1);
         }
     };
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
     if (!isOpen) return null;
 
@@ -237,6 +241,8 @@ export default function LeaderModal({ isOpen, onClose, }) {
                 </Header>
 
                 <InstructionText>양도할 팀원을 선택해주세요.</InstructionText>
+                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                <--------------------------------------map 함수 부분--------------------------------------> */}
                 <MemberList ref={listRef} onScroll={handleScroll}>
                     {members.map((member) => (
                         <MemberItem key={member.projectParticipantId}>

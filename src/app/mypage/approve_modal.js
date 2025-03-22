@@ -278,6 +278,8 @@ const projectData =
 export default function ApproveModal({ isOpen, onClose}) {
     if (!isOpen) return null;
 
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 아래부터 시작------------------------------------>
     const [currentPage, setCurrentPage] = useState(0);
     const [requestList, setRequestList] = useState(requestData[0].content);
     const listRef = useRef();
@@ -301,6 +303,9 @@ export default function ApproveModal({ isOpen, onClose}) {
             setRequestList((prev) => [...prev, ...nextPage.content]);
         }
     }, [currentPage]);
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
+
 
     const getStatusMessage = (projectRegistrationStatus) => {
         switch (projectRegistrationStatus) {
@@ -338,6 +343,8 @@ export default function ApproveModal({ isOpen, onClose}) {
                 </Header>
 
                 <RequestList ref={listRef} onScroll={handleScroll}>
+                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                <--------------------------------------map 함수 부분--------------------------------------> */}
                     {requestList.map((request) => (
                         <RequestItem key={request.registrationId}>
                             <Image

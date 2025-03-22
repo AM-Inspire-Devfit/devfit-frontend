@@ -276,6 +276,10 @@ export default function Team() {
     const [displayedMembers, setDisplayedMembers] = useState(teamMemberData[0].data.content);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [hasMore, setHasMore] = useState(!teamMemberData[0].data.last);
+
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------여기부터 아래부터 시작-------------------------------------->
+    
     
     useEffect(() => {
         // 팀 리더 데이터 변환
@@ -354,6 +358,10 @@ export default function Team() {
             setOtherProjects(otherProjectsArray);
         }
     }, []);
+
+
+    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
+    // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -594,6 +602,8 @@ export default function Team() {
                 <S.MemberList>
                     {/* 리더 */}
                     <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "20px" }}>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {leaders.map((leader) => (
                             <S.MemberItem key={leader.id}>
                                 <S.MemberProfile isLeader={true}>
@@ -604,6 +614,8 @@ export default function Team() {
                         ))}
                     {/* 팀원들 */}
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px" }}>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {teamMembers.slice(0, 3).map((member, index) => (
                             <S.MemberItem key={member.id} style={{ position: "relative", marginLeft: index === 0 ? "0" : "-15px" }}>
                                 <S.MemberProfile>
@@ -626,6 +638,8 @@ export default function Team() {
                         <S.MemberDetail onClick={() => setIsDetailOpen(prev => !prev)}>더보기 </S.MemberDetail>
                         <S.MemberName style={{ visibility: "hidden" }}></S.MemberName>
                         <S.ToggleMemberList isOpen={isDetailOpen} ref={toggleListRef}>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {allMembers.map((member, index) => (
                         <S.ToggleMemberItem key={`${member.id}-${index}`}>
                             <S.ToggleMemberImage>
@@ -660,6 +674,8 @@ export default function Team() {
                 <T.Button onClick={() => handleAddClick()}>추가하기</T.Button>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
+            {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+             <--------------------------------------map 함수 부분--------------------------------------> */}
             {myProjects.length > 0 ? (
                 myProjects.map(project => (
                 <S.ProjectBox key={project.projectInfo.projectId}>
@@ -725,6 +741,8 @@ export default function Team() {
                 </S.SectionHeaderContainer>
             </S.SectionHeaderWrapper>
             <S.Divider2 />
+            {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+             <--------------------------------------map 함수 부분--------------------------------------> */}
             {otherProjects.length > 0 ? (
                 otherProjects.map((project) => (
                 <S.ProjectBox key={project.projectInfo.projectId}>
