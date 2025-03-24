@@ -1,22 +1,46 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import * as S from "./profile_modal_s"; 
+import axios from "axios";
 
-const ProfileModal = ({ isOpen, onClose }) => {
+const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
+  const [nickname, setNickname] = useState("");
   const [selectedTab, setSelectedTab] = useState("profile"); // 'profile' or 'withdraw'
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // 탈퇴 확인 모달
+
 
   // 모달이 열릴 때 스크롤 막기
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      setNickname(profile.nickname || "")
     } else {
       document.body.style.overflow = "auto";
     }
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isOpen]);
+  }, [isOpen, profile]);
+
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_DEVFIT_SERVER_URI}/members/me/nickname`,
+        { nickname },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("닉네임 변경 성공");
+      onClose();
+      onProfileUpdated();
+    } catch (error) {
+      console.error("닉네임 변경 실패:", error.response?.data || error.message);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -60,8 +84,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
                   {/* 닉네임 / 수정 버튼 영역 */}
                   <S.ProfileForm>
                     <S.Label>닉네임</S.Label>
-                    <S.Input type="text" defaultValue="최현태" />
-                    <S.SaveButton>수정 완료</S.SaveButton>
+                    <S.Input value={nickname} onChange={(e) => setNickname(e.target.value)} />
+                    <S.SaveButton onClick={handleSubmit}>수정 완료</S.SaveButton>
                   </S.ProfileForm>
                 </S.ProfileContainer>
               </>
@@ -74,6 +98,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
                 회원 탈퇴 시 현재 팀/프로젝트 정보가 모두 삭제됩니다.
                 계속 진행하시겠습니까?
               </S.WarningMessage>
+              
               <S.WithdrawButton onClick={() => setIsConfirmModalOpen(true)}>
                 회원 탈퇴
               </S.WithdrawButton>

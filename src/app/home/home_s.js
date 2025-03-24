@@ -14,6 +14,9 @@ export const PageContainer = styled.div`
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+
+    cursor: default;
+    user-select: none;
 `;
 
 export const ProfileContainer = styled.div`
@@ -61,24 +64,21 @@ export const InfoUpdateButton = styled.button`
   }
 `
 export const OptionContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 16px;
-    padding: 16px;
-    align-items: center;
-    justify-content: center;
-    background-color: #F9F7FE;
-    width: 600px;
-    min-height: 500px;
-    margin: 0 auto;
-    margin-top: 100px;
-    margin-bottom: 100px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-    
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  background-color: #F9F7FE;
+  width: 600px;
+  min-height: 500px;
+  margin: 0 auto;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const TeamOptionContainer = styled.div`
@@ -124,6 +124,15 @@ export const TeamIcon = styled.img`
     width: 24px;
     height: 24px;
 `;
+export const CardEmoji = styled.span`
+  display: block;
+  min-height: 40px;
+  line-height: 40px;
+  font-size: 40px;     /* 이모지 크기 */
+  text-align: center; 
+  margin-top:20px; /* 수평 가운데 정렬 */
+  margin-bottom: 20px;
+`;
 
 export const Divider = styled.div`
     width: 2px;
@@ -132,20 +141,18 @@ export const Divider = styled.div`
 `;
 
 export const CardContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    grid-auto-rows:220px;
-    gap: 16px;
-    padding: 16px;
-    align-items: center;
-    justify-content: center;
-    width: 600px;
-    min-height: 220px;
-    margin: 0 auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 20px;
-`;
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  grid-auto-rows: 220px;
+  gap: 16px;
+  width: 100%;
+  min-height: 220px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  `;
 
 export const EmptyFiller = styled.div`
   font-size: 24px;
@@ -192,7 +199,7 @@ export const Title = styled.h2`
   font-weight: 300;
   text-align: left;
   margin: 0;
-  flex: 1; /* 제목이 왼쪽으로 밀리지 않게 유지 */
+  flex: 1;
 `;
 
 // 설명 텍스트
@@ -200,8 +207,7 @@ export const Description = styled.p`
   font-size: 10px;
   text-align: left;
   color: #6E65AB;
-  margin-bottom: 12px;
-  padding-bottom:50px;
+  margin-bottom: 10px;
 `;
 
 // 이미지 스타일
