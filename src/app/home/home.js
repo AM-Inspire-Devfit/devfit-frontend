@@ -23,9 +23,7 @@ export default function Home(){
         
       ];
 
-    
-
-
+  
   const handleMenuToggle = (id) => {
     setSelectedId((prevId)=>(prevId === id ? null : id));
   };

@@ -1,10 +1,5 @@
 import styled from "styled-components";
 
-// 모달 배경 (백드롭)
-
-
-/// 
-
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
