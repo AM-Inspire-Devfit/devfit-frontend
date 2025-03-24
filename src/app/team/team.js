@@ -269,6 +269,8 @@ export default function Team() {
     const [deleteModal, setDeleteModal] = useState(false);
     const [adminLModal, setAdminLModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
+    
+    const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
     const [leaders, setLeaders] = useState([]);
     const [teamMembers, setTeamMembers] = useState([]);

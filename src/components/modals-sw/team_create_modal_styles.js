@@ -7,7 +7,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.3); /* 반투명 배경 */
+  background: rgba(29, 27, 27, 0.3); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,3 +109,5 @@ export const SubmitButton = styled.button`
     background: #5a3b9c;
   }
 `;
+
+
