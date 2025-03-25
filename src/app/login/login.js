@@ -14,8 +14,9 @@ export default function Login() {
 
   const handleLogin = async (provider) => {
     try {
-      console.log(process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID)
+      console.log()
       const res = await axios.get(`/api/auth/${provider}`);
+      console.log(res.data.url)
       window.location.href = res.data.url; // OAuth 인증 페이지 redirect
       console.log(res.data)
     } catch (error) {
