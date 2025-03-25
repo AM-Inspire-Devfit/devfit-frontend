@@ -7,14 +7,15 @@ import TeamJoinModal from "@/components/modals-sw/TeamJoinModal";
 import axios from "axios";
 import { ClipLoader } from "react-spinners"; 
 import * as S from "./home_s";
+import { useAlert } from "@/context/AlertContext";
 
 export default function Home() {
-  // 액세스 토큰
+  //액세스 토큰
   const homeUrl = process.env.NEXT_PUBLIC_DEVFIT_SERVER_URI;
   const accessToken =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-
-  // 드롭다운 관련
+  const { showAlert } = useAlert();
+  //드롭다운 관련
   const [selectedId, setSelectedId] = useState(null);
   const menuRefs = useRef([]);
 
@@ -22,16 +23,18 @@ export default function Home() {
   const [isModalOpen, setIsCreateModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-
+  //카드
+  const [cards, setCards] = useState([]);
+  const [lastTeamId, setLastTeamId] = useState(null); // 첫 페이지: null
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false); // 중복 요청 방지용
   // 프로필 정보
   const [profile, setProfile] = useState({
     nickname: "",
     profileImageUrl: "",
   });
 
-  // ---------------------------
-  // (A) 프로필 불러오기
-  // ---------------------------
+  const [teamMembers, setTeamMembers] = useState({});
 
   const fetchProfile = async () => {
     if (!accessToken) return;
@@ -50,26 +53,14 @@ export default function Home() {
         profileImageUrl: res.data.data.profileImageUrl || "",
       });
     } catch (error) {
-      console.error("프로필 정보 조회 실패:", error.response?.data || error.message);
+      showAlert("error", error.response.data.data.message);
+      console.log(error.response.data);
     }
   }
 
+  useEffect(() => {fetchProfile()}, [accessToken]);
 
 
-  useEffect(() => {
-   
-    fetchProfile();
-  }, [accessToken]);
-
-  // ---------------------------
-  // (B) 팀 목록 (lastTeamId 기반)
-  // ---------------------------
-  const [cards, setCards] = useState([]);
-  const [lastTeamId, setLastTeamId] = useState(null); // 첫 페이지: null
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetching, setIsFetching] = useState(false); // 중복 요청 방지용
-
-  // 팀 목록 불러오기 함수
   const fetchTeams = async () => {
     if (!accessToken) return;
     if (isFetching || !hasMore) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
@@ -117,15 +108,35 @@ export default function Home() {
       setIsFetching(false);
     }
   };
-
+  const fetchTeamMembers = async (teamId) => {
+    if (!accessToken) return;
+    try {
+      const res = await axios.get(`${homeUrl}/members/${teamId}/list`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: { size: 3 }, // 최대 3명만
+      });
+      const memberProfiles = res.data.data.content.map((m) => m.profileImageUrl);
+      console.log(res.data.data)
+      setTeamMembers((prev) => ({ ...prev, [teamId]: memberProfiles }));
+    } catch (error) {
+      showAlert("error", error.response.data.data.message);
+      console.log(error.response.data);
+    }
+  };
+  useEffect(() => {
+    cards.forEach((team) => {
+      if (!teamMembers[team.teamId]) {
+        fetchTeamMembers(team.teamId);
+      }
+    });
+  }, [cards]);
+  
+  
   // 첫 마운트 시 첫 페이지 로드
   useEffect(() => {
     fetchTeams();
   }, [accessToken]);
 
-  // ---------------------------
-  // (C) 스크롤 이벤트 핸들러
-  // ---------------------------
   const handleScroll = () => {
     if (!hasMore || isFetching) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
 
@@ -142,9 +153,7 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, isFetching]);
 
-  // ---------------------------
-  // (D) 드롭다운 외부 클릭 닫기
-  // ---------------------------
+
   const handleMenuToggle = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
@@ -165,13 +174,13 @@ export default function Home() {
   }, [selectedId]);
 
 const handleTeamAdded = () => {
-    // 목록 상태를 초기화하거나, 페이지를 1로 되돌린 후 재요청
+    //목록 상태를 초기화하거나, 페이지를 1로 되돌린 후 재요청
     setLastTeamId(null);
     setCards([]);
     setHasMore(true);
-    fetchTeams(); // 팀 목록 다시 로드
+    fetchTeams();
   };
-  // 팀 삭제 함수
+
 const handleTeamDelete = async (teamId) => {
   if (!accessToken) return;
   try {
@@ -186,18 +195,15 @@ const handleTeamDelete = async (teamId) => {
     // 성공 시, 로컬 상태에서 해당 팀 제거
     setCards((prevCards) => prevCards.filter((team) => team.teamId !== teamId));
   } catch (error) {
-    console.error("팀 삭제 실패:", error.response?.data || error.message);
+    showAlert("error", error.response.data.data.message);
+    console.log(error.response.data);
   }
 };
 
-
-  // ---------------------------
-  // (E) 렌더링
-  // ---------------------------
   return (
     <>
       <S.PageContainer>
-        {/* ------------------ 프로필 영역 ------------------ */}
+        {/* ---------------------- 프로필 ---------------------- */}
         <S.ProfileContainer>
           <S.ProfileImage
             src={
@@ -221,7 +227,7 @@ const handleTeamDelete = async (teamId) => {
           />
         </S.ProfileContainer>
 
-        {/* ------------------ 팀 목록 영역 ------------------ */}
+        {/* ------------------ 팀 카드 목록 ------------------ */}
         <S.OptionContainer>
           <S.TeamOptionContainer>
             <S.OptionTitle>나의 팀</S.OptionTitle>
@@ -258,7 +264,7 @@ const handleTeamDelete = async (teamId) => {
           ) : (
             <S.CardContainer>
               {isFetching ? (
-    // ✅ 로딩 중이면 카드 대신 스피너만 보여주기
+    //로딩 중이면 카드 대신 스피너만 보여주기
     <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "40px" }}>
       <ClipLoader size={50} color="#7b4fc3" />
     </div>
@@ -295,9 +301,19 @@ const handleTeamDelete = async (teamId) => {
                   </S.DropdownMenu>
 
                   <S.IconContainer>
-                    <S.Icon src="/img/profile_sample.jpg" alt="icon" />
-                    <S.Icon src="/img/profile_sample.jpg" alt="icon" />
-                    <S.Icon src="/img/profile_sample.jpg" alt="icon" />
+                  {(() => {
+                      const urls = teamMembers[team.teamId] || [];
+                      const filledUrls = [...urls];
+
+                      //부족한 인원수만큼 기본 이미지 
+                      while (filledUrls.length < 3) {
+                        filledUrls.push("/img/profile_sample.jpg");
+                      }
+
+                      return filledUrls.map((url, index) => (
+                        <S.Icon key={index} src={url} alt="member" />
+                      ));
+                    })()}
                   </S.IconContainer>
                 </S.TeamCard>
               ))}

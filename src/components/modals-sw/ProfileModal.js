@@ -5,11 +5,11 @@ import axios from "axios";
 
 const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
   const [nickname, setNickname] = useState("");
-  const [selectedTab, setSelectedTab] = useState("profile"); // 'profile' or 'withdraw'
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // 탈퇴 확인 모달
+  const [selectedTab, setSelectedTab] = useState("profile"); // profile/withdraw
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); 
 
 
-  // 모달이 열릴 때 스크롤 막기
+  //모달 열릴 때 스크롤 막기
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -38,7 +38,8 @@ const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
       onClose();
       onProfileUpdated();
     } catch (error) {
-      console.error("닉네임 변경 실패:", error.response?.data || error.message);
+      showAlert("error", error.response.data.data.message);
+      console.log(error.response.data);
     }
   };
 
@@ -63,25 +64,19 @@ const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
           </S.SidebarItem>
         </S.Sidebar>
 
-        {/* 오른쪽 내용 영역 */}
+
         <S.ContentArea>
           <S.CloseButton onClick={onClose}>×</S.CloseButton>
 
-          {/* 프로필 수정 탭 */}
+
           {selectedTab === "profile" && (
               <>
-                {/* 섹션 타이틀 (원하시면 위치/문구 조절 가능) */}
                 <S.SectionTitle>프로필 수정</S.SectionTitle>
-
-                {/* 새로 추가한 레이아웃 */}
                 <S.ProfileContainer>
-                  {/* 프로필 이미지 + 수정 아이콘 */}
                   <S.ProfileImageWrapper>
-                    <S.ProfileImage src="/img/profile_sample.jpg" alt="프로필 이미지" />
+                    <S.ProfileImage src={profile.profileImageUrl} />
 
                   </S.ProfileImageWrapper>
-
-                  {/* 닉네임 / 수정 버튼 영역 */}
                   <S.ProfileForm>
                     <S.Label>닉네임</S.Label>
                     <S.Input value={nickname} onChange={(e) => setNickname(e.target.value)} />
@@ -90,7 +85,6 @@ const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
                 </S.ProfileContainer>
               </>
             )}
-          {/* 회원 탈퇴 탭 */}
           {selectedTab === "withdraw" && (
             <>
               <S.SectionTitle>회원 탈퇴</S.SectionTitle>
@@ -106,8 +100,6 @@ const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
           )}
         </S.ContentArea>
       </S.ModalContent>
-
-      {/* 회원 탈퇴 재확인 모달 (하단) */}
       {isConfirmModalOpen && (
         <S.ConfirmModal>
           <S.ConfirmText>회원 탈퇴를 진행하시겠습니까?</S.ConfirmText>

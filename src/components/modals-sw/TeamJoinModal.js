@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import * as S from "./team_join_modal_styles";
+import axios from "axios";
+import { useAlert } from "@/context/AlertContext";
 
-export default function TeamJoinModal({ isOpen, onClose }) {
+export default function TeamJoinModal({ isOpen, onClose, onTeamJoined  }) {
   const [inviteCode, setInviteCode] = useState("");
-
+  const { showAlert } = useAlert();
   const handleJoin = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -21,7 +23,8 @@ export default function TeamJoinModal({ isOpen, onClose }) {
       onClose();          // 모달 닫기
       onTeamJoined();     // 팀 목록 다시 fetch
     } catch (error) {
-      console.error("팀 참여 실패:", error.response?.data || error.message);
+      showAlert("error", error.response.data.data.message);
+      console.log(error.response.data);
     }
   };
 

@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { AlertProvider } from "@/context/AlertContext";
+import AlertBox from "@/components/common/AlertBox";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,7 +22,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <AlertProvider>
         {children}
+        <AlertBox />
+        </AlertProvider>
       </body>
     </html>
   );

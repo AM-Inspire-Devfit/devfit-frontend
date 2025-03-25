@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import * as S from "./team_create_modal_styles"; // 스타일 파일
+import * as S from "./team_create_modal_styles";
 
 const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
   const [teamName, setTeamName] = useState("");
@@ -9,12 +9,12 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"; // 스크롤 막기
+      document.body.style.overflow = "hidden"; //스크롤 막기
     } else {
-      document.body.style.overflow = "auto"; // 스크롤 원래대로
+      document.body.style.overflow = "auto"; //스크롤 원래대로
     }
     return () => {
-      document.body.style.overflow = "auto"; // 모달이 닫히면 원래대로 복구
+      document.body.style.overflow = "auto"; //모달 닫고 원래대로 복구
     };
   }, [isOpen]);
 
@@ -24,7 +24,6 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
     e.preventDefault();
     try {
       const accessToken = localStorage.getItem("accessToken");
-      // 실제 팀 생성 API 엔드포인트에 맞게 URL을 수정하세요.
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_DEVFIT_SERVER_URI}/teams/create`,
         {
@@ -39,7 +38,7 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
         }
       );
       console.log("팀 생성 성공:", response.data);
-      onClose(); // 성공 시 모달 닫기
+      onClose();
       onTeamCreated();
     } catch (error) {
       console.error(

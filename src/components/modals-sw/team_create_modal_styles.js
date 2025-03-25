@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-// 모달 배경 (백드롭)
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -15,7 +14,7 @@ export const ModalOverlay = styled.div`
   overflow: hidden;
 `;
 
-// 모달 컨텐츠
+
 export const ModalContent = styled.div`
   background: white;
   padding: 30px 60px;
@@ -29,7 +28,6 @@ export const ModalContent = styled.div`
   gap: 16px;
 `;
 
-// 모달 헤더 (타이틀 + 닫기 버튼)
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -48,13 +46,11 @@ export const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-// 설명 텍스트
 export const Description = styled.p`
   font-size: 14px;
   color: #666;
 `;
 
-// 입력 폼 그룹
 export const Form = styled.form`
   display: flex;
   flex-direction: column;

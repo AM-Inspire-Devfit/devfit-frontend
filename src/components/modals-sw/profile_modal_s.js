@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-// 모달 배경
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -25,9 +24,6 @@ export const ModalContent = styled.div`
   overflow: hidden;     /* 둥근 모서리 영역 밖 숨김 */
 `;
 
-/* ----------------------------------
-   왼쪽 사이드바 (연보라색 배경)
----------------------------------- */
 export const Sidebar = styled.div`
   width: 180px;
   background-color: #f2e8ff; /* 연보라색 */
@@ -68,9 +64,6 @@ export const SidebarItem = styled.button`
 `;
 
 
-/* ----------------------------------
-   오른쪽 내용 영역
----------------------------------- */
 export const ContentArea = styled.div`
   flex: 1;
   position: relative;
@@ -97,8 +90,6 @@ export const SectionTitle = styled.h2`
   
 `;
 
-/* ------------------ 프로필 섹션 ------------------ */
-
 export const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
@@ -106,14 +97,12 @@ export const ProfileContainer = styled.div`
   margin-top: 20px; /* 위쪽 여백 */
 `;
 
-/** 프로필 이미지 + 수정 아이콘을 겹치게 배치할 래퍼 */
 export const ProfileImageWrapper = styled.div`
   position: relative;
   width: 180px;  /* 프로필 이미지 영역 크기 */
   height: 180px; 
 `;
 
-/** 큰 원형 프로필 이미지 */
 export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
@@ -121,17 +110,16 @@ export const ProfileImage = styled.img`
   object-fit: cover; 
 `;
 
-// /** 프로필 이미지 위에 겹치는 수정 아이콘 */
+// 프로필 이미지 위에 겹치는 수정 아이콘 
 // export const EditIcon = styled.img`
 //   position: absolute;
 //   right: 0;
 //   bottom: 0;
-//   width: 40px;   /* 아이콘 크기 조절 */
+//   width: 40px; 
 //   height: 40px;
 //   cursor: pointer;
 // `;
 
-/** 닉네임/버튼 등이 들어가는 폼 영역 */
 export const ProfileForm = styled.div`
   display: flex;
   flex-direction: column;
@@ -168,7 +156,6 @@ export const SaveButton = styled.button`
   font-size: 14px;
 `;
 
-/* ------------------ 회원 탈퇴 섹션 ------------------ */
 export const WarningMessage = styled.div`
   width: 80%;
   min-height: 60px;
@@ -191,7 +178,7 @@ export const WithdrawButton = styled(SaveButton)`
   text-align: center;
 `;
 
-/* ------------------ 회원 탈퇴 재확인 모달 ------------------ */
+
 export const ConfirmModal = styled.div`
   position: fixed;
   bottom: 50vh;
