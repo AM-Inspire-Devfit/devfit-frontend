@@ -5,6 +5,7 @@ import TeamCreateModal from "@/components/modals-sw/TeamCreateModal";
 import ProfileModal from "@/components/modals-sw/ProfileModal";
 import TeamJoinModal from "@/components/modals-sw/TeamJoinModal";
 import axios from "axios";
+import axiosWithAuthorization from "@/context/axiosWithAuthorization";
 import { ClipLoader } from "react-spinners"; 
 import * as S from "./home_s";
 import { useAlert } from "@/context/AlertContext";
@@ -33,46 +34,31 @@ export default function Home() {
     nickname: "",
     profileImageUrl: "",
   });
-
+  // 팀 멤버
   const [teamMembers, setTeamMembers] = useState({});
 
   const fetchProfile = async () => {
-    if (!accessToken) return;
     try {
-      const res = await axios.get(
-        `${homeUrl}/members/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log("프로필 응답:", res.data);
+      const res = await axiosWithAuthorization.get("/members/me");
+  
       setProfile({
         nickname: res.data.data.nickname || "",
         profileImageUrl: res.data.data.profileImageUrl || "",
       });
     } catch (error) {
-      showAlert("error", error.response.data.data.message);
-      console.log(error.response.data);
+      showAlert("error", error.response?.data?.data?.message || "프로필 조회 실패");
+      console.log(error.response?.data);
     }
-  }
-
-  useEffect(() => {fetchProfile()}, [accessToken]);
-
-
+  };
+  
   const fetchTeams = async () => {
-    if (!accessToken) return;
     if (isFetching || !hasMore) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
 
     setIsFetching(true);
     try {
-      const res = await axios.get(
-        `${homeUrl}/teams/list`,
+      const res = await axiosWithAuthorization.get(
+        "/teams/list",
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
           params: {
             // 첫 페이지는 lastTeamId=null
             lastTeamId: lastTeamId,
@@ -103,7 +89,8 @@ export default function Home() {
         setHasMore(false);
       }
     } catch (error) {
-      console.error("팀 목록 조회 실패:", error.response?.data || error.message);
+      showAlert("error", error.response?.data?.data?.message || "팀 목록 조회 실패");
+      console.log(error.response?.data);
     } finally {
       setIsFetching(false);
     }
@@ -111,8 +98,7 @@ export default function Home() {
   const fetchTeamMembers = async (teamId) => {
     if (!accessToken) return;
     try {
-      const res = await axios.get(`${homeUrl}/members/${teamId}/list`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
+      const res = await axiosWithAuthorization.get(`/members/${teamId}/list`, {
         params: { size: 3 }, // 최대 3명만
       });
       const memberProfiles = res.data.data.content.map((m) => m.profileImageUrl);
@@ -123,20 +109,6 @@ export default function Home() {
       console.log(error.response.data);
     }
   };
-  useEffect(() => {
-    cards.forEach((team) => {
-      if (!teamMembers[team.teamId]) {
-        fetchTeamMembers(team.teamId);
-      }
-    });
-  }, [cards]);
-  
-  
-  // 첫 마운트 시 첫 페이지 로드
-  useEffect(() => {
-    fetchTeams();
-  }, [accessToken]);
-
   const handleScroll = () => {
     if (!hasMore || isFetching) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
 
@@ -146,17 +118,51 @@ export default function Home() {
       fetchTeams();
     }
   };
+  const handleMenuToggle = (id) => {
+    setSelectedId((prevId) => (prevId === id ? null : id));
+  };
+  const handleTeamAdded = () => {
+    //목록 상태를 초기화하거나, 페이지를 1로 되돌린 후 재요청
+    setLastTeamId(null);
+    setCards([]);
+    setHasMore(true);
+    fetchTeams();
+  };
+  const handleTeamDelete = async (teamId) => {
+    if (!accessToken) return;
+    try {
+      // DELETE /teams/{teamId}
+      await axios.delete(`${homeUrl}/teams/${teamId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(`팀(${teamId}) 삭제 성공`);
+  
+      //성공 시 로컬 상태에서 해당 팀 제거
+      setCards((prevCards) => prevCards.filter((team) => team.teamId !== teamId));
+    } catch (error) {
+      //에러
+      showAlert("error", error.response.data.data.message);
+      console.log(error.response.data);
+    }
+  };
 
+  // 첫 마운트 시 첫 페이지 로드
+  useEffect(() => {fetchProfile()}, [accessToken]);
+  useEffect(() => {fetchTeams();}, [accessToken]);
+  useEffect(() => {
+    cards.forEach((team) => {
+      if (!teamMembers[team.teamId]) {
+        fetchTeamMembers(team.teamId);
+      }
+    });
+}, [cards]);
   // 스크롤 이벤트 등록/해제
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, isFetching]);
-
-
-  const handleMenuToggle = (id) => {
-    setSelectedId((prevId) => (prevId === id ? null : id));
-  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -173,32 +179,8 @@ export default function Home() {
     };
   }, [selectedId]);
 
-const handleTeamAdded = () => {
-    //목록 상태를 초기화하거나, 페이지를 1로 되돌린 후 재요청
-    setLastTeamId(null);
-    setCards([]);
-    setHasMore(true);
-    fetchTeams();
-  };
 
-const handleTeamDelete = async (teamId) => {
-  if (!accessToken) return;
-  try {
-    // DELETE /teams/{teamId}
-    await axios.delete(`${homeUrl}/teams/${teamId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    console.log(`팀(${teamId}) 삭제 성공`);
 
-    // 성공 시, 로컬 상태에서 해당 팀 제거
-    setCards((prevCards) => prevCards.filter((team) => team.teamId !== teamId));
-  } catch (error) {
-    showAlert("error", error.response.data.data.message);
-    console.log(error.response.data);
-  }
-};
 
   return (
     <>
