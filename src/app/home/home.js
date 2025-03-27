@@ -19,7 +19,6 @@ export default function Home() {
   //드롭다운 관련
   const [selectedId, setSelectedId] = useState(null);
   const menuRefs = useRef([]);
-
   // 모달 관련
   const [isModalOpen, setIsCreateModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -35,6 +34,7 @@ export default function Home() {
     profileImageUrl: "",
   });
   // 팀 멤버
+  const [teamAdmins, setTeamAdmins] = useState({});
   const [teamMembers, setTeamMembers] = useState({});
 
   const fetchProfile = async () => {
@@ -50,7 +50,9 @@ export default function Home() {
       console.log(error.response?.data);
     }
   };
+ 
   
+
   const fetchTeams = async () => {
     if (isFetching || !hasMore) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
 
@@ -95,11 +97,21 @@ export default function Home() {
       setIsFetching(false);
     }
   };
+
+  const fetchTeamAdmin = async (teamId) => {
+    try {
+      const res = await axiosWithAuthorization.get(`/teams/${teamId}/admin`);
+      const adminProfile = res.data.data.profileImageUrl;
+      setTeamAdmins((prev) => ({ ...prev, [teamId]: adminProfile }));
+    } catch (error) {
+      showAlert("error", error.response?.data?.data?.message || "팀장 조회 실패");
+    }
+  };
+
   const fetchTeamMembers = async (teamId) => {
-    if (!accessToken) return;
     try {
       const res = await axiosWithAuthorization.get(`/members/${teamId}/list`, {
-        params: { size: 3 }, // 최대 3명만
+        params: { size: 2 }, // 2명만
       });
       const memberProfiles = res.data.data.content.map((m) => m.profileImageUrl);
       console.log(res.data.data)
@@ -156,8 +168,12 @@ export default function Home() {
       if (!teamMembers[team.teamId]) {
         fetchTeamMembers(team.teamId);
       }
+      if (!teamAdmins[team.teamId]) {
+        fetchTeamAdmin(team.teamId);
+      }
     });
-}, [cards]);
+  }, [cards]);
+
   // 스크롤 이벤트 등록/해제
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -283,18 +299,15 @@ export default function Home() {
                   </S.DropdownMenu>
 
                   <S.IconContainer>
-                  {(() => {
-                      const urls = teamMembers[team.teamId] || [];
-                      const filledUrls = [...urls];
-
-                      //부족한 인원수만큼 기본 이미지 
-                      while (filledUrls.length < 3) {
-                        filledUrls.push("/img/profile_sample.jpg");
+                    {(() => {
+                      const adminUrl = teamAdmins[team.teamId] || "/img/profile_sample.jpg";
+                      const memberUrls = (teamMembers[team.teamId] || []).slice(0, 2);;
+                      const result = [adminUrl];
+                      for (let i = 0; i < memberUrls.length; i++) {
+                        result.push(memberUrls[i]);
                       }
 
-                      return filledUrls.map((url, index) => (
-                        <S.Icon key={index} src={url} alt="member" />
-                      ));
+                      return result.map((url, idx) => <S.Icon key={idx} src={url} alt="member" />);
                     })()}
                   </S.IconContainer>
                 </S.TeamCard>

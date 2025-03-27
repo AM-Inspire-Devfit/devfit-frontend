@@ -43,10 +43,10 @@ axiosWithAuthorization.interceptors.response.use(
         return axiosWithAuthorization(originalRequest);
       }
 
-      //헤더에 토토이 없으면 로그인 페이지 리디렉
+      //헤더에 토토이 없으면 로그인 페이지 리디렉션
       localStorage.removeItem("accessToken");
       console.log("리프레시 토큰 만료")
-      // window.location.href = "/login";
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
