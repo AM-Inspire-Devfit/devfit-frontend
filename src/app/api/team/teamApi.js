@@ -41,7 +41,6 @@ export const fetchTeamCode = async (teamId) => {
     }
 }
 
-
 // 팀 이모지 수정
 export const updateTeamEmoji = async (teamId, emoji) => {
     try {
@@ -62,6 +61,12 @@ export const updateTeamEmoji = async (teamId, emoji) => {
             throw new Error("알 수 없는 오류가 발생했습니다.");
         }
     }
-
 };
+
+
+// 팀장 조회
+export const fetchTeamAdmin = async (teamId) => {
+    const res = await axiosWithAuthorization.get(`/teams/${teamId}/admin`);
+    return res.data.data;
+}
 

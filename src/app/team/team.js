@@ -21,7 +21,7 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
-import { fetchTeamData, fetchTeamCode, updateTeamEmoji, } from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamEmoji, fetchTeamAdmin} from "@/app/api/team/teamApi";
 
 export default function Team({ teamId }) {
 
@@ -267,6 +267,7 @@ export default function Team({ teamId }) {
     
     const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
+    const [teamAdmin, setTeamAdmin] = useState(null);
     const [leaders, setLeaders] = useState([]);
     const [teamMembers, setTeamMembers] = useState([]);
 
@@ -327,13 +328,26 @@ export default function Team({ teamId }) {
             setInviteModal(true);
         }
     };
+
+    useEffect(() => {
+        if (!numericTeamId) return;
+    
+        const getTeamAdmin = async () => {
+            const adminData = await fetchTeamAdmin(numericTeamId); // teamId 넘기기
+            setTeamAdmin(adminData);
+        };
+    
+        getTeamAdmin();
+    }, [numericTeamId]);
     
     useEffect(() => {
+        if (!teamAdmin) return;
+
         // 팀 리더 데이터 변환
         const leader = {
-            id: teamLeaderData.data.memberId,
-            name: teamLeaderData.data.nickname,
-            profileImage: teamLeaderData.data.profileImageUrl,
+            id: teamAdmin.memberId,
+            name: teamAdmin.nickname,
+            profileImage: teamAdmin.profileImageUrl,
             role: "leader"
         };
         
@@ -348,7 +362,7 @@ export default function Team({ teamId }) {
         setLeaders([leader]);
         setTeamMembers(members);
         setDisplayedMembers(members);
-    }, []);
+    }, [teamAdmin]);
 
 
     const [allMembers, setAllMembers] = useState([]);
