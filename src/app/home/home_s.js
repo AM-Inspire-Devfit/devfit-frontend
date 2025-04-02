@@ -225,6 +225,7 @@ export const Image = styled.img`
 export const IconContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 `;
 
 export const Icon = styled.img`
