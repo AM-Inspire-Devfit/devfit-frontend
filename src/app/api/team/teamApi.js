@@ -10,13 +10,37 @@ export const fetchTeamData = async (teamId) => {
         const status = error?.response?.status;
         const data = error?.response?.data?.data;
 
-        if (status === 404 && data?.reasonMessage?.code === "TEAM_NOT_FOUND") {
+        if (status === 404 && data?.reasonMessage?.code === "TEAM_PARTICIPANT_NOT_FOUND") {
+            throw new Error("팀 참여자가 아닙니다.");
+        }
+        else if (status === 404 && data?.reasonMessage?.code === "TEAM_NOT_FOUND") {
             throw new Error("요청한 팀을 찾을 수 없습니다.");
         }
 
         throw new Error("팀 정보를 불러올 수 없습니다.");
     }
 };
+
+// 팀 초대 코드 확인
+export const fetchTeamCode = async (teamId) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/teams/${teamId}/invite-code`);
+        return res.data.data;
+    } catch (error) {
+        const status = error?.response?.status;
+        const data = error?.response?.data?.data;
+
+        if (status === 404 && data?.reasonMessage?.code === "TEAM_PARTICIPANT_NOT_FOUND") {
+            throw new Error("팀 참여자가 아닙니다.");
+        }
+        else if (status === 404 && data?.reasonMessage?.code === "TEAM_NOT_FOUND") {
+            throw new Error("요청한 팀을 찾을 수 없습니다.");
+        }
+
+        throw new Error("팀 정보를 불러올 수 없습니다.");
+    }
+}
+
 
 // 팀 이모지 수정
 export const updateTeamEmoji = async (teamId, emoji) => {

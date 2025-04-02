@@ -55,21 +55,14 @@ export const CopyButton = styled.button`
     font-size: 18px;
 `;
 
-export default function InviteModal({ onClose }) {
-
-    const TeamCode = {
-        "success": true,
-        "status": 200,
-        "data": {
-            "inviteCode": "6XP3HQ4A"
-        },
-        "timestamp": "2025-02-06T21:01:09.340263"
-    };
+export default function InviteModal({ inviteCode, inviteCodeError, onClose }) {
 
     // 초대 코드 복사 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(inviteCode);
-        alert("초대 코드가 복사되었습니다!"); 
+        if (inviteCode) {
+            navigator.clipboard.writeText(inviteCode.inviteCode);
+            alert("초대 코드가 복사되었습니다!");
+        }
     };
 
     return (
@@ -90,7 +83,11 @@ export default function InviteModal({ onClose }) {
 
                 <InviteBox>
                     <InviteLabel>Team Code</InviteLabel>
-                    <InviteCode>{TeamCode.data.inviteCode}</InviteCode>
+                    {inviteCode ? (
+                        <InviteCode>{inviteCode?.inviteCode}</InviteCode>
+                    ) : (
+                        <InviteCode style={{ color: "red", fontSize: "16px" }}>{inviteCodeError}</InviteCode>
+                    )}
                     <CopyButton onClick={copyToClipboard}>
                         <FiCopy size={20} />
                     </CopyButton>

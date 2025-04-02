@@ -21,7 +21,7 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
-import { fetchTeamData, updateTeamEmoji } from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamEmoji, } from "@/app/api/team/teamApi";
 
 export default function Team({ teamId }) {
 
@@ -247,6 +247,9 @@ export default function Team({ teamId }) {
     const [title, setTitle] = useState("");
     const [subtitle, setSubtitle] = useState("");
 
+    const [inviteCode, setInviteCode] = useState(null);
+    const [inviteCodeError, setInviteCodeError] = useState("");
+
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const emojiBoxRef = useRef(null);
     const emojiPickerRef = useRef(null);
@@ -309,6 +312,20 @@ export default function Team({ teamId }) {
         }
     
         setShowEmojiPicker(false); // emoji Picker 닫기
+    };
+
+    // 초대코드 생성 모달
+    const handleInviteClick = async () => {
+        try {
+            const code = await fetchTeamCode(numericTeamId);
+            setInviteCode(code);
+            setInviteCodeError("");
+        } catch (error) {
+            setInviteCode(null);
+            setInviteCodeError(error.message);
+        } finally {
+            setInviteModal(true);
+        }
     };
     
     useEffect(() => {
@@ -469,11 +486,6 @@ export default function Team({ teamId }) {
             window.removeEventListener("mousedown", handleClickOutside);
         };
     }, [showEmojiPicker]);
-
-    // 초대코드 생성 모달
-    const handleInviteClick = () => {
-        setInviteModal(true);
-    };
 
     // 프로젝트 생성 모달 
     const handleAddClick = () => {
@@ -825,6 +837,8 @@ export default function Team({ teamId }) {
         {/* 초대코드 생성 modal */}
         {inviteModal && 
         <InviteModal  
+            inviteCode={inviteCode}
+            inviteCodeError={inviteCodeError}
             onClose={() => setInviteModal(false)} 
         />}
 
