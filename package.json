@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.3",
     "@styled-system/should-forward-prop": "^5.1.5",
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "caniuse-lite": "^1.0.30001699",
     "emoji-picker-react": "^4.12.0",
     "next": "15.1.6",

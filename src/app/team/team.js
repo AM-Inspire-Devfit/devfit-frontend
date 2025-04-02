@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
+
 import Link from 'next/link'; 
 
 import * as c from '@/components/common_s'
@@ -19,7 +21,9 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
-export default function Team() {
+import { fetchTeamData } from "@/app/api/team/teamApi";
+
+export default function Team({ teamId }) {
 
     const userData = {
         "success": true,
@@ -32,18 +36,6 @@ export default function Team() {
             "role": "USER"
         },
         "timestamp": "2025-02-11T17:08:20.340403"
-    }
-
-    const teamData = {
-        "success": true,
-        "status": 200,
-        "data": {
-            "teamId": "1",
-            "teamName": "Side Effect",
-            "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
-            "teamEmoji": "🍇"
-        },
-        "timestamp": "2025-02-10T14:18:46.135007"
     }
 
     const teamLeaderData = 
@@ -244,16 +236,16 @@ export default function Team() {
             "empty": true
         }
 
+    const [teamInfo, setTeamInfo] = useState(null);
 
     const [myProjects, setMyProjects] = useState([]);
     const [otherProjects, setOtherProjects] = useState([]);
 
     const [isEditing, setIsEditing] = useState(false);
     
-    const [teamInfo, setTeamInfo] = useState(teamData.data);
-    // const [chosenEmoji, setChosenEmoji] = useState(teamInfo.teamEmoji);
-    // const [title, setTitle] = useState(teamInfo.teamName);
-    // const [subtitle, setSubtitle] = useState(teamInfo.teamDescription);
+    const [chosenEmoji, setChosenEmoji] = useState("");
+    const [title, setTitle] = useState("");
+    const [subtitle, setSubtitle] = useState("");
 
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const emojiBoxRef = useRef(null);
@@ -279,9 +271,32 @@ export default function Team() {
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [hasMore, setHasMore] = useState(!teamMemberData[0].data.last);
 
+    const [teamErrorMessage, setTeamErrorMessage] = useState("");
+
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------여기부터 아래부터 시작-------------------------------------->
-    
+    const numericTeamId = Number(teamId);
+
+    useEffect(() => {
+        if (!numericTeamId) return;
+
+        const getTeamInfo = async () => {
+            try {
+                const teamData = await fetchTeamData(numericTeamId); 
+                console.log(teamData); 
+                setTeamInfo(teamData);  
+                setTeamErrorMessage("");                
+            } catch (error) {
+                const reason =
+                    error?.response?.data?.message || 
+                    error?.response?.data?.data?.reasonMessage?.reason;
+            
+                    setTeamErrorMessage(reason || "팀 정보를 불러올 수 없습니다.");
+            }
+        };
+        
+        getTeamInfo();
+    }, [numericTeamId]);
     
     useEffect(() => {
         // 팀 리더 데이터 변환
@@ -483,6 +498,25 @@ export default function Team() {
             [projectId]: !prev[projectId]
         }));
     };
+
+
+    if (teamErrorMessage) {
+        return (
+            <c.ContentContainer>
+                <p style={{ textAlign: "center", marginTop: "50px", fontSize: "18px", color: "#432CA4" }}>
+                    {teamErrorMessage}
+                </p>
+            </c.ContentContainer>
+        );
+    }
+    
+    if (!teamInfo) {
+        return (
+            <c.ContentContainer>
+            <p style={{ textAlign: "center", marginTop: "50px", fontSize: "18px" }}>팀 정보를 불러오는 중...</p>
+            </c.ContentContainer>
+        );
+    }
     
 
     return (
