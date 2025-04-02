@@ -21,7 +21,7 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
-import { fetchTeamData } from "@/app/api/team/teamApi";
+import { fetchTeamData, updateTeamEmoji } from "@/app/api/team/teamApi";
 
 export default function Team({ teamId }) {
 
@@ -283,20 +283,33 @@ export default function Team({ teamId }) {
         const getTeamInfo = async () => {
             try {
                 const teamData = await fetchTeamData(numericTeamId); 
-                console.log(teamData); 
                 setTeamInfo(teamData);  
                 setTeamErrorMessage("");                
             } catch (error) {
-                const reason =
-                    error?.response?.data?.message || 
-                    error?.response?.data?.data?.reasonMessage?.reason;
-            
-                    setTeamErrorMessage(reason || "팀 정보를 불러올 수 없습니다.");
+                setTeamErrorMessage(error.message); 
             }
         };
         
         getTeamInfo();
     }, [numericTeamId]);
+
+    const handleEmojiClick = async (emojiData) => {
+        const newEmoji = emojiData.emoji;
+    
+        try {
+            const updated = await updateTeamEmoji(numericTeamId, newEmoji);
+    
+            setTeamInfo((prev) => ({
+                ...prev,
+                teamEmoji: updated.teamEmoji, 
+            }));
+        } catch (error) {
+            alert(error.message);
+            console.error("이모지 업데이트 에러:", error);
+        }
+    
+        setShowEmojiPicker(false); // emoji Picker 닫기
+    };
     
     useEffect(() => {
         // 팀 리더 데이터 변환
@@ -456,11 +469,6 @@ export default function Team({ teamId }) {
             window.removeEventListener("mousedown", handleClickOutside);
         };
     }, [showEmojiPicker]);
-
-    const handleEmojiClick = (emojiData) => {
-        setTeamInfo((prev) => ({ ...prev, teamEmoji: emojiData.emoji }));
-        setShowEmojiPicker(false); // 이모지 선택 후 Picker 닫기
-    };
 
     // 초대코드 생성 모달
     const handleInviteClick = () => {
