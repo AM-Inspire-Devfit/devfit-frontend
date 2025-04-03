@@ -42,10 +42,10 @@ export const fetchProjectListData = async (teamId, isParticipant, lastProjectId,
     }
 };
 
-
+// 프로젝트 삭제
 export const deleteProject = async (projectId) => {
     try {
-        const res = await axiosWithAuthorization.delete(`/projects/${projectId}/`);
+        const res = await axiosWithAuthorization.delete(`/projects/${projectId}`);
         console.log("프로젝트 삭제 성공:", res.data);
         return res.data.data;
     } catch (error) {
