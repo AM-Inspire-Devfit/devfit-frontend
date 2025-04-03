@@ -10,6 +10,7 @@ import * as c from '@/components/common_s'
 import * as T from '@/app/team/team_s'
 
 import * as S from '@/app/team/section_s'
+
 import { LeaveProjectButton, JoinProjectButton } from "@/app/team/section_s";
 
 import InviteModal from "./invite_modal";
@@ -21,6 +22,7 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
+import { fetchUserData } from "../api/user/userApi";
 import { fetchTeamData, fetchTeamCode, updateTeamEmoji, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
 import { useAlert } from "@/context/AlertContext";
 
@@ -42,65 +44,11 @@ export default function Team({ teamId }) {
 
     const projectData = 
         {
-            "first": true,
-            "last": true,
-            "size": 1073741824,
-            "content": [
-                {
-                    "projectInfo": {
-                        "projectId": 1,
-                        "projectTitle": "Devfit",
-                        "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트",
-                        "startDt": "2024-01-01",
-                        "dueDt": "2025-01-01"
-                    },
-                    "isAdmin":true,
-                    "isParticipant": true
-                },
-                {
-                    "projectInfo": {
-                        "projectId": 2,
-                        "projectTitle": "Devfit",
-                        "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트",
-                        "startDt": "2024-01-01",
-                        "dueDt": "2025-01-01"
-                    },
-                    "isAdmin": false,
-                    "isParticipant": true
-                },
-                {
-                    "projectInfo": {
-                        "projectId": 3,
-                        "projectTitle": "Devfit",
-                        "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트",
-                        "startDt": "2024-01-01",
-                        "dueDt": "2025-01-01"
-                    },
-                    "isAdmin": false,
-                    "isParticipant": false
-                },
-            ],
-            "number": 1073741824,
-            "sort": {
-                "empty": true,
-                "unsorted": true,
-                "sorted": true
-            },
-            "pageable": {
-                "offset": 9007199254740991,
-                "sort": {
-                    "empty": true,
-                    "unsorted": true,
-                    "sorted": true
-                },
-                "paged": true,
-                "unpaged": true,
-                "pageNumber": 1073741824,
-                "pageSize": 1073741824
-            },
-            "numberOfElements": 1073741824,
-            "empty": true
+
         }
+
+
+    const [currentUser, setCurrentUser] = useState(null);
 
     const [teamInfo, setTeamInfo] = useState(null);
 
@@ -140,6 +88,25 @@ export default function Team({ teamId }) {
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------여기부터 아래부터 시작-------------------------------------->
+    
+    useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+            const user = await fetchUserData();
+            setCurrentUser(user);
+            } catch (error) {
+            showAlert("error", error.message);
+            }
+        };
+    
+        getUserInfo();
+    }, []);
+
+    useEffect(() => {
+        console.log("currentUser:", currentUser);
+        console.log("teamAdmin:", teamAdmin);
+      }, [currentUser, teamAdmin]);
+    
     const numericTeamId = Number(teamId);
 
     useEffect(() => {
@@ -440,16 +407,21 @@ export default function Team({ teamId }) {
                     onClick={(e) => {
                         e.stopPropagation();
                         updatePickerPosition();
+                        if (currentUser?.memberId === teamAdmin?.id) {
                         setShowEmojiPicker((prev) => !prev);
+                        }
                     }}
+                    style={{ cursor: currentUser?.memberId === teamAdmin?.id ? "pointer" : "default" }}
                 >
                     {teamInfo.teamEmoji}
+                    {currentUser?.memberId === teamAdmin?.id && (
                     <Image 
                         src="/img/emoji_edit.png" 
                         alt="Edit" 
                         width={35} 
                         height={35} 
                     />
+                    )}
                     </T.EmojiBox>
                 </T.TitleLeft>
                     
@@ -481,6 +453,7 @@ export default function Team({ teamId }) {
                                 {teamInfo.teamName}
                             </T.Title>
                         )}
+                        {currentUser?.memberId === teamAdmin?.id && (
                         <Image
                             src="/img/edit.png"
                             alt="Edit"
@@ -489,6 +462,7 @@ export default function Team({ teamId }) {
                             onClick={handleEditClick}
                             style={{ cursor: "pointer", marginLeft: "10px" }}
                         />
+                        )}
                         </T.TitleRow>
                         <c.Divider1 />
                         {isEditing ? (
@@ -541,9 +515,11 @@ export default function Team({ teamId }) {
                 <S.SectionHeaderContainer>
                 <S.SectionHeader>팀 멤버</S.SectionHeader>
                 </S.SectionHeaderContainer>
+                {currentUser?.memberId === teamAdmin?.id && (
                 <T.Button onClick={handleInviteClick}>
                     초대코드 확인
                 </T.Button>
+                )}
             </S.SectionHeaderWrapper>
             <S.Divider2 />
                 <S.MemberList>
