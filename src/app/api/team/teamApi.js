@@ -70,3 +70,24 @@ export const fetchTeamAdmin = async (teamId) => {
     return res.data.data;
 }
 
+// (팀장 제외, 본인 포함) 팀원 목록 조회
+export const fetchRandomTeamMembers = async (teamId) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/members/${teamId}/list`, {
+          params: { size: 3 }, // 3명
+        });
+        const memberData = res.data.data.content.map((m) => ({
+            id: m.memberId,
+            name: m.nickname,
+            profileImage: m.profileImageUrl,
+        }));
+
+        console.log("랜덤 팀원 정보 조회:", memberData);
+        return memberData;
+    
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+

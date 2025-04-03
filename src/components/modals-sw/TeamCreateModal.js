@@ -73,7 +73,7 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
 
           <S.FormGroup>
             <S.Label>
-              상세 설명 <S.Required>*</S.Required>
+              상세 설명 
             </S.Label>
             <S.TextArea
               placeholder="팀에 대한 설명을 입력하세요"

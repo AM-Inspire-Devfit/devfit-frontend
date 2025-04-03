@@ -21,7 +21,7 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
-import { fetchTeamData, fetchTeamCode, updateTeamEmoji, fetchTeamAdmin} from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamEmoji, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
 
 export default function Team({ teamId }) {
 
@@ -37,142 +37,6 @@ export default function Team({ teamId }) {
         },
         "timestamp": "2025-02-11T17:08:20.340403"
     }
-
-    const teamLeaderData = 
-        {
-            "success": true,
-            "status": 200,
-            "data": {
-                "memberId": 44,
-                "nickname": "최현태",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg"
-            },
-            "timestamp": "2025-03-02T14:52:05.54385"
-        }
-
-    const teamMemberData = [
-        {
-            "success": true,
-            "status": 200,
-            "data": {
-            "content": [
-            {
-                "memberId": 1,
-                "nickname": "",
-                "profileImageUrl": "",
-            },
-            {
-                "memberId": 2,
-                "nickname": "조수빈",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-            {
-                "memberId": 3,
-                "nickname": "정선우",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-
-            ],
-            "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-            },
-            "first": true,
-            "last": false,
-            "size": 3,
-            "number": 0,
-            "sort": [],
-            "numberOfElements": 1,
-            "empty": false
-        },
-        "timestamp": "2025-03-02T14:57:03.879893"
-        },
-        {
-            "success": true,
-            "status": 200,
-            "data": {
-            "content": [
-            {
-                "memberId": 4,
-                "nickname": "채민주",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-            {
-                "memberId": 5,
-                "nickname": "조수빈",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-            {
-                "memberId": 6,
-                "nickname": "정선우",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-
-            ],
-            "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-            },
-            "first": false,
-            "last": false,
-            "size": 3,
-            "number": 0,
-            "sort": [],
-            "numberOfElements": 1,
-            "empty": false
-        },
-        "timestamp": "2025-03-02T14:57:03.879893"
-        },
-        {
-            "success": true,
-            "status": 200,
-            "data": {
-            "content": [
-            {
-                "memberId": 7,
-                "nickname": "채민주",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-            {
-                "memberId": 8,
-                "nickname": "조수빈",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-            {
-                "memberId": 9,
-                "nickname": "정선우",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            },
-
-            ],
-            "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-            },
-            "first": false,
-            "last": true,
-            "size": 3,
-            "number": 0,
-            "sort": [],
-            "numberOfElements": 1,
-            "empty": false
-        },
-        "timestamp": "2025-03-02T14:57:03.879893"
-        }
-
-    ]
 
     const projectData = 
         {
@@ -268,12 +132,11 @@ export default function Team({ teamId }) {
     const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
     const [teamAdmin, setTeamAdmin] = useState(null);
-    const [leaders, setLeaders] = useState([]);
     const [teamMembers, setTeamMembers] = useState([]);
 
-    const [displayedMembers, setDisplayedMembers] = useState(teamMemberData[0].data.content);
+    const [displayedMembers, setDisplayedMembers] = useState([]);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
-    const [hasMore, setHasMore] = useState(!teamMemberData[0].data.last);
+    const [hasMore, setHasMore] = useState(true);
 
     const [teamErrorMessage, setTeamErrorMessage] = useState("");
 
@@ -334,43 +197,39 @@ export default function Team({ teamId }) {
     
         const getTeamAdmin = async () => {
             const adminData = await fetchTeamAdmin(numericTeamId); // teamId 넘기기
-            setTeamAdmin(adminData);
+            setTeamAdmin({
+                id: adminData.memberId,
+                name: adminData.nickname,
+                profileImage: adminData.profileImageUrl,
+            });
         };
     
         getTeamAdmin();
     }, [numericTeamId]);
-    
+
     useEffect(() => {
-        if (!teamAdmin) return;
-
-        // 팀 리더 데이터 변환
-        const leader = {
-            id: teamAdmin.memberId,
-            name: teamAdmin.nickname,
-            profileImage: teamAdmin.profileImageUrl,
-            role: "leader"
-        };
-        
-        // 팀원 데이터 변환
-        const members = teamMemberData[0].data.content.map(member => ({
-            id: member.memberId,
-            name: member.nickname,
-            profileImage: member.profileImageUrl,
-            role: "member"
-        }));
+        if (!numericTeamId) return;
     
-        setLeaders([leader]);
-        setTeamMembers(members);
-        setDisplayedMembers(members);
-    }, [teamAdmin]);
-
+        const getRandomTeamMembers = async () => {
+            const members = await fetchRandomTeamMembers(numericTeamId);
+            const formattedMembers = members.map((member) => ({
+                ...member,
+                role: "member",
+            }));
+            setTeamMembers(formattedMembers);
+            setDisplayedMembers(formattedMembers);
+        };
+    
+        getRandomTeamMembers();
+    }, [numericTeamId]);
 
     const [allMembers, setAllMembers] = useState([]);
 
     useEffect(() => {
-    setAllMembers([...leaders, ...displayedMembers]);
-    }, [leaders, displayedMembers]);
-
+        if (teamAdmin) {
+            setAllMembers([teamAdmin, ...displayedMembers]);
+        }
+    }, [teamAdmin, displayedMembers]);
     const toggleListRef = useRef(null);
 
     // 팀원 스크롤 이벤트
@@ -670,24 +529,26 @@ export default function Team({ teamId }) {
             </S.SectionHeaderWrapper>
             <S.Divider2 />
                 <S.MemberList>
-                    {/* 리더 */}
+                    {/* <------------------------------------ 팀 리더 --------------------------------------> */}
                     <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "20px" }}>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                        {leaders.map((leader) => (
-                            <S.MemberItem key={leader.id}>
+                        {teamAdmin && (
+                            <S.MemberItem key={teamAdmin.id}>
                                 <S.MemberProfile isLeader={true}>
-                                <Image src={leader.profileImage} alt={leader.name} width={50} height={50} />
+                                <Image 
+                                    src={teamAdmin.profileImage ? teamAdmin.profileImage : "/img/default_profile.png"}
+                                    alt={teamAdmin.name || "사용자"} 
+                                    width={50} height={50} 
+                                />
                                 </S.MemberProfile>
-                                <S.MemberName isLeader={true}>{leader.name}</S.MemberName>
+                                <S.MemberName isLeader={true}>{teamAdmin.name}</S.MemberName>
                             </S.MemberItem>
-                        ))}
-                    {/* 팀원들 */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px" }}>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                        {teamMembers.slice(0, 3).map((member, index) => (
-                            <S.MemberItem key={member.id} style={{ position: "relative", marginLeft: index === 0 ? "0" : "-15px" }}>
+                        )}
+                    {/* <------------------------------------ 팀원들(3명) --------------------------------------> */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px", marginBottom: "20px"}}>
+                        {teamMembers.map((member, index) => (
+                            <S.MemberItem 
+                                key={member.id} 
+                                style={{ position: "relative", marginLeft: index === 0 ? "0" : "-22px" }}>
                                 <S.MemberProfile>
                                     <Image 
                                         src={member.profileImage ? member.profileImage : "/img/default_profile.png"}
@@ -695,11 +556,7 @@ export default function Team({ teamId }) {
                                         width={50} 
                                         height={50} />
                                 </S.MemberProfile>
-                                {member.name ? (
-                                <S.MemberName style={{ visibility: "hidden" }}>{member.name}</S.MemberName>
-                                ) : (
-                                <S.MemberName style={{ visibility: "hidden" }}>사용자</S.MemberName>
-                                )}
+                                
                             </S.MemberItem>
                         ))}
                     </div>
