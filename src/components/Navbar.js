@@ -65,6 +65,9 @@ const Navbar = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
+    const confirmLogout = window.confirm("로그아웃 하시겠습니까?");
+    if (!confirmLogout) return; 
+
     try {
         await logout(); // 로그아웃 요청
         localStorage.removeItem("accessToken"); // 저장된 토큰 제거 
