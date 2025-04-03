@@ -13,9 +13,9 @@ export const createProject = async (projectData) => {
 };
 
 // 프로젝트 개별 정보 조회
-export const fetchProjectData = async (projectData) => {
+export const fetchProjectData = async (projectId) => {
     try {
-        const res = await axiosWithAuthorization.get(`/projects/${projectId}`, projectData);
+        const res = await axiosWithAuthorization.get(`/projects/${projectId}`);
         console.log("프로젝트 개별 정보 조회:", res.data);
         return res.data.data;
     } catch (error) {
@@ -41,3 +41,16 @@ export const fetchProjectListData = async (teamId, isParticipant, lastProjectId,
         throw new Error(message);
     }
 };
+
+
+export const deleteProject = async (projectId) => {
+    try {
+        const res = await axiosWithAuthorization.delete(`/projects/${projectId}/`);
+        console.log("프로젝트 삭제 성공:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "프로젝트를 삭제할 수 없습니다.";
+        throw new Error(message);
+    }
+};
+

@@ -733,6 +733,7 @@ export default function Team({ teamId }) {
         <DeleteModal 
             selectedProject={selectedProject} 
             onClose={() => setDeleteModal(false)}
+            onProjectDeleted={fetchAllProjects}
         />
         )}
 

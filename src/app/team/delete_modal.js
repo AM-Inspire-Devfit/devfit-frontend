@@ -1,6 +1,12 @@
 import * as m from '@/components/modal_s';
 
-export default function DeleteModal({ selectedProject, onClose }) {
+import { deleteProject } from "@/app/api/project/projectApi";
+
+import { useAlert } from "@/context/AlertContext";
+
+export default function DeleteModal({ selectedProject, onClose, onProjectDeleted}) {
+    const { showAlert } = useAlert();
+    
     return (
         <m.ModalOverlay>
             <m.ModalContent
@@ -37,11 +43,24 @@ export default function DeleteModal({ selectedProject, onClose }) {
                 </div>
                 <div style={{ marginTop: "20px", textAlign: "center" }}>
                     <p style={{ fontSize: "20px", marginBottom: "5px" }}>
-                        <strong>{selectedProject.title}</strong> 프로젝트를 삭제하시겠습니까?
+                        <strong>{selectedProject.projectInfo.projectTitle}</strong> 프로젝트를 삭제하시겠습니까?
                     </p>
                 </div>
                 <div style={{ marginTop: "10px", display: "flex", gap: "60px", justifyContent: "center" }}> 
-                    <m.ModalButton onClick={onClose}>예</m.ModalButton>
+                    <m.ModalButton 
+                        onClick={async () => {
+                            try {
+                                await deleteProject(selectedProject.projectInfo.projectId);
+                                showAlert("success", "프로젝트가 삭제되었습니다."); 
+                                onClose(); // 모달 닫기
+                                if (onProjectDeleted) onProjectDeleted();
+                            } catch (error) {
+                                showAlert("error", error.message);
+                            }
+                        }}
+                    >
+                        예
+                    </m.ModalButton>
                     <m.ModalButton onClick={onClose}>아니오</m.ModalButton>
                 </div>
             </m.ModalContent>
