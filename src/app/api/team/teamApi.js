@@ -7,17 +7,8 @@ export const fetchTeamData = async (teamId) => {
         console.log("팀 정보 조회:", res.data);
         return res.data.data;
     } catch (error) {
-        const status = error?.response?.status;
-        const data = error?.response?.data?.data;
-
-        if (status === 404 && data?.reasonMessage?.code === "TEAM_PARTICIPANT_NOT_FOUND") {
-            throw new Error("팀 참여자가 아닙니다.");
-        }
-        else if (status === 404 && data?.reasonMessage?.code === "TEAM_NOT_FOUND") {
-            throw new Error("요청한 팀을 찾을 수 없습니다.");
-        }
-
-        throw new Error("팀 정보를 불러올 수 없습니다.");
+        const message = error?.response?.data?.data?.message ?? "팀 정보를 조회할 수 없습니다.";
+        throw new Error(message);
     }
 };
 
