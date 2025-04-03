@@ -27,17 +27,8 @@ export const fetchTeamCode = async (teamId) => {
         const res = await axiosWithAuthorization.get(`/teams/${teamId}/invite-code`);
         return res.data.data;
     } catch (error) {
-        const status = error?.response?.status;
-        const data = error?.response?.data?.data;
-
-        if (status === 404 && data?.reasonMessage?.code === "TEAM_PARTICIPANT_NOT_FOUND") {
-            throw new Error("팀 참여자가 아닙니다.");
-        }
-        else if (status === 404 && data?.reasonMessage?.code === "TEAM_NOT_FOUND") {
-            throw new Error("요청한 팀을 찾을 수 없습니다.");
-        }
-
-        throw new Error("팀 정보를 불러올 수 없습니다.");
+        const message = error?.response?.data?.data?.message ?? "초대 코드를 확인할 수 없습니다.";
+        throw new Error(message);
     }
 }
 
@@ -50,24 +41,22 @@ export const updateTeamEmoji = async (teamId, emoji) => {
         console.log("팀 이모지 수정:", res.data);
         return res.data.data;
     } catch (error) {
-        const status = error?.response?.status;
-        const data = error?.response?.data?.data;
-
-        if (status === 404 && data?.reasonMessage?.code === "TEAM_NOT_FOUND") {
-            throw new Error("요청한 팀을 찾을 수 없습니다.");
-        } else if (status === 400 && data?.errorClassName === "MethodArgumentNotValidException") {
-            throw new Error("팀 이모지는 필수 사항입니다.");
-        } else {
-            throw new Error("알 수 없는 오류가 발생했습니다.");
-        }
+        const message = error?.response?.data?.data?.message ?? "팀 이모지를 업데이트할 수 없습니다.";
+        throw new Error(message);
     }
 };
 
 
 // 팀장 조회
 export const fetchTeamAdmin = async (teamId) => {
+    try {
     const res = await axiosWithAuthorization.get(`/teams/${teamId}/admin`);
     return res.data.data;
+    }
+    catch (error) {
+        const message = error?.response?.data?.data?.message ?? "팀 Admin 조회를 할 수 없습니다.";
+        throw new Error(message);
+    }
 }
 
 // (팀장 제외, 본인 포함) 팀원 목록 조회
@@ -86,8 +75,8 @@ export const fetchRandomTeamMembers = async (teamId) => {
         return memberData;
     
     } catch (error) {
-        console.error(error);
-        return [];
+        const message = error?.response?.data?.data?.message ?? "랜덤 팀원 조회를 할 수 없습니다.";
+        throw new Error(message);
     }
 };
 

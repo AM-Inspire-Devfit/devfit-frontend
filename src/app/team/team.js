@@ -22,8 +22,10 @@ import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
 import { fetchTeamData, fetchTeamCode, updateTeamEmoji, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
+import { useAlert } from "@/context/AlertContext";
 
 export default function Team({ teamId }) {
+    const { showAlert } = useAlert();
 
     const userData = {
         "success": true,
@@ -148,13 +150,14 @@ export default function Team({ teamId }) {
         if (!numericTeamId) return;
 
         const getTeamInfo = async () => {
-            try {
-                const teamData = await fetchTeamData(numericTeamId); 
-                setTeamInfo(teamData);  
-                setTeamErrorMessage("");                
-            } catch (error) {
-                setTeamErrorMessage(error.message); 
-            }
+
+        try {
+            const teamData = await fetchTeamData(numericTeamId); 
+            setTeamInfo(teamData);  
+            setTeamErrorMessage("");                
+        } catch (error) {
+            showAlert("error", error.message);
+        }
         };
         
         getTeamInfo();
@@ -171,8 +174,7 @@ export default function Team({ teamId }) {
                 teamEmoji: updated.teamEmoji, 
             }));
         } catch (error) {
-            alert(error.message);
-            console.error("이모지 업데이트 에러:", error);
+            showAlert("error", error.message);
         }
     
         setShowEmojiPicker(false); // emoji Picker 닫기
@@ -196,12 +198,16 @@ export default function Team({ teamId }) {
         if (!numericTeamId) return;
     
         const getTeamAdmin = async () => {
-            const adminData = await fetchTeamAdmin(numericTeamId); // teamId 넘기기
-            setTeamAdmin({
-                id: adminData.memberId,
-                name: adminData.nickname,
-                profileImage: adminData.profileImageUrl,
-            });
+            try {
+                const adminData = await fetchTeamAdmin(numericTeamId); // teamId 넘기기
+                setTeamAdmin({
+                    id: adminData.memberId,
+                    name: adminData.nickname,
+                    profileImage: adminData.profileImageUrl,
+                });
+            } catch (error) {
+                showAlert("error", error.message);
+            }
         };
     
         getTeamAdmin();
@@ -211,13 +217,17 @@ export default function Team({ teamId }) {
         if (!numericTeamId) return;
     
         const getRandomTeamMembers = async () => {
-            const members = await fetchRandomTeamMembers(numericTeamId);
-            const formattedMembers = members.map((member) => ({
-                ...member,
-                role: "member",
-            }));
-            setTeamMembers(formattedMembers);
-            setDisplayedMembers(formattedMembers);
+            try {
+                const members = await fetchRandomTeamMembers(numericTeamId);
+                const formattedMembers = members.map((member) => ({
+                    ...member,
+                    role: "member",
+                }));
+                setTeamMembers(formattedMembers);
+                setDisplayedMembers(formattedMembers);
+            } catch (error) {
+                showAlert("error", error.message);
+            }
         };
     
         getRandomTeamMembers();
@@ -391,22 +401,10 @@ export default function Team({ teamId }) {
             [projectId]: !prev[projectId]
         }));
     };
-
-
-    if (teamErrorMessage) {
-        return (
-            <c.ContentContainer>
-                <p style={{ textAlign: "center", marginTop: "50px", fontSize: "18px", color: "#432CA4" }}>
-                    {teamErrorMessage}
-                </p>
-            </c.ContentContainer>
-        );
-    }
     
     if (!teamInfo) {
         return (
             <c.ContentContainer>
-            <p style={{ textAlign: "center", marginTop: "50px", fontSize: "18px" }}>팀 정보를 불러오는 중...</p>
             </c.ContentContainer>
         );
     }
