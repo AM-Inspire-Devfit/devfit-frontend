@@ -108,9 +108,6 @@ export default function Team({ teamId }) {
     const [otherProjects, setOtherProjects] = useState([]);
 
     const [isEditing, setIsEditing] = useState(false);
-    
-    const [title, setTitle] = useState("");
-    const [subtitle, setSubtitle] = useState("");
 
     const [inviteCode, setInviteCode] = useState(null);
     const [inviteCodeError, setInviteCodeError] = useState("");
