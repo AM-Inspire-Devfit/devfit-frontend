@@ -21,7 +21,7 @@ import AdminLModal from "./admin_leave_modal";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
-import { fetchTeamData, fetchTeamCode, updateTeamEmoji, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamEmoji, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
 import { useAlert } from "@/context/AlertContext";
 
 export default function Team({ teamId }) {
@@ -109,7 +109,6 @@ export default function Team({ teamId }) {
 
     const [isEditing, setIsEditing] = useState(false);
     
-    const [chosenEmoji, setChosenEmoji] = useState("");
     const [title, setTitle] = useState("");
     const [subtitle, setSubtitle] = useState("");
 
@@ -316,15 +315,39 @@ export default function Team({ teamId }) {
 
 
     const handleEditClick = () => {
-        setIsEditing((prev) => !prev); 
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            setIsEditing(false);
+        // 편집 중이면 저장, 아니면 편집 시작
+        if (isEditing) {
+            saveTeamInfo();
+        } else {
+            setIsEditing(true);
         }
     };
-
+    
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            saveTeamInfo();
+        }
+    };
+    
+    const saveTeamInfo = async () => {
+        const name = teamInfo.teamName?.trim();
+        const desc = teamInfo.teamDescription?.trim();
+    
+        if (!name) {
+            alert("팀 이름은 필수입니다.");
+            return;
+        }
+    
+        try {
+            const updated = await updateTeamData(numericTeamId, name, desc);
+            setTeamInfo(updated);
+            setIsEditing(false);
+            showAlert("success", "팀 정보가 수정되었습니다.");
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+    
     // 이모지 클릭 시 위치 계산
     const updatePickerPosition = () => {
         if (emojiBoxRef.current) {

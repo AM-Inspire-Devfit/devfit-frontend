@@ -37,6 +37,22 @@ export const updateTeamEmoji = async (teamId, emoji) => {
     }
 };
 
+// 팀 이름 & 설명 수정
+export const updateTeamData = async (teamId, teamName, teamDescription) => {
+    try {
+        const res = await axiosWithAuthorization.patch(`/teams/${teamId}`, {
+            teamName,
+            teamDescription,
+        });
+        console.log("팀 정보 수정 성공:", res.data);
+        return res.data.data;
+    }
+    catch (error) {
+        const message = error?.response?.data?.data?.message ?? "팀 정보를 업데이트할 수 없습니다.";
+        throw new Error(message);
+    }
+}
+
 
 // 팀장 조회
 export const fetchTeamAdmin = async (teamId) => {
