@@ -31,19 +31,6 @@ import { useAlert } from "@/context/AlertContext";
 export default function Team({ teamId }) {
     const { showAlert } = useAlert();
 
-    const userData = {
-        "success": true,
-        "status": 200,
-        "data": {
-            "memberId": 1,
-            "nickname": "최현태",
-            "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            "status": "NORMAL",
-            "role": "USER"
-        },
-        "timestamp": "2025-02-11T17:08:20.340403"
-    }
-
     const [currentUser, setCurrentUser] = useState(null);
 
     const [teamInfo, setTeamInfo] = useState(null);
@@ -105,15 +92,15 @@ export default function Team({ teamId }) {
         console.log("teamAdmin:", teamAdmin);
     }, [currentUser, teamAdmin]);
     
-    const numericTeamId = Number(teamId);
+    const TeamId = Number(teamId);
 
     useEffect(() => {
-        if (!numericTeamId) return;
+        if (!TeamId) return;
 
         const getTeamInfo = async () => {
 
         try {
-            const teamData = await fetchTeamData(numericTeamId); 
+            const teamData = await fetchTeamData(TeamId); 
             setTeamInfo(teamData);  
             setTeamErrorMessage("");                
         } catch (error) {
@@ -122,13 +109,13 @@ export default function Team({ teamId }) {
         };
         
         getTeamInfo();
-    }, [numericTeamId]);
+    }, [TeamId]);
 
     const handleEmojiClick = async (emojiData) => {
         const newEmoji = emojiData.emoji;
     
         try {
-            const updated = await updateTeamEmoji(numericTeamId, newEmoji);
+            const updated = await updateTeamEmoji(TeamId, newEmoji);
     
             setTeamInfo((prev) => ({
                 ...prev,
@@ -144,7 +131,7 @@ export default function Team({ teamId }) {
     // 초대코드 생성 모달
     const handleInviteClick = async () => {
         try {
-            const code = await fetchTeamCode(numericTeamId);
+            const code = await fetchTeamCode(TeamId);
             setInviteCode(code);
             setInviteCodeError("");
         } catch (error) {
@@ -156,11 +143,11 @@ export default function Team({ teamId }) {
     };
 
     useEffect(() => {
-        if (!numericTeamId) return;
+        if (!TeamId) return;
     
         const getTeamAdmin = async () => {
             try {
-                const adminData = await fetchTeamAdmin(numericTeamId); // teamId 넘기기
+                const adminData = await fetchTeamAdmin(TeamId); // teamId 넘기기
                 setTeamAdmin({
                     id: adminData.memberId,
                     name: adminData.nickname,
@@ -172,14 +159,14 @@ export default function Team({ teamId }) {
         };
     
         getTeamAdmin();
-    }, [numericTeamId]);
+    }, [TeamId]);
 
     useEffect(() => {
-        if (!numericTeamId) return;
+        if (!TeamId) return;
     
         const getRandomTeamMembers = async () => {
             try {
-                const members = await fetchRandomTeamMembers(numericTeamId);
+                const members = await fetchRandomTeamMembers(TeamId);
                 const formattedMembers = members.map((member) => ({
                     ...member,
                     role: "member",
@@ -192,7 +179,7 @@ export default function Team({ teamId }) {
         };
     
         getRandomTeamMembers();
-    }, [numericTeamId]);
+    }, [TeamId]);
 
     const [allMembers, setAllMembers] = useState([]);
 
@@ -235,7 +222,7 @@ export default function Team({ teamId }) {
     const fetchAllProjects = async () => {
         try {
             const allProjects = await fetchProjectListData(
-                numericTeamId,
+                TeamId,
                 null,
                 null,
                 10   
@@ -260,10 +247,10 @@ export default function Team({ teamId }) {
     };
     
     useEffect(() => {
-        if (numericTeamId) {
+        if (TeamId) {
             fetchAllProjects();
         }
-    }, [numericTeamId]);
+    }, [TeamId]);
 
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
@@ -316,7 +303,7 @@ export default function Team({ teamId }) {
         }
     
         try {
-            const updated = await updateTeamData(numericTeamId, name, desc);
+            const updated = await updateTeamData(TeamId, name, desc);
             setTeamInfo(updated);
             setIsEditing(false);
             showAlert("success", "팀 정보가 수정되었습니다.");
@@ -723,7 +710,7 @@ export default function Team({ teamId }) {
         {/* 프로젝트 생성 modal */}
         {addModal && 
         <ProjectModal  
-            teamId={numericTeamId} 
+            teamId={TeamId} 
             onClose={() => setAddModal(false)} 
             onProjectCreated={fetchAllProjects}
         />}

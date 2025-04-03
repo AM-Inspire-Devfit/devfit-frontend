@@ -15,6 +15,8 @@ import SprintModal from "./sprint_modal";
 import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
+import { fetchProjectData } from "@/app/api/project/projectApi";
+
 import Image from "next/image";
 
     const colorData = [
@@ -61,18 +63,7 @@ import Image from "next/image";
 
     const projectData = 
     {
-        "success": true,
-        "status": 200,
-        "data": 
-            {
-                "projectId": 1,
-                "projectTitle": "Devfit-",
-                "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
-                "projectGoal": "개발자 건강을 위한 협업 툴 개발",
-                "startDt": "2024-01-01",
-                "dueDt": "2026-01-01"
-            },
-        "timestamp": "2025-02-06T09:56:45.150727"
+       
     }
 
     const projectMemberData = 
@@ -533,19 +524,20 @@ const meetingData = {
 };
 
 
-export default function Project() {
+export default function Project({projectId}) {
     const [isClient, setIsClient] = useState(false);
     const [isSprintModalOpen, setIsSprintModalOpen] = useState(false);
     const [isCreateSprintModalOpen, setIsCreateSprintModalOpen] = useState(false);
     const [goal, setGoal] = useState("");
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
-    const [description, setDescription] = useState(projectData.data.projectDescription);
+
+    const [projectData, setProjectData] = useState(null);
+    const [description, setDescription] = useState("");
 
     const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
 
-    const project = projectData.data; 
-    const project_id = project.projectId; 
+    const ProjectId = Number(projectId);
 
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -560,6 +552,20 @@ export default function Project() {
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
+
+    useEffect(() => {
+        const getProjectData = async () => {
+            try {
+                const data = await fetchProjectData(projectId);
+                setProjectData(data);
+                setDescription(data.projectDescription);
+            } catch (err) {
+                console.error(err.message);
+            }
+        };
+    
+        if (projectId) getProjectData();
+    }, [projectId]);
 
 
     // sprint 수정 모달 열기/닫기 함수
@@ -788,7 +794,7 @@ export default function Project() {
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
                     <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamData.data.teamName} </span> 
-                        <span style={{ height: "40px", lineHeight: "40px" }}>{projectData.data.projectTitle}</span>
+                        <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
                     </div>
                     <Image
                         src="/img/edit.png"
@@ -855,7 +861,7 @@ export default function Project() {
                             member.name !== "알수없음" && 
                             projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                             <Link 
-                            href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                            href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
                             <P.FeedbackButton hidden={!isFeedbackDay}>
                                 동료 평가
                             </P.FeedbackButton>
@@ -957,7 +963,7 @@ export default function Project() {
                     {projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                     <Link
                         href={{
-                            pathname: `/project/${project_id}/sprint/${sprint_id}`,
+                            pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
                             query: {
                             sprint_num: currentSprint.sprint_num,
                             sprint_start: currentSprint.startDt,
@@ -1091,14 +1097,14 @@ export default function Project() {
             </div>
             )}
         </ContentContainer>
-        {isProjectEditModalOpen && (
+        {isProjectEditModalOpen && projectData && (
             <ProjectModal
                 onClose={() => setIsProjectEditModalOpen(false)}
                 isEditing={true}
-                currentTitle={projectData.data.projectTitle}
-                currentDescription={projectData.data.projectDescription}
-                currentStartDate={projectData.data.startDt}
-                currentDueDate={projectData.data.dueDt}
+                currentTitle={projectData.projectTitle}
+                currentDescription={projectData.projectDescription}
+                currentStartDate={projectData.startDt}
+                currentDueDate={projectData.dueDt}
             />
         )}
         </>
