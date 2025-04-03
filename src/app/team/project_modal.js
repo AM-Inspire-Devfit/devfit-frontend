@@ -3,7 +3,18 @@ import { IoClose } from "react-icons/io5";
 
 import { useState, useEffect } from 'react';
 
-export default function ProjectModal({ onClose, isEditing = false, currentTitle = "", currentDescription = "", currentStartDate = "", currentDueDate = "" }) {
+import { createProject } from "@/app/api/project/projectApi";
+
+export default function ProjectModal({ 
+        onClose, 
+        isEditing = false, 
+        currentTitle = "", 
+        currentDescription = "", 
+        currentStartDate = "", 
+        currentDueDate = "",
+        teamId,
+        onProjectCreated, 
+    }) {
     const [projectName, setProjectName] = useState(currentTitle);
     const [projectDescription, setProjectDescription] = useState(currentDescription);
     const [startDate, setStartDate] = useState("");
@@ -21,12 +32,25 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
 
     const isButtonDisabled = 
         projectName.trim() === "" || 
-        projectDescription.trim() === "" || 
         dueDate === "";
 
-    const handleSubmit = () => {
-        if (!isButtonDisabled) {
+    const handleSubmit = async () => {
+        if (isButtonDisabled) return;
+
+        const projectData = {
+            teamId: teamId,
+            projectTitle: projectName,
+            projectDescription: projectDescription.trim() || null,
+            dueDt: dueDate,
+        };
+            
+        try {
+            await createProject(projectData);
+            console.log("프로젝트 생성 완료");
+            if (onProjectCreated) onProjectCreated(); // 생성 후 콜백 실행
             onClose(); // 모달 닫기
+        } catch (error) {
+            console.error("프로젝트 생성 실패:", error.message);
         }
     };
 
@@ -57,6 +81,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
                     <m.Label style={{ color: "black", fontWeight: "bold", width: "90px" }}>프로젝트 명 *</m.Label>
                     <m.Input 
                         style={{ flex: 1, marginTop: "10px" }}
+                        placeholder="프로젝트 이름을 입력하세요"
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
                         />
@@ -64,7 +89,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
 
                 <m.InputWrapper style={{ alignItems: "flex-start" }}>
                     <m.Label style={{ color: "black", fontWeight: "bold", width: "90px", marginTop: "20px" }}>
-                        상세 설명 *
+                        상세 설명 
                     </m.Label>
                     <textarea
                         style={{
@@ -78,6 +103,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
                             resize: "none",
                             marginTop: "15px"
                         }}
+                        placeholder="프로젝트에 대한 설명을 입력하세요"
                         value={projectDescription}
                         onChange={(e) => setProjectDescription(e.target.value)}
                     />

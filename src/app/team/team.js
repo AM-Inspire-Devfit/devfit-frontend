@@ -24,6 +24,8 @@ import EmojiPicker from "emoji-picker-react";
 
 import { fetchUserData } from "../api/user/userApi";
 import { fetchTeamData, fetchTeamCode, updateTeamEmoji, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
+import { fetchProjectListData } from "@/app/api/project/projectApi";
+
 import { useAlert } from "@/context/AlertContext";
 
 export default function Team({ teamId }) {
@@ -41,12 +43,6 @@ export default function Team({ teamId }) {
         },
         "timestamp": "2025-02-11T17:08:20.340403"
     }
-
-    const projectData = 
-        {
-
-        }
-
 
     const [currentUser, setCurrentUser] = useState(null);
 
@@ -84,6 +80,8 @@ export default function Team({ teamId }) {
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
+    const [lastProjectId, setLastProjectId] = useState(null); // 첫 페이지는 null
+
     const [teamErrorMessage, setTeamErrorMessage] = useState("");
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
@@ -105,7 +103,7 @@ export default function Team({ teamId }) {
     useEffect(() => {
         console.log("currentUser:", currentUser);
         console.log("teamAdmin:", teamAdmin);
-      }, [currentUser, teamAdmin]);
+    }, [currentUser, teamAdmin]);
     
     const numericTeamId = Number(teamId);
 
@@ -233,24 +231,39 @@ export default function Team({ teamId }) {
         listEl.addEventListener('scroll', handleScroll);
         return () => listEl.removeEventListener('scroll', handleScroll);
     }, [hasMore, currentPageIndex]);
-    
-    useEffect(() => {
-        if (projectData && projectData.content) {
+
+    const fetchAllProjects = async () => {
+        try {
+            const allProjects = await fetchProjectListData(
+                numericTeamId,
+                null,
+                null,
+                10   
+            );
+
             const myProjectsArray = [];
             const otherProjectsArray = [];
-    
-            projectData.content.forEach(project => {
+
+            allProjects?.content?.forEach(project => {
                 if (project.isParticipant) {
                     myProjectsArray.push(project);
                 } else {
                     otherProjectsArray.push(project);
                 }
             });
-    
+
             setMyProjects(myProjectsArray);
             setOtherProjects(otherProjectsArray);
+        } catch (error) {
+            showAlert("error", error.message);
         }
-    }, []);
+    };
+    
+    useEffect(() => {
+        if (numericTeamId) {
+            fetchAllProjects();
+        }
+    }, [numericTeamId]);
 
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
@@ -710,7 +723,9 @@ export default function Team({ teamId }) {
         {/* 프로젝트 생성 modal */}
         {addModal && 
         <ProjectModal  
+            teamId={numericTeamId} 
             onClose={() => setAddModal(false)} 
+            onProjectCreated={fetchAllProjects}
         />}
 
         {/* 프로젝트 삭제 modal */}
