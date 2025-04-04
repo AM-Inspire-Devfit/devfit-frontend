@@ -84,8 +84,8 @@ export const fetchProjectMemberList = async (projectId, lastId = 0, size = 10) =
         const res = await axiosWithAuthorization.get(`/projects/${projectId}/participants`,
             {
                 params: {
-                  lastProjectParticipantId: lastId,
-                  size: size,
+                    lastProjectParticipantId: lastId,
+                    size: size,
                 },
             }
         );

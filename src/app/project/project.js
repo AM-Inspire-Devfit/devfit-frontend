@@ -480,7 +480,7 @@ export default function Project({projectId}) {
             setProjectData(project);
             setProjectDescription(project.projectDescription);
         } catch (error) {
-            console.error("프로젝트 정보 조회 실패:", error.message);
+            showAlert("error", error.message);
         }
     
         try {
@@ -494,7 +494,6 @@ export default function Project({projectId}) {
             const user = await fetchProjectUser(projectId);
             setProjectUser(user);
         } catch (error) {
-            console.error("내 프로젝트 정보 조회 실패:", error.message);
         }
     };
 
@@ -732,6 +731,7 @@ export default function Project({projectId}) {
                     <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamName} </span> 
                         <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
                     </div>
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                     <Image
                         src="/img/edit.png"
                         alt="Edit"
@@ -740,6 +740,7 @@ export default function Project({projectId}) {
                         onClick={() => setIsProjectEditModalOpen(true)} 
                         style={{ cursor: "pointer" }}
                     />
+                    )}
                 </h2>
                 <Divider1/>
                     <p 
@@ -841,6 +842,7 @@ export default function Project({projectId}) {
                                 </span>
                             </h2>
                             <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
+                                {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                                 <Image
                                     src="/img/edit.png" 
                                     alt="icon"
@@ -848,6 +850,7 @@ export default function Project({projectId}) {
                                     height={20}
                                     priority
                                 />
+                                )}
                             </div>
                             <SprintModal 
                                 isOpen={isSprintModalOpen}
@@ -894,7 +897,7 @@ export default function Project({projectId}) {
                         ))}
                     </P.TaskGrid>
                     <P.ButtonWrapper>
-                    {/*{projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (*/}
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                     <Link
                         href={{
                             pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
@@ -909,7 +912,7 @@ export default function Project({projectId}) {
                         >
                             <P.TaskButton>상세보기</P.TaskButton>
                         </Link>
-                    {/*})}*/}
+                        )}
                     </P.ButtonWrapper>
                 </P.SprintBox>
                 </>
@@ -974,6 +977,7 @@ export default function Project({projectId}) {
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
                 </h2>
                 <div onClick={openMeetingModalForCreate} style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                     <Image
                         src="/img/edit.png" 
                         alt="icon"
@@ -981,6 +985,7 @@ export default function Project({projectId}) {
                         height={20}
                         priority  
                     />
+                    )}
                 </div>
                 {/* 미팅 modal */}
                 <MeetingModal 
