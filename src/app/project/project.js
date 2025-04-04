@@ -17,9 +17,11 @@ import SprintModal from "./sprint_modal";
 import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
-import { fetchProjectData, } from "@/app/api/project/projectApi";
+import { fetchProjectData, fetchProjectUser, fetchProjectMemberList } from "@/app/api/project/projectApi";
 
 import Image from "next/image";
+
+import { useAlert } from "@/context/AlertContext";
 
     const colorData = [
         "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
@@ -27,96 +29,6 @@ import Image from "next/image";
         "#27AE60", "#D35400"
     ];
 
-    const projectUserData = {
-        "success": true,
-        "status": 200,
-        "data": {
-            "projectParticipantId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            "role": "ADMIN" 
-        },
-        "timestamp": "2025-03-19T21:42:40.59254"
-    }
-
-    // const projectUserData = {
-    //     "success": false,
-    //     "status": 403,
-    //     "data": {
-    //         "errorClassName": "PROJECT_PARTICIPATION_REQUIRED",
-    //         "message": "해당 프로젝트 참여자가 아닙니다."
-    //         },
-    //     "timestamp": "2025-03-03T01:39:33.14183"
-    // }
-
-    const teamData = 
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-            "teamId": 1,
-            "teamName": "Side Effect",
-            "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
-            "teamEmoji": "🍇"
-        },
-        "timestamp": "2025-02-10T14:18:46.135007"
-    }
-
-
-    const projectData = 
-    {
-       
-    }
-
-    const projectMemberData = 
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-                "projectParticipantId": 1,
-                "projectNickname": "정선우",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-                "role": "ADMIN"
-            },
-            {
-                "projectParticipantId": 2,
-                "projectNickname": "조수빈",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 3,
-                "projectNickname": "UNKNOWN_PROJECT_NICKNAME",
-                "profileImageUrl": "UNKNOWN_PROJECT_PROFILE_URL",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 4,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
-                "role": "MEMBER"
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": true,
-        "size": 3,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 3,
-        "empty": false
-        },
-        "timestamp": "2025-03-19T21:49:27.631511"
-    }
 
     const sprintData = [
     {
@@ -527,6 +439,8 @@ const meetingData = {
 
 
 export default function Project({projectId}) {
+    const { showAlert } = useAlert();
+
     const [isClient, setIsClient] = useState(false);
     const [isSprintModalOpen, setIsSprintModalOpen] = useState(false);
     const [isCreateSprintModalOpen, setIsCreateSprintModalOpen] = useState(false);
@@ -535,11 +449,12 @@ export default function Project({projectId}) {
     const [dueDate, setDueDate] = useState("");
 
     const [projectData, setProjectData] = useState(null);
-    const [description, setDescription] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
+
+    const [projectUser, setProjectUser] = useState(null);
+    const [projectMembers, setProjectMembers] = useState([]);
 
     const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
-
-    const ProjectId = Number(projectId);
 
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -551,6 +466,7 @@ export default function Project({projectId}) {
 
     const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
 
+    const ProjectId = Number(projectId);
     const searchParams = useSearchParams();
     const teamName = searchParams.get("teamName");
 
@@ -560,18 +476,31 @@ export default function Project({projectId}) {
 
     const getProjectData = async () => {
         try {
-            const data = await fetchProjectData(projectId);
-            setProjectData(data);
-            setDescription(data.projectDescription);
-        } catch (err) {
-            console.error(err.message);
+            const project = await fetchProjectData(projectId);
+            setProjectData(project);
+            setProjectDescription(project.projectDescription);
+        } catch (error) {
+            console.error("프로젝트 정보 조회 실패:", error.message);
+        }
+    
+        try {
+            const members = await fetchProjectMemberList(projectId);
+            setProjectMembers(members.content);
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    
+        try {
+            const user = await fetchProjectUser(projectId);
+            setProjectUser(user);
+        } catch (error) {
+            console.error("내 프로젝트 정보 조회 실패:", error.message);
         }
     };
 
     useEffect(() => {   
         if (projectId) getProjectData();
     }, [projectId]);
-
 
     // sprint 수정 모달 열기/닫기 함수
     const handleSprintModal = () => setIsSprintModalOpen(prev => !prev);
@@ -660,7 +589,7 @@ export default function Project({projectId}) {
             startDt: sprintContent.startDt,
             dueDt: sprintContent.dueDt,
             member: mergeProjectMembersWithContributions(
-                projectMemberData.data.content,
+                projectMembers,
                 sprintContributionsForSprint
             ),
         };
@@ -714,7 +643,9 @@ export default function Project({projectId}) {
     const sprintsWithFeedback = sprintData.filter(sprint => sprint.sprint_end === today);
 
     useEffect(() => {
-        const isNotParticipant = projectUserData.data?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED";
+        if (!projectUser || !currentSprint) return; // null 체크 먼저
+
+        const isNotParticipant = projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED";
 
         if (currentSprint.last) {
             // 마지막 스프린트일 때 프로젝트 외부인 고려
@@ -808,15 +739,14 @@ export default function Project({projectId}) {
                         height={20}
                         onClick={() => setIsProjectEditModalOpen(true)} 
                         style={{ cursor: "pointer" }}
-                        hidden={projectUserData.data.errorClassName === "PROJECT_PARTICIPATION_REQUIRED"} 
                     />
                 </h2>
                 <Divider1/>
                     <p 
                         style={{ 
                             fontSize: "15px", 
-                            color: description ? "#4F3DBD" : "#A9A9A9", 
-                            fontStyle: description ? "normal" : "italic",
+                            color: projectDescription ? "#4F3DBD" : "#A9A9A9", 
+                            fontStyle: projectDescription ? "normal" : "italic",
                             height: "30px", 
                             lineHeight: "30px", 
                             padding: "0", 
@@ -824,7 +754,7 @@ export default function Project({projectId}) {
                             alignItems: "center",
                             marginLeft: "30px"
                         }}>
-                        {description || "프로젝트에 대한 설명을 추가하세요!"}
+                        {projectDescription || "프로젝트에 대한 설명을 추가하세요!"}
                     </p>
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
@@ -863,16 +793,15 @@ export default function Project({projectId}) {
                         </P.ProfileContainer>
                         <span style={{ marginLeft: '10px' }}>{member.name}</span>
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
-                        {member.id !== projectUserData.data.projectParticipantId && 
+                        {projectUser && member.id !== projectUser.projectParticipantId &&
                             member.name !== "알수없음" && 
-                            projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                             <Link 
                             href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
                             <P.FeedbackButton hidden={!isFeedbackDay}>
                                 동료 평가
                             </P.FeedbackButton>
                             </Link>
-                        )}
+                        }
                         </P.ProjectMember>
                     ))}
                     </P.ScrollableMemberList>
@@ -918,7 +847,6 @@ export default function Project({projectId}) {
                                     width={20}  
                                     height={20}
                                     priority
-                                    hidden={projectUserData.data.errorClassName === "PROJECT_PARTICIPATION_REQUIRED"}
                                 />
                             </div>
                             <SprintModal 
@@ -966,7 +894,7 @@ export default function Project({projectId}) {
                         ))}
                     </P.TaskGrid>
                     <P.ButtonWrapper>
-                    {projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
+                    {/*{projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (*/}
                     <Link
                         href={{
                             pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
@@ -981,7 +909,7 @@ export default function Project({projectId}) {
                         >
                             <P.TaskButton>상세보기</P.TaskButton>
                         </Link>
-                    )}
+                    {/*})}*/}
                     </P.ButtonWrapper>
                 </P.SprintBox>
                 </>
@@ -1052,7 +980,6 @@ export default function Project({projectId}) {
                         width={20}  
                         height={20}
                         priority  
-                        hidden={projectUserData.data.errorClassName === "PROJECT_PARTICIPATION_REQUIRED"}
                     />
                 </div>
                 {/* 미팅 modal */}
@@ -1094,9 +1021,9 @@ export default function Project({projectId}) {
                             })
                         }
                         onMeetingClick={(meeting) => {
-                            if (projectUserData.data?.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED") {
+                            {/*if (projectUserData.data?.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED") {*/}
                                 openMeetingModalForEdit(meeting);
-                            }
+                            {/*}}*/}
                         }}
                     />
                 </P.MeetingContainer>

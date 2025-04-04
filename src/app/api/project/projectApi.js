@@ -67,7 +67,35 @@ export const updateProjectDueDate = async (projectId, updatedData) => {
 }
 
 // 프로젝트 내 개인 참가자 정보 조회
+export const fetchProjectUser = async (projectId) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/projects/${projectId}/me`);
+        console.log("프로젝트 내 개인 참가자 정보 조회:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "프로젝트 내 개인 참가자 정보를 조회할 수 없습니다.";
+        throw new Error(message);
+    }
+};
 
+// 프로젝트 참가자 목록 조회
+export const fetchProjectMemberList = async (projectId, lastId = 0, size = 10) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/projects/${projectId}/participants`,
+            {
+                params: {
+                  lastProjectParticipantId: lastId,
+                  size: size,
+                },
+            }
+        );
+        console.log("프로젝트 참가자 목록 조회:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "프로젝트 참가자 목록을 조회할 수 없습니다.";
+        throw new Error(message);
+    }
+};
 
 // 프로젝트 삭제
 export const deleteProject = async (projectId) => {
