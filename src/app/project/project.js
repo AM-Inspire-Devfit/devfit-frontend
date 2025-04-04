@@ -1,6 +1,8 @@
 "use client";  
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+
 import Link from "next/link";
 
 import { PieChart, Pie, Cell } from "recharts";
@@ -15,7 +17,7 @@ import SprintModal from "./sprint_modal";
 import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
-import { fetchProjectData } from "@/app/api/project/projectApi";
+import { fetchProjectData, } from "@/app/api/project/projectApi";
 
 import Image from "next/image";
 
@@ -549,21 +551,24 @@ export default function Project({projectId}) {
 
     const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
 
+    const searchParams = useSearchParams();
+    const teamName = searchParams.get("teamName");
+
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
 
-    useEffect(() => {
-        const getProjectData = async () => {
-            try {
-                const data = await fetchProjectData(projectId);
-                setProjectData(data);
-                setDescription(data.projectDescription);
-            } catch (err) {
-                console.error(err.message);
-            }
-        };
-    
+    const getProjectData = async () => {
+        try {
+            const data = await fetchProjectData(projectId);
+            setProjectData(data);
+            setDescription(data.projectDescription);
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+
+    useEffect(() => {   
         if (projectId) getProjectData();
     }, [projectId]);
 
@@ -793,7 +798,7 @@ export default function Project({projectId}) {
             <div style={{ width: '750px', textAlign: 'left' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
-                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamData.data.teamName} </span> 
+                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamName} </span> 
                         <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
                     </div>
                     <Image
@@ -810,7 +815,8 @@ export default function Project({projectId}) {
                     <p 
                         style={{ 
                             fontSize: "15px", 
-                            color: "#4F3DBD", 
+                            color: description ? "#4F3DBD" : "#A9A9A9", 
+                            fontStyle: description ? "normal" : "italic",
                             height: "30px", 
                             lineHeight: "30px", 
                             padding: "0", 
@@ -818,7 +824,7 @@ export default function Project({projectId}) {
                             alignItems: "center",
                             marginLeft: "30px"
                         }}>
-                        {description}
+                        {description || "프로젝트에 대한 설명을 추가하세요!"}
                     </p>
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
@@ -1101,10 +1107,12 @@ export default function Project({projectId}) {
             <ProjectModal
                 onClose={() => setIsProjectEditModalOpen(false)}
                 isEditing={true}
+                projectId={projectData.projectId}
                 currentTitle={projectData.projectTitle}
                 currentDescription={projectData.projectDescription}
                 currentStartDate={projectData.startDt}
                 currentDueDate={projectData.dueDt}
+                onProjectCreated={getProjectData}
             />
         )}
         </>

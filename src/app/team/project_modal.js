@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 
 import { useState, useEffect } from 'react';
 
-import { createProject } from "@/app/api/project/projectApi";
+import { createProject, updateProjectData, updateProjectDueDate} from "@/app/api/project/projectApi";
 
 export default function ProjectModal({ 
         onClose, 
@@ -13,10 +13,11 @@ export default function ProjectModal({
         currentStartDate = "", 
         currentDueDate = "",
         teamId,
+        projectId, // 프로젝트 수정
         onProjectCreated, 
     }) {
     const [projectName, setProjectName] = useState(currentTitle);
-    const [projectDescription, setProjectDescription] = useState(currentDescription);
+    const [projectDescription, setProjectDescription] = useState(currentDescription ?? "");
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState(currentDueDate); 
 
@@ -37,20 +38,45 @@ export default function ProjectModal({
     const handleSubmit = async () => {
         if (isButtonDisabled) return;
 
-        const projectData = {
-            teamId: teamId,
-            projectTitle: projectName,
-            projectDescription: projectDescription.trim() || null,
-            dueDt: dueDate,
-        };
-            
         try {
-            await createProject(projectData);
-            console.log("프로젝트 생성 완료");
-            if (onProjectCreated) onProjectCreated(); // 생성 후 콜백 실행
+            if (isEditing) {
+                const trimmedTitle = projectName.trim();
+                const trimmedDesc = projectDescription.trim();
+                const prevDesc = currentDescription?.trim?.() ?? null;  
+
+                // 이름과 설명이 이전 값과 다른지 확인
+                const titleChanged = trimmedTitle !== currentTitle;
+                const descChanged = (trimmedDesc === "" ? null : trimmedDesc) !== prevDesc;
+
+                if (titleChanged || descChanged) {
+                    const updatedData = {
+                        ...(titleChanged && { title: trimmedTitle }),
+                        ...(descChanged && { description: trimmedDesc }),
+                    };
+                    const res = await updateProjectData(projectId, updatedData);
+                    console.log("updateProjectData 응답값:", res);
+                }
+
+                const dueDateRes = await updateProjectDueDate(projectId, { dueDt: dueDate });
+                console.log("updateProjectDueDate 응답값:", dueDateRes);
+                console.log("프로젝트 수정 완료");
+            } else {
+                // 프로젝트 생성
+                const projectData = {
+                    teamId,
+                    projectTitle: projectName.trim(),
+                    dueDt: dueDate,
+                    projectDescription: projectDescription.trim() || null,
+                };
+                const res = await createProject(projectData);
+                console.log("createProject 응답값:", res);
+                console.log("프로젝트 생성 완료");
+            }
+    
+            onProjectCreated?.();
             onClose(); // 모달 닫기
         } catch (error) {
-            console.error("프로젝트 생성 실패:", error.message);
+            console.error(`${isEditing ? "프로젝트 수정 실패" : "프로젝트 생성 실패"}:`, error.message);
         }
     };
 

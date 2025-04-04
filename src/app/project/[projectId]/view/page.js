@@ -1,11 +1,11 @@
 import Project from '../../project';
 import Navbar_ from '@/components/Navbar_b';
 
-export default function ProjectVPage(){
+export default function ProjectVPage({ params }){
     return(
         <>
         <Navbar_/>
-        <Project/>
+        <Project projectId={params.projectId}/>
         </>
         
     )

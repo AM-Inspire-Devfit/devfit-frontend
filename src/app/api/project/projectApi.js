@@ -42,6 +42,33 @@ export const fetchProjectListData = async (teamId, isParticipant, lastProjectId,
     }
 };
 
+// 프로젝트 기본 정보 수정
+export const updateProjectData = async (projectId, updatedData) => {
+    try {
+        const res = await axiosWithAuthorization.patch(`/projects/${projectId}/basic-info`, updatedData);
+        console.log("프로젝트 기본 정보 수정 성공:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "프로젝트의 기본 정보를 수정할 수 없습니다.";
+        throw new Error(message);
+    }
+}
+
+// 프로젝트 일정 수정
+export const updateProjectDueDate = async (projectId, updatedData) => {
+    try {
+        const res = await axiosWithAuthorization.patch(`/projects/${projectId}/todo-info`, updatedData);
+        console.log("프로젝트 일정 정보 수정 성공:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "프로젝트의 일정 정보를 수정할 수 없습니다.";
+        throw new Error(message);
+    }
+}
+
+// 프로젝트 내 개인 참가자 정보 조회
+
+
 // 프로젝트 삭제
 export const deleteProject = async (projectId) => {
     try {

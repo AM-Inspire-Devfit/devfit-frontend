@@ -485,8 +485,15 @@ export default function Team({ teamId }) {
                                 }}
                             />
                         ) : (
-                            <T.Subtitle style={{ height: "25px", lineHeight: "25px", marginTop: "5px" }}>
-                                {teamInfo.teamDescription}
+                            <T.Subtitle 
+                            style={{ 
+                                height: "25px", 
+                                lineHeight: "25px", 
+                                marginTop: "5px",
+                                color: teamInfo.teamDescription ? "black" : "#A9A9A9", 
+                                fontStyle: teamInfo.teamDescription ? "normal" : "italic" 
+                            }}>
+                                {teamInfo.teamDescription || "팀에 대한 설명을 추가하세요!"}
                             </T.Subtitle>
                         )}
                     </T.TitleRight>
@@ -614,7 +621,14 @@ export default function Team({ teamId }) {
                         <>
                         <S.ProjectDivider1 />
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                        <Link href={`/project/${project.projectInfo.projectId}`}>
+                        <Link 
+                            href={{
+                                pathname: `/project/${project.projectInfo.projectId}`,
+                                query: {
+                                    teamName: teamInfo.teamName,
+                                },
+                            }}
+                        >
                             <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                         </Link>
                         <LeaveProjectButton onClick={() => handleAdminLClick(project)} />
@@ -626,7 +640,14 @@ export default function Team({ teamId }) {
                         <>
                         <S.ProjectDivider2 />
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                            <Link href={`/project/${project.projectInfo.projectId}`}>
+                            <Link 
+                                href={{
+                                    pathname: `/project/${project.projectInfo.projectId}`,
+                                    query: {
+                                        teamName: teamInfo.teamName,
+                                    },
+                                }}
+                            >
                                 <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                             </Link>
                             <LeaveProjectButton onClick={() => handleLeaveClick(project)} />
@@ -675,7 +696,14 @@ export default function Team({ teamId }) {
                     </S.ProjectInfo>
                     <S.ProjectDivider2 />
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <Link href={`/project/${project.projectInfo.projectId}/view`}>
+                    <Link 
+                        href={{
+                            pathname: `/project/${project.projectInfo.projectId}/view`,
+                            query: {
+                                teamName: teamInfo.teamName,
+                            },
+                        }}
+                    >
                         <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                     </Link>
                     <JoinProjectButton 
