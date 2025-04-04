@@ -74,7 +74,7 @@ import { useAlert } from "@/context/AlertContext";
             "title": "2",
             "goal": "MVP2 개발",
             "startDt": "2025-03-01",
-            "dueDt": "2025-03-22",
+            "dueDt": "2025-04-04",
             "status": "NOT_STARTED",
             "progress": 50.0
             }
@@ -642,25 +642,29 @@ export default function Project({projectId}) {
     const sprintsWithFeedback = sprintData.filter(sprint => sprint.sprint_end === today);
 
     useEffect(() => {
-        if (!projectUser || !currentSprint) return; // null 체크 먼저
-
-        const isNotParticipant = projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED";
-
-        if (currentSprint.last) {
-            // 마지막 스프린트일 때 프로젝트 외부인 고려
+        if (!currentSprint) return;
+    
+        const isLastSprint = currentSprintIndex === sprintDataWithColors.length - 1;
+    
+        const isNotParticipant =
+            projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED" || projectUser === null;
+    
+        if (isLastSprint) {
             if (isNotParticipant) {
                 setCanShowNextArrow(false);
             } else {
-                const koreaNow = new Date(Date.now() + 9 * 60 * 60 * 1000);
+                const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
                 const sprintEndKST = new Date(new Date(currentSprint.sprint_end + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
-    
-                const isAfterLastSprint = koreaNow > sprintEndKST;
-                setCanShowNextArrow(isAfterLastSprint);
+                setCanShowNextArrow(nowKST > sprintEndKST);
             }
         } else {
             setCanShowNextArrow(true);
         }
-    }, [currentSprint]);
+    }, [currentSprint, projectUser, currentSprintIndex]);
+
+    console.log("projectUser", projectUser);
+    console.log("currentSprintIndex", currentSprintIndex);
+    console.log("isLastSprint", currentSprintIndex === sprintDataWithColors.length - 1);
 
     const lastSprint = sprintDataWithColors[sprintDataWithColors.length - 1];
 
