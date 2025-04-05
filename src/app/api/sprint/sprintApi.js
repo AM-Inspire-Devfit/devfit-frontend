@@ -51,3 +51,15 @@ export const updateSprintData = async (sprintId, updatedData) => {
         throw new Error(message);
     }
 }
+
+// 스프린트 삭제
+export const deleteSprintData = async (sprintId) => {
+    try {
+        const res = await axiosWithAuthorization.delete(`/sprints/${sprintId}`);
+        console.log("스프린트 삭제 성공:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "스프린트를 삭제할 수 없습니다.";
+        throw new Error(message);
+    }
+}
