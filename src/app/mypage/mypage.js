@@ -11,17 +11,9 @@ import { ContributionCircle } from './contributionCircle';
 import ApproveModal from "./approve_modal";
 import LeaderModal from "./leader_modal";
 
-const projectUserData = {
-    "success": true,
-    "status": 200,
-    "data": {
-        "projectParticipantId": 4,
-        "projectNickname": "최현태",
-        "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-        "role": "ADMIN" 
-    },
-    "timestamp": "2025-03-19T21:42:40.59254"
-}
+import { fetchProjectData, fetchProjectUser } from "@/app/api/project/projectApi";
+
+
 
 const teamData = {
     "success": true,
@@ -33,22 +25,6 @@ const teamData = {
         "teamEmoji": "🍇"
     },
     "timestamp": "2025-02-10T14:18:46.135007"
-}
-
-const projectData = 
-{
-    "success": true,
-    "status": 200,
-    "data": 
-        {
-            "projectId": 1,
-            "projectTitle": "Devfit",
-            "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
-            "projectGoal": "개발자 건강을 위한 협업 툴 개발",
-            "startDt": "2024-01-01",
-            "dueDt": "2026-01-01"
-        },
-    "timestamp": "2025-02-06T09:56:45.150727"
 }
 
 const sprintData = [
@@ -399,11 +375,37 @@ const taskData = [
     }
 ]
 
-export default function My() {
+export default function My({ projectId }) {
+    const ProjectId = Number(projectId);
+
+    const [projectUserData, setProjectUserData] = useState(null);
+    const [projectData, setProjectData] = useState(null);
+
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
     const [isLeaderModalOpen, setIsLeaderModalOpen] = useState(false);
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
+
+    useEffect(() => {
+        const getProjectInfo = async () => {
+            try {
+                const userData = await fetchProjectUser(ProjectId);
+                setProjectUserData(userData);
+                console.log("프로필 이미지:", userData?.profileImageUrl);
+            } catch (err) {
+                console.error("프로젝트 유저 정보 에러:", err.message);
+            }
+
+            try {
+                const data = await fetchProjectData(ProjectId);
+                setProjectData(data);
+            } catch (err) {
+                console.error("프로젝트 데이터 에러:", err.message);
+            }
+        };
+
+        getProjectInfo();
+    }, []);
 
     const handlePrevSprint = () => {
         setCurrentSprintIndex((prev) => Math.max(prev - 1, 0));
@@ -415,7 +417,7 @@ export default function My() {
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------------여기 아래부터 시작------------------------------------>
-
+    
     const [visibleTasks, setVisibleTasks] = useState([]);
     const [taskPage, setTaskPage] = useState(0);
     const [hasMoreTasks, setHasMoreTasks] = useState(true);
@@ -496,21 +498,25 @@ export default function My() {
         return enableScroll;
     }, [isApproveModalOpen, isLeaderModalOpen]);
 
+    if (!projectUserData || !projectData) {
+        return <div>로딩 중...</div>;
+    }
+
     return (
         <>
         <ContentContainer>
             <M.Container style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <M.ProfileSection>
-                    <M.ProfileImage $profileImage={projectUserData.data.profileImageUrl} />
+                    <M.ProfileImage $profileImage={projectUserData?.profileImageUrl} />
                     <M.ProfileInfo>
-                        <M.Username>{projectUserData.data.projectNickname} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
+                        <M.Username>{projectUserData?.projectNickname} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
                         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
 
-                        <Link href={`/project/${projectData.data.projectId}/feedback`}>
+                        <Link href={`/project/${projectData?.projectId}/feedback`}>
                             <M.EvaluationButton>동료평가 메세지</M.EvaluationButton>
                         </Link>
                         
-                        {projectUserData.data.role === "ADMIN" && (
+                        {projectUserData?.role === "ADMIN" && (
                             <>
                             <M.ApproveButton onClick={() => setIsApproveModalOpen(true)}>가입 신청</M.ApproveButton>
                             <M.LeaderButton onClick={() => setIsLeaderModalOpen(true)}>팀장 변경</M.LeaderButton>
@@ -523,11 +529,11 @@ export default function My() {
                 <div style={{ width: '750px', textAlign: 'left', position: 'relative', marginTop: '10px'}}>
                     <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '100px' }}>
                         <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px' }}>{teamData.data.teamName}</span>
-                        <span>{projectData.data.projectTitle}</span>
+                        <span>{projectData?.projectTitle}</span>
                     </h2>
                     <Divider1 />
                     <p style={{ fontSize: '15px', color: '#4F3DBD', marginTop: '10px', marginLeft: '20px' }}>
-                        {projectData.data.projectDescription}
+                        {projectData?.projectDescription}
                     </p>
 
                     <M.SprintBox id="sprint-box" style={{ position: 'relative' }}>
@@ -557,7 +563,7 @@ export default function My() {
                         <M.RoleWrapper>
                             <M.RoleTitle>역할</M.RoleTitle>
                             <M.RoleText>
-                            {projectUserData.data.role === "ADMIN" ? "팀장" : "팀원"}
+                            {projectUserData?.data?.role === "ADMIN" ? "팀장" : "팀원"}
                             </M.RoleText>
                         </M.RoleWrapper>
 

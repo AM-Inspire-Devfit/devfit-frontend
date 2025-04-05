@@ -1,6 +1,6 @@
 "use client";  
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Link from "next/link";
@@ -18,6 +18,7 @@ import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
 import { fetchProjectData, fetchProjectUser, fetchProjectMemberList } from "@/app/api/project/projectApi";
+import { fetchSprintTaskData } from "@/app/api/sprint/sprintApi";
 
 import Image from "next/image";
 
@@ -31,72 +32,6 @@ import { useAlert } from "@/context/AlertContext";
 
 
     const sprintData = [
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "id": 1,
-            "title": "1",
-            "goal": "MVP 개발",
-            "startDt": "2025-02-01",
-            "dueDt": "2025-03-01",
-            "status": "NOT_STARTED",
-            "progress": 20.0
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 1,
-            "sort": [],
-            "offset": 0,
-            "unpaged": false,
-            "paged": true
-        },
-        "first": true,
-        "last": false,
-        "size": 1,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 1,
-        "empty": false
-        },
-        "timestamp": "2025-03-06T22:22:06.395628"
-    },
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "id": 2,
-            "title": "2",
-            "goal": "MVP2 개발",
-            "startDt": "2025-03-01",
-            "dueDt": "2025-04-04",
-            "status": "NOT_STARTED",
-            "progress": 50.0
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 1,
-            "sort": [],
-            "offset": 0,
-            "unpaged": false,
-            "paged": true
-        },
-        "first": false,
-        "last": true,
-        "size": 1,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 1,
-        "empty": false
-        },
-        "timestamp": "2025-03-06T22:23:36.017048"
-    }
 ]
 
 const sprintContributionData = [
@@ -456,6 +391,8 @@ export default function Project({projectId}) {
 
     const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
 
+    const [sprintData, setSprintData] = useState([]);
+
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
     const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
@@ -501,6 +438,21 @@ export default function Project({projectId}) {
         if (projectId) getProjectData();
     }, [projectId]);
 
+
+    const getSprintTaskData = async () => {
+        try {
+            const response = await fetchSprintTaskData(projectId);
+            console.log("스프린트 응답 데이터:", response);
+            setSprintData(response.content);
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    };
+
+    useEffect(() => {
+    if (projectId) getSprintTaskData();
+    }, [projectId]);
+
     // sprint 수정 모달 열기/닫기 함수
     const handleSprintModal = () => setIsSprintModalOpen(prev => !prev);
 
@@ -509,8 +461,7 @@ export default function Project({projectId}) {
         setIsCreateSprintModalOpen(true);
         setGoal("");    
 
-        if (sprintData.length === 0) {
-            // Sprint 생성이면 오늘 날짜
+        if (!sprintData || sprintData.length === 0) {
             setStartDate(today);
         }
         setDueDate(""); // 사용자가 입력하게 비워두기 
@@ -567,38 +518,49 @@ export default function Project({projectId}) {
         }));
     };
 
-    // 색상 적용된 Sprint 데이터
-    const sprintDataWithColors = sprintData.map((sprintObj, idx) => {
-        const sprintContent = sprintObj.data.content[0]; 
-        if (!sprintContent) return null; 
+    useEffect(() => {
+        console.log("📦 sprintData 구조 확인:", sprintData);
+      }, [sprintData]);
 
-        const sprintContributionsForSprint = sprintContributionData.find(item =>
-            item.data?.[0]?.sprintId === sprintContent.id
-        )?.data ?? [];
+    const sprintDataWithColors = useMemo(() => {
+        if (!Array.isArray(sprintData)) return [];
     
-        return {
-            sprint_id: sprintContent.id,
-            sprint_num: sprintContent.title,
-            goal: sprintContent.goal,
-            sprint_start: sprintContent.startDt,
-            sprint_end: sprintContent.dueDt,
-            progress: sprintContent.progress ?? 0,
-            last: sprintObj.data.last,
-            title: sprintContent.title,
-            startDt: sprintContent.startDt,
-            dueDt: sprintContent.dueDt,
-            member: mergeProjectMembersWithContributions(
-                projectMembers,
-                sprintContributionsForSprint
-            ),
-        };
-    }).filter(Boolean); 
-
+        const result = sprintData
+            .map((sprintObj, idx) => {
+                const sprintContent = sprintObj; // 중요 포인트
+                if (!sprintContent) return null;
+    
+                const sprintContributionsForSprint = sprintContributionData.find(item =>
+                    item.data?.[0]?.sprintId === sprintContent.id
+                )?.data ?? [];
+    
+                return {
+                    sprint_id: sprintContent.id,
+                    sprint_num: sprintContent.title,
+                    goal: sprintContent.goal,
+                    sprint_start: sprintContent.startDt,
+                    sprint_end: sprintContent.dueDt,
+                    progress: sprintContent.progress ?? 0,
+                    last: sprintObj.last,
+                    title: sprintContent.title,
+                    startDt: sprintContent.startDt,
+                    dueDt: sprintContent.dueDt,
+                    member: mergeProjectMembersWithContributions(
+                        projectMembers,
+                        sprintContributionsForSprint
+                    ),
+                };
+            })
+            .filter(Boolean);
+    
+        console.log("🎯 sprintDataWithColors 결과:", result); 
+        return result;
+    }, [sprintData, projectMembers]);
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
     const currentSprint = sprintDataWithColors[currentSprintIndex]; 
 
-    const sprint = sprintData.find(s => s.sprint_num === currentSprint.sprint_num);
+    const sprint = sprintDataWithColors.find(s => s.sprint_num === currentSprint?.sprint_num);
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
@@ -615,7 +577,28 @@ export default function Project({projectId}) {
         }));
     };
 
-    const currentSprintTasks = getTaskDataBySprintId(currentSprint.sprint_id);
+    const currentSprintTasks = currentSprint
+        ? getTaskDataBySprintId(currentSprint.sprint_id)
+        : [];
+
+    useEffect(() => {
+        if (!sprintDataWithColors.length) return;
+    
+        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
+            sprint.sprint_start <= today && sprint.sprint_end >= today
+        );
+    
+        if (sprintIndex !== -1) {
+            setCurrentSprintIndex(sprintIndex);
+        } else {
+            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
+            if (upcomingSprintIndex !== -1) {
+                setCurrentSprintIndex(upcomingSprintIndex);
+            } else {
+                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
+            }
+        }
+    }, [sprintDataWithColors]);
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------------여기 위까지 끝-------------------------------------->
@@ -638,8 +621,10 @@ export default function Project({projectId}) {
         }
     };
 
-    const isFeedbackDay = today === currentSprint.sprint_end;
-    const sprintsWithFeedback = sprintData.filter(sprint => sprint.sprint_end === today);
+    const isFeedbackDay = currentSprint && currentSprint.sprint_end === today;
+    const sprintsWithFeedback = Array.isArray(sprintDataWithColors)
+        ? sprintDataWithColors.filter(sprint => sprint.sprint_end === today)
+        : [];
 
     useEffect(() => {
         if (!currentSprint) return;
@@ -662,15 +647,13 @@ export default function Project({projectId}) {
         }
     }, [currentSprint, projectUser, currentSprintIndex]);
 
-    console.log("projectUser", projectUser);
-    console.log("currentSprintIndex", currentSprintIndex);
-    console.log("isLastSprint", currentSprintIndex === sprintDataWithColors.length - 1);
-
     const lastSprint = sprintDataWithColors[sprintDataWithColors.length - 1];
 
     const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
 
     useEffect(() => {
+        if (!sprintDataWithColors.length) return;
+
         const sprintIndex = sprintDataWithColors.findIndex(sprint =>
             sprint.sprint_start <= today && sprint.sprint_end >= today
         );
@@ -682,7 +665,7 @@ export default function Project({projectId}) {
             if (upcomingSprintIndex !== -1) {
                 setCurrentSprintIndex(upcomingSprintIndex);
             } else {
-                setCurrentSprintIndex(sprintDataWithColors.length - 1);
+                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
             }
         }
     }, []);
@@ -781,146 +764,7 @@ export default function Project({projectId}) {
                     </div>
                 )}
 
-            {!showCreateSprintBox ? (
-                    <>
-                <P.ChartWrapper>
-                    <P.ChartTitle>Sprint {currentSprint.sprint_num}</P.ChartTitle>
-
-                    {/* 팀원 리스트 */}
-                    <P.ScrollableMemberList>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                    {currentSprint.member.map((member, index) => (
-                        <P.ProjectMember key={`${member.id}-${index}`}> 
-                        <P.ProfileContainer>
-                            <P.ProfileMain $profileImage={member.profileImage} />
-                            <P.ProfileIcon color={member.color} />
-                        </P.ProfileContainer>
-                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
-                        <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
-                        {projectUser && member.id !== projectUser.projectParticipantId &&
-                            member.name !== "알수없음" && 
-                            <Link 
-                            href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
-                            <P.FeedbackButton hidden={!isFeedbackDay}>
-                                동료 평가
-                            </P.FeedbackButton>
-                            </Link>
-                        }
-                        </P.ProjectMember>
-                    ))}
-                    </P.ScrollableMemberList>
-
-                    {/* 기여도 차트 */}
-                    <P.DonutChartContainer>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                        {isClient && (
-                        <PieChart width={300} height={300}>
-                            <Pie
-                                data={currentSprint.member}
-                                dataKey="value"
-                                cx="50%"
-                                cy="50%"
-                                innerRadius="65%" 
-                                outerRadius="90%" 
-                                startAngle={90}
-                                endAngle={450}
-                                stroke="none"
-                            >
-                                {currentSprint.member.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                            </Pie>
-                        </PieChart>
-                        )}
-                    </P.DonutChartContainer>
-                </P.ChartWrapper>
-
-                <div style={{ width: '80%', minWidth: '400px', textAlign: 'left', marginTop: '5px', position: 'relative', }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', flex: 1 }}>
-                                <span style={{ fontSize: '23px', marginLeft: '20px' }}>Sprint {currentSprint.title}</span>
-                                <span style={{ fontSize: '12px', marginLeft: '15px' }}>
-                                    {currentSprint.startDt} ~ {currentSprint.dueDt}
-                                </span>
-                            </h2>
-                            <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
-                                {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
-                                <Image
-                                    src="/img/edit.png" 
-                                    alt="icon"
-                                    width={20}  
-                                    height={20}
-                                    priority
-                                />
-                                )}
-                            </div>
-                            <SprintModal 
-                                isOpen={isSprintModalOpen}
-                                onClose={handleSprintModal}
-                                sprint={currentSprint.title}
-                                goal={currentSprint.goal}
-                                setGoal={setGoal}
-                                startDate={currentSprint.startDt}
-                                setStartDate={setStartDate}  
-                                dueDate={currentSprint.dueDt}
-                                setDueDate={setDueDate}  
-                                isLastSprint={currentSprint.last} 
-                            />
-                        </div>
-                        <Divider1 />
-                        <p style={{ fontSize: '14px', fontWeight: 400, color: '#4F3DBD', marginTop: '10px', marginLeft: '20px', marginBottom: '25px' }}>
-                            {currentSprint.goal}
-                        </p>
-                    </div>
-
-                <P.ProgressContainer>
-                    <P.ProgressLabels>
-                        <span>0</span>
-                        <span>50</span>
-                        <span>100</span>
-                    </P.ProgressLabels>
-                    <P.ProgressBarWrapper>
-                        <P.ProgressBar progress={currentSprint.progress} /> 
-                    </P.ProgressBarWrapper>
-                </P.ProgressContainer>
-                
-                <P.SprintBox>
-                    Task
-                    <P.TaskGrid>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                        {currentSprintTasks?.map((item, index) => (
-                            <P.TaskItem key={`task-${index}`}> 
-                                <P.TaskCheckbox
-                                    checked={item.toDoStatus === "COMPELTED"} readOnly
-                                />
-                                {item.task}
-                            </P.TaskItem>
-                        ))}
-                    </P.TaskGrid>
-                    <P.ButtonWrapper>
-                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
-                    <Link
-                        href={{
-                            pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
-                            query: {
-                            sprint_num: currentSprint.sprint_num,
-                            sprint_start: currentSprint.startDt,
-                            sprint_end: currentSprint.dueDt,
-                            sprint_goal: currentSprint.goal,
-                            sprint_progress: currentSprint.progress
-                            }
-                        }}
-                        >
-                            <P.TaskButton>상세보기</P.TaskButton>
-                        </Link>
-                        )}
-                    </P.ButtonWrapper>
-                </P.SprintBox>
-                </>
-                ) : (
+                {(!sprintDataWithColors.length || showCreateSprintBox) ? (
                     // Sprint 생성 상자
                     <div style={{
                         width: '100%',
@@ -963,8 +807,161 @@ export default function Project({projectId}) {
                             dueDate={dueDate}
                             setDueDate={setDueDate}  
                             isLastSprint={true} 
+                            projectId={projectId}
+                            onSprintCreated={async () => {
+                                await getSprintTaskData();
+                                setShowCreateSprintBox(false);
+                                setCurrentSprintIndex(sprintDataWithColors.length); 
+                            }}
                         />
                     </div>
+                ) : (
+                    <>
+                <P.ChartWrapper>
+                    <P.ChartTitle>Sprint {currentSprint?.sprint_num}</P.ChartTitle>
+
+                    {/* 팀원 리스트 */}
+                    <P.ScrollableMemberList>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
+                    {currentSprint?.member?.map((member, index) => (
+                        <P.ProjectMember key={`${member.id}-${index}`}> 
+                        <P.ProfileContainer>
+                            <P.ProfileMain $profileImage={member.profileImage} />
+                            <P.ProfileIcon color={member.color} />
+                        </P.ProfileContainer>
+                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
+                        <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
+                        {projectUser && member.id !== projectUser.projectParticipantId &&
+                            member.name !== "알수없음" && 
+                            <Link 
+                            href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                            <P.FeedbackButton hidden={!isFeedbackDay}>
+                                동료 평가
+                            </P.FeedbackButton>
+                            </Link>
+                        }
+                        </P.ProjectMember>
+                    ))}
+                    </P.ScrollableMemberList>
+
+                    {/* 기여도 차트 */}
+                    <P.DonutChartContainer>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
+                        {isClient && (
+                        <PieChart width={300} height={300}>
+                            <Pie
+                                data={currentSprint?.member}
+                                dataKey="value"
+                                cx="50%"
+                                cy="50%"
+                                innerRadius="65%" 
+                                outerRadius="90%" 
+                                startAngle={90}
+                                endAngle={450}
+                                stroke="none"
+                            >
+                                {currentSprint?.member.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                        )}
+                    </P.DonutChartContainer>
+                </P.ChartWrapper>
+
+                <div style={{ width: '80%', minWidth: '400px', textAlign: 'left', marginTop: '5px', position: 'relative', }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', flex: 1 }}>
+                                <span style={{ fontSize: '23px', marginLeft: '20px' }}>Sprint {currentSprint?.title}</span>
+                                <span style={{ fontSize: '12px', marginLeft: '15px' }}>
+                                    {currentSprint?.startDt} ~ {currentSprint?.dueDt}
+                                </span>
+                            </h2>
+                            <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
+                                {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
+                                <Image
+                                    src="/img/edit.png" 
+                                    alt="icon"
+                                    width={20}  
+                                    height={20}
+                                    priority
+                                />
+                                )}
+                            </div>
+                            <SprintModal 
+                                isOpen={isSprintModalOpen}
+                                onClose={handleSprintModal}
+                                sprint={currentSprint?.title}
+                                goal={currentSprint?.goal}
+                                setGoal={setGoal}
+                                startDate={currentSprint?.startDt}
+                                setStartDate={setStartDate}  
+                                dueDate={currentSprint?.dueDt}
+                                setDueDate={setDueDate}  
+                                isLastSprint={currentSprint?.last} 
+                                onSprintCreated={() => {
+                                    getSprintTaskData().then(() => {
+                                        setShowCreateSprintBox(false);
+                                        setTimeout(() => {
+                                            setCurrentSprintIndex(prev => prev + 1);
+                                        }, 100);
+                                    });
+                                }}
+                            />
+                        </div>
+                        <Divider1 />
+                        <p style={{ fontSize: '14px', fontWeight: 400, color: '#4F3DBD', marginTop: '10px', marginLeft: '20px', marginBottom: '25px' }}>
+                            {currentSprint?.goal}
+                        </p>
+                    </div>
+
+                <P.ProgressContainer>
+                    <P.ProgressLabels>
+                        <span>0</span>
+                        <span>50</span>
+                        <span>100</span>
+                    </P.ProgressLabels>
+                    <P.ProgressBarWrapper>
+                        <P.ProgressBar progress={currentSprint?.progress} /> 
+                    </P.ProgressBarWrapper>
+                </P.ProgressContainer>
+                
+                <P.SprintBox>
+                    Task
+                    <P.TaskGrid>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
+                        {currentSprintTasks?.map((item, index) => (
+                            <P.TaskItem key={`task-${index}`}> 
+                                <P.TaskCheckbox
+                                    checked={item.toDoStatus === "COMPELTED"} readOnly
+                                />
+                                {item.task}
+                            </P.TaskItem>
+                        ))}
+                    </P.TaskGrid>
+                    <P.ButtonWrapper>
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
+                    <Link
+                        href={{
+                            pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
+                            query: {
+                            sprint_num: currentSprint?.sprint_num,
+                            sprint_start: currentSprint?.startDt,
+                            sprint_end: currentSprint?.dueDt,
+                            sprint_goal: currentSprint?.goal,
+                            sprint_progress: currentSprint?.progress
+                            }
+                        }}
+                        >
+                            <P.TaskButton>상세보기</P.TaskButton>
+                        </Link>
+                        )}
+                    </P.ButtonWrapper>
+                </P.SprintBox>
+                </>
                 )}
             
                 {/* 오른쪽 화살표 */}
@@ -1003,7 +1000,7 @@ export default function Project({projectId}) {
                     setStartTime={setStartTime}
                     endTime={endTime}
                     setEndTime={setEndTime}
-                    sprintNum={currentSprint.sprint_num}
+                    sprintNum={currentSprint?.sprint_num}
                     isEditing={!!selectedMeeting} 
                 />
                 
@@ -1011,16 +1008,17 @@ export default function Project({projectId}) {
                 <P.MeetingContainer>
                     {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
                      <--------------------------------------map 함수 부분--------------------------------------> */}
+                    {currentSprint?.sprint_start && currentSprint?.sprint_end && (
                     <SprintCalendar 
-                        sprintStart={currentSprint.sprint_start} 
-                        sprintEnd={currentSprint.sprint_end}
+                        sprintStart={currentSprint?.sprint_start} 
+                        sprintEnd={currentSprint?.sprint_end}
                         meetingData={
-                            (meetingData[currentSprint.sprint_num]?.content || []).map(meeting => {
+                            (meetingData[currentSprint?.sprint_num]?.content || []).map(meeting => {
                             const [date, startTime] = meeting.meetingStart.split("T");
                             const [, endTime] = meeting.meetingEnd.split("T");
                         
                             return {
-                                sprint_num: Number(currentSprint.sprint_num),
+                                sprint_num: Number(currentSprint?.sprint_num),
                                 title: meeting.meetingTitle,
                                 date: date,
                                 startTime: startTime.slice(0, 5),
@@ -1035,6 +1033,7 @@ export default function Project({projectId}) {
                             {/*}}*/}
                         }}
                     />
+                    )}
                 </P.MeetingContainer>
             </div>
             )}

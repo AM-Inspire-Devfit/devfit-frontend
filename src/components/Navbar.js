@@ -61,7 +61,7 @@ export const LogoutButton = styled.button`
   }
 `;
 
-const Navbar = () => {
+const Navbar = ({ projectId }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -91,8 +91,18 @@ const Navbar = () => {
       </LogoContainer>
       </Link>
       <NavLinks>
-        <StyledLink href="/project/${project_id}/">Home</StyledLink>
-        <StyledLink href="/project/${project_id}/mypage">MyPage</StyledLink>
+      <StyledLink href={projectId ? `/project/${projectId}` : "/"}>Home</StyledLink>
+      <StyledLink 
+        href={projectId ? `/project/${projectId}/mypage` : "/"} 
+        onClick={(e) => {
+          if (!projectId) {
+            e.preventDefault();
+            alert("프로젝트 ID가 없습니다.");
+          }
+        }}
+      >
+        MyPage
+      </StyledLink>
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </NavLinks>
     </NavbarContainer>

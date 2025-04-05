@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Container = styled.div`
     width: 750px;
@@ -23,9 +23,11 @@ export const ProfileImage = styled.div`
     margin-left: 40px;
 
     ${({ $profileImage }) =>
-        $profileImage
-            ? `background-image: url(${$profileImage});`
-            : `background-image: url('/img/default-profile.png');`}
+        css`
+            background-image: url(${
+                $profileImage || "/img/default_profile.png"
+            });
+        `}
 `;
 
 export const ProfileInfo = styled.div`
