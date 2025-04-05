@@ -972,7 +972,7 @@ export default function Project({projectId}) {
                 )}
             </P.BoxContainer>
                 
-            {!showCreateSprintBox && (
+            {sprintDataWithColors.length > 0 && (
             <div style={{ width: '750px', textAlign: 'left', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
