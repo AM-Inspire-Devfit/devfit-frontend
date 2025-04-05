@@ -3,7 +3,7 @@ import * as m from '../../components/modal_s';
 import { IoClose } from "react-icons/io5";  
 import { useEffect, useState} from "react";
 
-import { createSprint, fetchSprintData, updateSprintData } from "@/app/api/sprint/sprintApi";
+import { createSprint, fetchSprintData, updateSprintData, deleteSprintData } from "@/app/api/sprint/sprintApi";
 
 import { useAlert } from "@/context/AlertContext";
 
@@ -54,7 +54,7 @@ const DateInputWrapper = styled.div`
 
 
 export default function SprintModal({ 
-    isOpen, onClose, sprintId, title, isLastSprint, projectId, onSprintCreated, isEdit}) {
+    isOpen, onClose, sprintId, title, isLastSprint, projectId, onSprintCreated, onSprintEdited, onSprintDeleted, isEdit}) {
     const { showAlert } = useAlert();
 
     const [sprintGoal, setSprintGoal] = useState("");
@@ -101,7 +101,7 @@ export default function SprintModal({
             };
 
             await createSprint(updatedData);
-            showAlert("success", `Sprint ${title} 생성 완료!`);
+            showAlert("success", `Sprint ${title} 생성 완료`);
             onClose();
 
             if (onSprintCreated)  {
@@ -124,13 +124,30 @@ export default function SprintModal({
             if (title) updatedData.title = String(title);
     
             await updateSprintData(sprintId, updatedData); 
-            showAlert("success", `Sprint ${title} 수정 완료!`);
+            showAlert("success", `Sprint ${title} 수정 완료`);
 
-            if (onSprintCreated) {
-                await onSprintCreated(); 
+            if (onSprintEdited) {
+                await onSprintEdited(); 
             }
             
             onClose();
+        } catch (err) {
+            showAlert("error", err.message);
+        }
+    };
+
+    const handleDeleteSprint = async () => {
+        const confirmed = window.confirm(`Sprint ${title}을(를) 삭제하시겠습니까?`);
+        if (!confirmed) return;
+    
+        try {
+            await deleteSprintData(sprintId);
+            showAlert("success", `Sprint ${title} 삭제 완료`);
+            onClose();
+    
+            if (onSprintDeleted) {
+                await onSprintDeleted(); // 리스트 새로고침
+            }
         } catch (err) {
             showAlert("error", err.message);
         }
@@ -193,7 +210,8 @@ export default function SprintModal({
                         gap: "10px"
                     }}
                 >
-                    {isEdit && <m.DeleteButton>삭제</m.DeleteButton>}
+                    {isEdit && 
+                    <m.DeleteButton onClick={handleDeleteSprint}>삭제</m.DeleteButton>}
                     <m.SubmitButton onClick={isEdit ? handleEditSprint : handleCreateSprint}>
                         {isEdit ? "수정" : "생성"}
                     </m.SubmitButton>

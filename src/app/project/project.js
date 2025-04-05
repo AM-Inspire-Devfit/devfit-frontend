@@ -924,12 +924,22 @@ export default function Project({projectId}) {
                                 dueDate={currentSprint?.dueDt}
                                 setDueDate={setDueDate}  
                                 isLastSprint={currentSprint?.last} 
-                                onSprintCreated={async () => {
+                                onSprintEdited={async () => {
                                     await getSprintTaskData(); 
                                     const index = sprintData.findIndex(s => s.id === currentSprint?.sprint_id);
                                     if (index !== -1) {
                                         setCurrentSprintIndex(index); 
                                     }
+                                }}
+                                onSprintDeleted={async () => {
+                                    setSprintData([]);
+                                    setLastSprintId(null);
+                                    setSprintLast(false);
+                                
+                                    await getSprintTaskData(); 
+                                
+                                    setCurrentSprintIndex(0);  
+                                    setShowCreateSprintBox(false); 
                                 }}
                                 isEdit={true} 
                             />
