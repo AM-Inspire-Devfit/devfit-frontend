@@ -23,7 +23,7 @@ import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
 import { fetchUserData } from "../api/user/userApi";
-import { fetchTeamData, fetchTeamCode, updateTeamEmoji, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
 import { fetchProjectListData } from "@/app/api/project/projectApi";
 
 import { useAlert } from "@/context/AlertContext";
@@ -110,23 +110,6 @@ export default function Team({ teamId }) {
         
         getTeamInfo();
     }, [TeamId]);
-
-    const handleEmojiClick = async (emojiData) => {
-        const newEmoji = emojiData.emoji;
-    
-        try {
-            const updated = await updateTeamEmoji(TeamId, newEmoji);
-    
-            setTeamInfo((prev) => ({
-                ...prev,
-                teamEmoji: updated.teamEmoji, 
-            }));
-        } catch (error) {
-            showAlert("error", error.message);
-        }
-    
-        setShowEmojiPicker(false); // emoji Picker 닫기
-    };
 
     // 초대코드 생성 모달
     const handleInviteClick = async () => {
@@ -292,24 +275,68 @@ export default function Team({ teamId }) {
             saveTeamInfo();
         }
     };
+
+    const originalTeamName = useRef("");
+
+    // 팀 정보 로드 시 초기 값 저장
+    useEffect(() => {
+        if (teamInfo) {
+            originalTeamName.current = teamInfo.teamName;
+        }
+    }, [teamInfo]);
+
+    const nameInputRef = useRef(null);
     
     const saveTeamInfo = async () => {
         const name = teamInfo.teamName?.trim();
-        const desc = teamInfo.teamDescription?.trim();
+        const desc = teamInfo.teamDescription?.trim(); 
     
         if (!name) {
             alert("팀 이름은 필수입니다.");
-            return;
+
+            try {
+                const latestTeamInfo = await fetchTeamData(TeamId);
+
+                // 원래 팀 이름으로만 수정 요청, 설명은 유지
+                const updated = await updateTeamData(TeamId, latestTeamInfo.teamName, desc, null);
+
+                setTeamInfo(updated);
+                originalTeamName.current = updated.teamName;
+            } catch (error) {
+                showAlert("error", "팀 정보를 다시 불러오는 데 실패했습니다.");
+            }
+    
+            setIsEditing(false);
+            return; // isEditing 유지
         }
     
         try {
-            const updated = await updateTeamData(TeamId, name, desc);
+            const updated = await updateTeamData(TeamId, name, desc, null);
             setTeamInfo(updated);
+            originalTeamName.current = updated.teamName;
             setIsEditing(false);
             showAlert("success", "팀 정보가 수정되었습니다.");
         } catch (error) {
             alert(error.message);
         }
+    };
+
+    const handleEmojiClick = async (emojiData) => {
+        const newEmoji = emojiData.emoji?.trim(); 
+    
+        try {
+            const updated = await updateTeamData(TeamId, null, null, newEmoji);
+    
+            setTeamInfo((prev) => ({
+                ...prev,
+                teamEmoji: updated.teamEmoji, 
+            }));
+            showAlert("success", "이모지가 수정되었습니다.");
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    
+        setShowEmojiPicker(false); // emoji Picker 닫기
     };
     
     // 이모지 클릭 시 위치 계산
@@ -431,7 +458,12 @@ export default function Team({ teamId }) {
                             <T.StyledInput
                                 type="text"
                                 value={teamInfo.teamName}
-                                onChange={(e) => setTeamInfo({ ...teamInfo, teamName: e.target.value })} 
+                                onChange={(e) =>
+                                    setTeamInfo((prev) => ({
+                                        ...prev,
+                                        teamName: e.target.value,
+                                    }))
+                                }
                                 onKeyDown={handleKeyDown}
                                 autoFocus
                                 style={{
@@ -490,7 +522,7 @@ export default function Team({ teamId }) {
                                 height: "25px", 
                                 lineHeight: "25px", 
                                 marginTop: "5px",
-                                color: teamInfo.teamDescription ? "black" : "#A9A9A9", 
+                                color: teamInfo.teamDescription ? "#796AD9" : "#A9A9A9", 
                                 fontStyle: teamInfo.teamDescription ? "normal" : "italic" 
                             }}>
                                 {teamInfo.teamDescription || "팀에 대한 설명을 추가하세요!"}

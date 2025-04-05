@@ -442,7 +442,6 @@ export default function Project({projectId}) {
     const getSprintTaskData = async () => {
         try {
             const response = await fetchSprintTaskData(projectId);
-            console.log("스프린트 응답 데이터:", response);
             setSprintData(response.content);
         } catch (error) {
             showAlert("error", error.message);
@@ -518,10 +517,6 @@ export default function Project({projectId}) {
         }));
     };
 
-    useEffect(() => {
-        console.log("📦 sprintData 구조 확인:", sprintData);
-      }, [sprintData]);
-
     const sprintDataWithColors = useMemo(() => {
         if (!Array.isArray(sprintData)) return [];
     
@@ -553,7 +548,6 @@ export default function Project({projectId}) {
             })
             .filter(Boolean);
     
-        console.log("🎯 sprintDataWithColors 결과:", result); 
         return result;
     }, [sprintData, projectMembers]);
 

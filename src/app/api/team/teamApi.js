@@ -23,26 +23,13 @@ export const fetchTeamCode = async (teamId) => {
     }
 }
 
-// 팀 이모지 수정
-export const updateTeamEmoji = async (teamId, emoji) => {
-    try {
-        const res = await axiosWithAuthorization.patch(`/teams/${teamId}/emoji`, {
-            teamEmoji: emoji,
-        });
-        console.log("팀 이모지 수정:", res.data);
-        return res.data.data;
-    } catch (error) {
-        const message = error?.response?.data?.data?.message ?? "팀 이모지를 업데이트할 수 없습니다.";
-        throw new Error(message);
-    }
-};
-
-// 팀 이름 & 설명 수정
-export const updateTeamData = async (teamId, teamName, teamDescription) => {
+// 팀 이름 & 설명 & 이모지 수정
+export const updateTeamData = async (teamId, teamName, teamDescription, teamEmoji) => {
     try {
         const res = await axiosWithAuthorization.patch(`/teams/${teamId}`, {
             teamName,
             teamDescription,
+            teamEmoji,
         });
         console.log("팀 정보 수정 성공:", res.data);
         return res.data.data;
