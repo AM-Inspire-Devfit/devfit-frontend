@@ -13,9 +13,13 @@ export const createSprint = async (sprintData) => {
 };
 
 // 프로젝트별 스프린트 & 태스크 목록 조회
-export const fetchSprintTaskData = async (projectId) => {
+export const fetchSprintTaskData = async (projectId, lastSprintId = null) => {
     try {
-        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/project`);
+        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/project`,
+            { 
+                params: lastSprintId ? { lastSprintId } : {} 
+            }
+        );
         console.log("프로젝트별 스프린트 & 태스크 목록 조회:", res.data);
         return res.data.data;
     } catch (error) {

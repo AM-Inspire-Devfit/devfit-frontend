@@ -387,6 +387,8 @@ export default function Project({projectId}) {
 
     const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
 
+    const [lastSprintId, setLastSprintId] = useState(null);
+    const [sprintLast, setSprintLast] = useState(false); // 마지막 페이지 여부
     const [sprintData, setSprintData] = useState([]);
 
     //meeting
@@ -431,14 +433,31 @@ export default function Project({projectId}) {
     };
 
     useEffect(() => {   
-        if (projectId) getProjectData();
+        if (projectId) {
+            getProjectData(); 
+            setLastSprintId(null); 
+            getSprintTaskData();   
+            //loadAllSprintData();
+        }
     }, [projectId]);
 
 
-    const getSprintTaskData = async () => {
+    const getSprintTaskData = async (cursor = null) => {
         try {
-            const response = await fetchSprintTaskData(projectId);
-            setSprintData(response.content);
+            const response = await fetchSprintTaskData(projectId, cursor);
+    
+            if (cursor === null) {
+                setSprintData(response.content);
+            } else {
+                setSprintData(prev => [...prev, ...response.content]);
+            }
+    
+            const newLastId = response.content.length > 0
+                ? response.content[response.content.length - 1].id
+                : null;
+    
+            setLastSprintId(newLastId);
+            setSprintLast(response.last); // 마지막 여부 저장
         } catch (error) {
             //showAlert("error", error.message);
         }
@@ -571,34 +590,59 @@ export default function Project({projectId}) {
         ? getTaskDataBySprintId(currentSprint.sprint_id)
         : [];
 
-    useEffect(() => {
-        if (!processedSprintData.length) return;
     
-        const sprintIndex = processedSprintData.findIndex(sprint =>
-            sprint.sprint_start <= today && sprint.sprint_end >= today
-        );
+    // const loadAllSprintData = async () => {
+    //     let hasNext = true;
+    //     let cursor = null;
+    //     let allSprintData = [];
+        
+    //     while (hasNext) {
+    //         const response = await fetchSprintTaskData(projectId, cursor);
+    //         allSprintData = [...allSprintData, ...response.content];
+        
+    //         hasNext = !response.last;
+    //         cursor = response.content.length > 0
+    //         ? response.content[response.content.length - 1].id
+    //         : null;
+    //     }
+        
+    //     setSprintData(allSprintData);
+    //     const todayDate = new Date(today + "T00:00:00");
+
+    //     const processed = allSprintData.map((sprintContent, idx) => {
+    //         const startDate = new Date(sprintContent.startDt + "T00:00:00");
+    //         const endDate = new Date(sprintContent.dueDt + "T23:59:59");
+    //         return { idx, startDate, endDate };
+    //     });
     
-        if (sprintIndex !== -1) {
-            setCurrentSprintIndex(sprintIndex);
-        } else {
-            const upcomingSprintIndex = processedSprintData.findIndex(sprint => sprint.sprint_start > today);
-            if (upcomingSprintIndex !== -1) {
-                setCurrentSprintIndex(upcomingSprintIndex);
-            } else {
-                setCurrentSprintIndex(Math.max(0, processedSprintData.length - 1));
-            }
-        }
-    }, [processedSprintData]);
+    //     const sprintIndex = processed.find(p =>
+    //         p.startDate <= todayDate && todayDate <= p.endDate
+    //     )?.idx;
+    
+    //     if (sprintIndex !== undefined) {
+    //         setCurrentSprintIndex(sprintIndex);
+    //     } else {
+    //         const upcoming = processed.find(p => p.startDate > todayDate)?.idx;
+    //         setCurrentSprintIndex(
+    //             upcoming !== undefined ? upcoming : Math.max(0, processed.length - 1)
+    //         );
+    //     }
+    // };
+
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------------여기 위까지 끝-------------------------------------->
 
 
-    const handleNextSprint = () => {
+    const handleNextSprint = async () => {
         if (currentSprint.last) {
-            setShowCreateSprintBox(true); // 마지막 Sprint에서 클릭하면 생성 상자 표시
+            if (!sprintLast) {
+                await getSprintTaskData(lastSprintId);
+            } else {
+                setShowCreateSprintBox(true); // 마지막이면 Sprint 생성 상자
+            }
         } else {
-            setCurrentSprintIndex(prevIndex => prevIndex + 1);
+            setCurrentSprintIndex(prev => prev + 1);
         }
     };
 
@@ -640,25 +684,6 @@ export default function Project({projectId}) {
     const lastSprint = processedSprintData[processedSprintData.length - 1];
 
     const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
-
-    useEffect(() => {
-        if (!processedSprintData.length) return;
-
-        const sprintIndex = processedSprintData.findIndex(sprint =>
-            sprint.sprint_start <= today && sprint.sprint_end >= today
-        );
-    
-        if (sprintIndex !== -1) {
-            setCurrentSprintIndex(sprintIndex);
-        } else {
-            const upcomingSprintIndex = processedSprintData.findIndex(sprint => sprint.sprint_start > today);
-            if (upcomingSprintIndex !== -1) {
-                setCurrentSprintIndex(upcomingSprintIndex);
-            } else {
-                setCurrentSprintIndex(Math.max(0, processedSprintData.length - 1));
-            }
-        }
-    }, []);
 
     useEffect(() => {
         if (isSprintModalOpen && !isCreateSprintModalOpen && currentSprint) {
@@ -737,14 +762,14 @@ export default function Project({projectId}) {
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
              <--------------------------------------map 함수 부분--------------------------------------> */}
-            {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
+            {currentSprint?.sprint_end === today && (
             <P.AlertBox key={`feedback-${sprint.sprint_num}`}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
                     <span>Sprint {sprint.sprint_num} 동료평가를 잊지 마세요!</span>
                 </div>
             </P.AlertBox>
-            ))}
+            )}
 
             <P.BoxContainer>
                 {/* 왼쪽 화살표 (첫 Sprint가 아닐 때만 표시) */}
@@ -800,7 +825,10 @@ export default function Project({projectId}) {
                             isLastSprint={true} 
                             projectId={projectId}
                             onSprintCreated={async () => {
-                                await getSprintTaskData();
+                                setSprintData([]);           
+                                setLastSprintId(null);
+                                setSprintLast(false);
+                                await getSprintTaskData();  
                                 setShowCreateSprintBox(false);
                                 setCurrentSprintIndex(processedSprintData.length); 
                             }}
