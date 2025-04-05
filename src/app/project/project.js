@@ -30,10 +30,6 @@ import { useAlert } from "@/context/AlertContext";
         "#27AE60", "#D35400"
     ];
 
-
-    const sprintData = [
-]
-
 const sprintContributionData = [
     {
         "success": true,
@@ -444,7 +440,7 @@ export default function Project({projectId}) {
             const response = await fetchSprintTaskData(projectId);
             setSprintData(response.content);
         } catch (error) {
-            showAlert("error", error.message);
+            //showAlert("error", error.message);
         }
     };
 
@@ -517,17 +513,17 @@ export default function Project({projectId}) {
         }));
     };
 
-    const sprintDataWithColors = useMemo(() => {
+    const processedSprintData = useMemo(() => {
         if (!Array.isArray(sprintData)) return [];
     
-        const result = sprintData
-            .map((sprintObj, idx) => {
-                const sprintContent = sprintObj; // 중요 포인트
-                if (!sprintContent) return null;
+        const result = sprintData.map((sprintContent, idx) => {
+            if (!sprintContent) return null;
     
                 const sprintContributionsForSprint = sprintContributionData.find(item =>
                     item.data?.[0]?.sprintId === sprintContent.id
                 )?.data ?? [];
+        
+                const isLast = idx === sprintData.length - 1;
     
                 return {
                     sprint_id: sprintContent.id,
@@ -536,7 +532,7 @@ export default function Project({projectId}) {
                     sprint_start: sprintContent.startDt,
                     sprint_end: sprintContent.dueDt,
                     progress: sprintContent.progress ?? 0,
-                    last: sprintObj.last,
+                    last: isLast,
                     title: sprintContent.title,
                     startDt: sprintContent.startDt,
                     dueDt: sprintContent.dueDt,
@@ -552,9 +548,9 @@ export default function Project({projectId}) {
     }, [sprintData, projectMembers]);
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
-    const currentSprint = sprintDataWithColors[currentSprintIndex]; 
+    const currentSprint = processedSprintData[currentSprintIndex]; 
 
-    const sprint = sprintDataWithColors.find(s => s.sprint_num === currentSprint?.sprint_num);
+    const sprint = processedSprintData.find(s => s.sprint_num === currentSprint?.sprint_num);
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
@@ -576,23 +572,23 @@ export default function Project({projectId}) {
         : [];
 
     useEffect(() => {
-        if (!sprintDataWithColors.length) return;
+        if (!processedSprintData.length) return;
     
-        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
+        const sprintIndex = processedSprintData.findIndex(sprint =>
             sprint.sprint_start <= today && sprint.sprint_end >= today
         );
     
         if (sprintIndex !== -1) {
             setCurrentSprintIndex(sprintIndex);
         } else {
-            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
+            const upcomingSprintIndex = processedSprintData.findIndex(sprint => sprint.sprint_start > today);
             if (upcomingSprintIndex !== -1) {
                 setCurrentSprintIndex(upcomingSprintIndex);
             } else {
-                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
+                setCurrentSprintIndex(Math.max(0, processedSprintData.length - 1));
             }
         }
-    }, [sprintDataWithColors]);
+    }, [processedSprintData]);
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------------여기 위까지 끝-------------------------------------->
@@ -609,21 +605,21 @@ export default function Project({projectId}) {
     const handlePrevSprint = () => {
         if (showCreateSprintBox) {
             setShowCreateSprintBox(false); // Sprint 생성 화면에서 이전 Sprint로 돌아가기
-            setCurrentSprintIndex(sprintDataWithColors.length - 1); // 마지막 Sprint로 이동
+            setCurrentSprintIndex(processedSprintData.length - 1); // 마지막 Sprint로 이동
         } else if (currentSprintIndex > 0) {
             setCurrentSprintIndex(prevIndex => prevIndex - 1); // 이전 Sprint로 이동
         }
     };
 
     const isFeedbackDay = currentSprint && currentSprint.sprint_end === today;
-    const sprintsWithFeedback = Array.isArray(sprintDataWithColors)
-        ? sprintDataWithColors.filter(sprint => sprint.sprint_end === today)
+    const sprintsWithFeedback = Array.isArray(processedSprintData)
+        ? processedSprintData.filter(sprint => sprint.sprint_end === today)
         : [];
 
     useEffect(() => {
         if (!currentSprint) return;
     
-        const isLastSprint = currentSprintIndex === sprintDataWithColors.length - 1;
+        const isLastSprint = currentSprintIndex === processedSprintData.length - 1;
     
         const isNotParticipant =
             projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED" || projectUser === null;
@@ -641,25 +637,25 @@ export default function Project({projectId}) {
         }
     }, [currentSprint, projectUser, currentSprintIndex]);
 
-    const lastSprint = sprintDataWithColors[sprintDataWithColors.length - 1];
+    const lastSprint = processedSprintData[processedSprintData.length - 1];
 
     const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
 
     useEffect(() => {
-        if (!sprintDataWithColors.length) return;
+        if (!processedSprintData.length) return;
 
-        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
+        const sprintIndex = processedSprintData.findIndex(sprint =>
             sprint.sprint_start <= today && sprint.sprint_end >= today
         );
     
         if (sprintIndex !== -1) {
             setCurrentSprintIndex(sprintIndex);
         } else {
-            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
+            const upcomingSprintIndex = processedSprintData.findIndex(sprint => sprint.sprint_start > today);
             if (upcomingSprintIndex !== -1) {
                 setCurrentSprintIndex(upcomingSprintIndex);
             } else {
-                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
+                setCurrentSprintIndex(Math.max(0, processedSprintData.length - 1));
             }
         }
     }, []);
@@ -758,7 +754,7 @@ export default function Project({projectId}) {
                     </div>
                 )}
 
-                {(!sprintDataWithColors.length || showCreateSprintBox) ? (
+                {(!processedSprintData.length || showCreateSprintBox) ? (
                     // Sprint 생성 상자
                     <div style={{
                         width: '100%',
@@ -793,7 +789,8 @@ export default function Project({projectId}) {
                         <SprintModal 
                             isOpen={isCreateSprintModalOpen}
                             onClose={() => setIsCreateSprintModalOpen(false)}
-                            sprint={lastSprintNum + 1} 
+                            sprintId={currentSprint?.sprint_id}
+                            title={lastSprintNum + 1}
                             goal={goal}
                             setGoal={setGoal}
                             startDate={startDate}
@@ -805,8 +802,9 @@ export default function Project({projectId}) {
                             onSprintCreated={async () => {
                                 await getSprintTaskData();
                                 setShowCreateSprintBox(false);
-                                setCurrentSprintIndex(sprintDataWithColors.length); 
+                                setCurrentSprintIndex(processedSprintData.length); 
                             }}
+                            isEdit={false} 
                         />
                     </div>
                 ) : (
@@ -886,8 +884,11 @@ export default function Project({projectId}) {
                             </div>
                             <SprintModal 
                                 isOpen={isSprintModalOpen}
-                                onClose={handleSprintModal}
-                                sprint={currentSprint?.title}
+                                onClose={() => {
+                                    handleSprintModal();                
+                                }}
+                                sprintId={currentSprint?.sprint_id}
+                                title={currentSprint?.title}
                                 goal={currentSprint?.goal}
                                 setGoal={setGoal}
                                 startDate={currentSprint?.startDt}
@@ -895,14 +896,14 @@ export default function Project({projectId}) {
                                 dueDate={currentSprint?.dueDt}
                                 setDueDate={setDueDate}  
                                 isLastSprint={currentSprint?.last} 
-                                onSprintCreated={() => {
-                                    getSprintTaskData().then(() => {
-                                        setShowCreateSprintBox(false);
-                                        setTimeout(() => {
-                                            setCurrentSprintIndex(prev => prev + 1);
-                                        }, 100);
-                                    });
+                                onSprintCreated={async () => {
+                                    await getSprintTaskData(); 
+                                    const index = sprintData.findIndex(s => s.id === currentSprint?.sprint_id);
+                                    if (index !== -1) {
+                                        setCurrentSprintIndex(index); 
+                                    }
                                 }}
+                                isEdit={true} 
                             />
                         </div>
                         <Divider1 />
@@ -966,7 +967,7 @@ export default function Project({projectId}) {
                 )}
             </P.BoxContainer>
                 
-            {sprintDataWithColors.length > 0 && (
+            {processedSprintData.length > 0 && (
             <div style={{ width: '750px', textAlign: 'left', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
