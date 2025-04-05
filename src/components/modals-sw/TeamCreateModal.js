@@ -18,6 +18,26 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const disableScroll = () => {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    };
+
+    const enableScroll = () => {
+      document.documentElement.style.overflow = "auto";
+      document.body.style.overflow = "auto";
+    };
+
+    if (isOpen) {
+      disableScroll();
+    } else {
+      enableScroll();
+    }
+
+    return () => enableScroll();
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
@@ -61,7 +81,7 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
         <S.Form onSubmit={handleSubmit}>
           <S.FormGroup>
             <S.Label>
-              team 명 <S.Required>*</S.Required>
+              team 명 *
             </S.Label>
             <S.Input
               type="text"
@@ -73,7 +93,7 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
 
           <S.FormGroup>
             <S.Label>
-              상세 설명 <S.Required>*</S.Required>
+              상세 설명 
             </S.Label>
             <S.TextArea
               placeholder="팀에 대한 설명을 입력하세요"

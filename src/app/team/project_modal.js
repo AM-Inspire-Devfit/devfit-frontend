@@ -3,9 +3,21 @@ import { IoClose } from "react-icons/io5";
 
 import { useState, useEffect } from 'react';
 
-export default function ProjectModal({ onClose, isEditing = false, currentTitle = "", currentDescription = "", currentStartDate = "", currentDueDate = "" }) {
+import { createProject, updateProjectData, updateProjectDueDate} from "@/app/api/project/projectApi";
+
+export default function ProjectModal({ 
+        onClose, 
+        isEditing = false, 
+        currentTitle = "", 
+        currentDescription = "", 
+        currentStartDate = "", 
+        currentDueDate = "",
+        teamId,
+        projectId, // 프로젝트 수정
+        onProjectCreated, 
+    }) {
     const [projectName, setProjectName] = useState(currentTitle);
-    const [projectDescription, setProjectDescription] = useState(currentDescription);
+    const [projectDescription, setProjectDescription] = useState(currentDescription ?? "");
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState(currentDueDate); 
 
@@ -21,12 +33,50 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
 
     const isButtonDisabled = 
         projectName.trim() === "" || 
-        projectDescription.trim() === "" || 
         dueDate === "";
 
-    const handleSubmit = () => {
-        if (!isButtonDisabled) {
+    const handleSubmit = async () => {
+        if (isButtonDisabled) return;
+
+        try {
+            if (isEditing) {
+                const trimmedTitle = projectName.trim();
+                const trimmedDesc = projectDescription.trim();
+                const prevDesc = currentDescription?.trim?.() ?? null;  
+
+                // 이름과 설명이 이전 값과 다른지 확인
+                const titleChanged = trimmedTitle !== currentTitle;
+                const descChanged = (trimmedDesc === "" ? null : trimmedDesc) !== prevDesc;
+
+                if (titleChanged || descChanged) {
+                    const updatedData = {
+                        ...(titleChanged && { title: trimmedTitle }),
+                        ...(descChanged && { description: trimmedDesc }),
+                    };
+                    const res = await updateProjectData(projectId, updatedData);
+                    console.log("updateProjectData 응답값:", res);
+                }
+
+                const dueDateRes = await updateProjectDueDate(projectId, { dueDt: dueDate });
+                console.log("updateProjectDueDate 응답값:", dueDateRes);
+                console.log("프로젝트 수정 완료");
+            } else {
+                // 프로젝트 생성
+                const projectData = {
+                    teamId,
+                    projectTitle: projectName.trim(),
+                    dueDt: dueDate,
+                    projectDescription: projectDescription.trim() || null,
+                };
+                const res = await createProject(projectData);
+                console.log("createProject 응답값:", res);
+                console.log("프로젝트 생성 완료");
+            }
+    
+            onProjectCreated?.();
             onClose(); // 모달 닫기
+        } catch (error) {
+            console.error(`${isEditing ? "프로젝트 수정 실패" : "프로젝트 생성 실패"}:`, error.message);
         }
     };
 
@@ -57,6 +107,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
                     <m.Label style={{ color: "black", fontWeight: "bold", width: "90px" }}>프로젝트 명 *</m.Label>
                     <m.Input 
                         style={{ flex: 1, marginTop: "10px" }}
+                        placeholder="프로젝트 이름을 입력하세요"
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
                         />
@@ -64,7 +115,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
 
                 <m.InputWrapper style={{ alignItems: "flex-start" }}>
                     <m.Label style={{ color: "black", fontWeight: "bold", width: "90px", marginTop: "20px" }}>
-                        상세 설명 *
+                        상세 설명 
                     </m.Label>
                     <textarea
                         style={{
@@ -78,6 +129,7 @@ export default function ProjectModal({ onClose, isEditing = false, currentTitle 
                             resize: "none",
                             marginTop: "15px"
                         }}
+                        placeholder="프로젝트에 대한 설명을 입력하세요"
                         value={projectDescription}
                         onChange={(e) => setProjectDescription(e.target.value)}
                     />

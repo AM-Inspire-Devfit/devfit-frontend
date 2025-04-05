@@ -1,6 +1,8 @@
 "use client";  
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+
 import Link from "next/link";
 
 import { PieChart, Pie, Cell } from "recharts";
@@ -15,7 +17,12 @@ import SprintModal from "./sprint_modal";
 import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
+import { fetchProjectData, fetchProjectUser, fetchProjectMemberList } from "@/app/api/project/projectApi";
+import { fetchSprintTaskData } from "@/app/api/sprint/sprintApi";
+
 import Image from "next/image";
+
+import { useAlert } from "@/context/AlertContext";
 
     const colorData = [
         "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
@@ -23,175 +30,8 @@ import Image from "next/image";
         "#27AE60", "#D35400"
     ];
 
-    const projectUserData = {
-        "success": true,
-        "status": 200,
-        "data": {
-            "projectParticipantId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-            "role": "ADMIN" 
-        },
-        "timestamp": "2025-03-19T21:42:40.59254"
-    }
-
-    // const projectUserData = {
-    //     "success": false,
-    //     "status": 403,
-    //     "data": {
-    //         "errorClassName": "PROJECT_PARTICIPATION_REQUIRED",
-    //         "message": "해당 프로젝트 참여자가 아닙니다."
-    //         },
-    //     "timestamp": "2025-03-03T01:39:33.14183"
-    // }
-
-    const teamData = 
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-            "teamId": 1,
-            "teamName": "Side Effect",
-            "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
-            "teamEmoji": "🍇"
-        },
-        "timestamp": "2025-02-10T14:18:46.135007"
-    }
-
-
-    const projectData = 
-    {
-        "success": true,
-        "status": 200,
-        "data": 
-            {
-                "projectId": 1,
-                "projectTitle": "Devfit-",
-                "projectDescription": "LG CNS AM Inspire Camp 사이드 프로젝트gg",
-                "projectGoal": "개발자 건강을 위한 협업 툴 개발",
-                "startDt": "2024-01-01",
-                "dueDt": "2026-01-01"
-            },
-        "timestamp": "2025-02-06T09:56:45.150727"
-    }
-
-    const projectMemberData = 
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-                "projectParticipantId": 1,
-                "projectNickname": "정선우",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-                "role": "ADMIN"
-            },
-            {
-                "projectParticipantId": 2,
-                "projectNickname": "조수빈",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 3,
-                "projectNickname": "UNKNOWN_PROJECT_NICKNAME",
-                "profileImageUrl": "UNKNOWN_PROJECT_PROFILE_URL",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 4,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
-                "role": "MEMBER"
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": true,
-        "size": 3,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 3,
-        "empty": false
-        },
-        "timestamp": "2025-03-19T21:49:27.631511"
-    }
 
     const sprintData = [
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "id": 1,
-            "title": "1",
-            "goal": "MVP 개발",
-            "startDt": "2025-02-01",
-            "dueDt": "2025-03-01",
-            "status": "NOT_STARTED",
-            "progress": 20.0
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 1,
-            "sort": [],
-            "offset": 0,
-            "unpaged": false,
-            "paged": true
-        },
-        "first": true,
-        "last": false,
-        "size": 1,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 1,
-        "empty": false
-        },
-        "timestamp": "2025-03-06T22:22:06.395628"
-    },
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "id": 2,
-            "title": "2",
-            "goal": "MVP2 개발",
-            "startDt": "2025-03-01",
-            "dueDt": "2025-03-22",
-            "status": "NOT_STARTED",
-            "progress": 50.0
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 1,
-            "sort": [],
-            "offset": 0,
-            "unpaged": false,
-            "paged": true
-        },
-        "first": false,
-        "last": true,
-        "size": 1,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 1,
-        "empty": false
-        },
-        "timestamp": "2025-03-06T22:23:36.017048"
-    }
 ]
 
 const sprintContributionData = [
@@ -533,19 +373,25 @@ const meetingData = {
 };
 
 
-export default function Project() {
+export default function Project({projectId}) {
+    const { showAlert } = useAlert();
+
     const [isClient, setIsClient] = useState(false);
     const [isSprintModalOpen, setIsSprintModalOpen] = useState(false);
     const [isCreateSprintModalOpen, setIsCreateSprintModalOpen] = useState(false);
     const [goal, setGoal] = useState("");
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
-    const [description, setDescription] = useState(projectData.data.projectDescription);
+
+    const [projectData, setProjectData] = useState(null);
+    const [projectDescription, setProjectDescription] = useState("");
+
+    const [projectUser, setProjectUser] = useState(null);
+    const [projectMembers, setProjectMembers] = useState([]);
 
     const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
 
-    const project = projectData.data; 
-    const project_id = project.projectId; 
+    const [sprintData, setSprintData] = useState([]);
 
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -557,10 +403,55 @@ export default function Project() {
 
     const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
 
+    const ProjectId = Number(projectId);
+    const searchParams = useSearchParams();
+    const teamName = searchParams.get("teamName");
+
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
 
+    const getProjectData = async () => {
+        try {
+            const project = await fetchProjectData(projectId);
+            setProjectData(project);
+            setProjectDescription(project.projectDescription);
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    
+        try {
+            const members = await fetchProjectMemberList(projectId);
+            setProjectMembers(members.content);
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    
+        try {
+            const user = await fetchProjectUser(projectId);
+            setProjectUser(user);
+        } catch (error) {
+        }
+    };
+
+    useEffect(() => {   
+        if (projectId) getProjectData();
+    }, [projectId]);
+
+
+    const getSprintTaskData = async () => {
+        try {
+            const response = await fetchSprintTaskData(projectId);
+            console.log("스프린트 응답 데이터:", response);
+            setSprintData(response.content);
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    };
+
+    useEffect(() => {
+    if (projectId) getSprintTaskData();
+    }, [projectId]);
 
     // sprint 수정 모달 열기/닫기 함수
     const handleSprintModal = () => setIsSprintModalOpen(prev => !prev);
@@ -570,8 +461,7 @@ export default function Project() {
         setIsCreateSprintModalOpen(true);
         setGoal("");    
 
-        if (sprintData.length === 0) {
-            // Sprint 생성이면 오늘 날짜
+        if (!sprintData || sprintData.length === 0) {
             setStartDate(today);
         }
         setDueDate(""); // 사용자가 입력하게 비워두기 
@@ -628,38 +518,49 @@ export default function Project() {
         }));
     };
 
-    // 색상 적용된 Sprint 데이터
-    const sprintDataWithColors = sprintData.map((sprintObj, idx) => {
-        const sprintContent = sprintObj.data.content[0]; 
-        if (!sprintContent) return null; 
+    useEffect(() => {
+        console.log("📦 sprintData 구조 확인:", sprintData);
+      }, [sprintData]);
 
-        const sprintContributionsForSprint = sprintContributionData.find(item =>
-            item.data?.[0]?.sprintId === sprintContent.id
-        )?.data ?? [];
+    const sprintDataWithColors = useMemo(() => {
+        if (!Array.isArray(sprintData)) return [];
     
-        return {
-            sprint_id: sprintContent.id,
-            sprint_num: sprintContent.title,
-            goal: sprintContent.goal,
-            sprint_start: sprintContent.startDt,
-            sprint_end: sprintContent.dueDt,
-            progress: sprintContent.progress ?? 0,
-            last: sprintObj.data.last,
-            title: sprintContent.title,
-            startDt: sprintContent.startDt,
-            dueDt: sprintContent.dueDt,
-            member: mergeProjectMembersWithContributions(
-                projectMemberData.data.content,
-                sprintContributionsForSprint
-            ),
-        };
-    }).filter(Boolean); 
-
+        const result = sprintData
+            .map((sprintObj, idx) => {
+                const sprintContent = sprintObj; // 중요 포인트
+                if (!sprintContent) return null;
+    
+                const sprintContributionsForSprint = sprintContributionData.find(item =>
+                    item.data?.[0]?.sprintId === sprintContent.id
+                )?.data ?? [];
+    
+                return {
+                    sprint_id: sprintContent.id,
+                    sprint_num: sprintContent.title,
+                    goal: sprintContent.goal,
+                    sprint_start: sprintContent.startDt,
+                    sprint_end: sprintContent.dueDt,
+                    progress: sprintContent.progress ?? 0,
+                    last: sprintObj.last,
+                    title: sprintContent.title,
+                    startDt: sprintContent.startDt,
+                    dueDt: sprintContent.dueDt,
+                    member: mergeProjectMembersWithContributions(
+                        projectMembers,
+                        sprintContributionsForSprint
+                    ),
+                };
+            })
+            .filter(Boolean);
+    
+        console.log("🎯 sprintDataWithColors 결과:", result); 
+        return result;
+    }, [sprintData, projectMembers]);
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
     const currentSprint = sprintDataWithColors[currentSprintIndex]; 
 
-    const sprint = sprintData.find(s => s.sprint_num === currentSprint.sprint_num);
+    const sprint = sprintDataWithColors.find(s => s.sprint_num === currentSprint?.sprint_num);
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
@@ -676,7 +577,28 @@ export default function Project() {
         }));
     };
 
-    const currentSprintTasks = getTaskDataBySprintId(currentSprint.sprint_id);
+    const currentSprintTasks = currentSprint
+        ? getTaskDataBySprintId(currentSprint.sprint_id)
+        : [];
+
+    useEffect(() => {
+        if (!sprintDataWithColors.length) return;
+    
+        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
+            sprint.sprint_start <= today && sprint.sprint_end >= today
+        );
+    
+        if (sprintIndex !== -1) {
+            setCurrentSprintIndex(sprintIndex);
+        } else {
+            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
+            if (upcomingSprintIndex !== -1) {
+                setCurrentSprintIndex(upcomingSprintIndex);
+            } else {
+                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
+            }
+        }
+    }, [sprintDataWithColors]);
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------------여기 위까지 끝-------------------------------------->
@@ -699,33 +621,39 @@ export default function Project() {
         }
     };
 
-    const isFeedbackDay = today === currentSprint.sprint_end;
-    const sprintsWithFeedback = sprintData.filter(sprint => sprint.sprint_end === today);
+    const isFeedbackDay = currentSprint && currentSprint.sprint_end === today;
+    const sprintsWithFeedback = Array.isArray(sprintDataWithColors)
+        ? sprintDataWithColors.filter(sprint => sprint.sprint_end === today)
+        : [];
 
     useEffect(() => {
-        const isNotParticipant = projectUserData.data?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED";
-
-        if (currentSprint.last) {
-            // 마지막 스프린트일 때 프로젝트 외부인 고려
+        if (!currentSprint) return;
+    
+        const isLastSprint = currentSprintIndex === sprintDataWithColors.length - 1;
+    
+        const isNotParticipant =
+            projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED" || projectUser === null;
+    
+        if (isLastSprint) {
             if (isNotParticipant) {
                 setCanShowNextArrow(false);
             } else {
-                const koreaNow = new Date(Date.now() + 9 * 60 * 60 * 1000);
+                const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
                 const sprintEndKST = new Date(new Date(currentSprint.sprint_end + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
-    
-                const isAfterLastSprint = koreaNow > sprintEndKST;
-                setCanShowNextArrow(isAfterLastSprint);
+                setCanShowNextArrow(nowKST > sprintEndKST);
             }
         } else {
             setCanShowNextArrow(true);
         }
-    }, [currentSprint]);
+    }, [currentSprint, projectUser, currentSprintIndex]);
 
     const lastSprint = sprintDataWithColors[sprintDataWithColors.length - 1];
 
     const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
 
     useEffect(() => {
+        if (!sprintDataWithColors.length) return;
+
         const sprintIndex = sprintDataWithColors.findIndex(sprint =>
             sprint.sprint_start <= today && sprint.sprint_end >= today
         );
@@ -737,7 +665,7 @@ export default function Project() {
             if (upcomingSprintIndex !== -1) {
                 setCurrentSprintIndex(upcomingSprintIndex);
             } else {
-                setCurrentSprintIndex(sprintDataWithColors.length - 1);
+                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
             }
         }
     }, []);
@@ -787,9 +715,10 @@ export default function Project() {
             <div style={{ width: '750px', textAlign: 'left' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
-                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamData.data.teamName} </span> 
-                        <span style={{ height: "40px", lineHeight: "40px" }}>{projectData.data.projectTitle}</span>
+                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamName} </span> 
+                        <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
                     </div>
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                     <Image
                         src="/img/edit.png"
                         alt="Edit"
@@ -797,14 +726,15 @@ export default function Project() {
                         height={20}
                         onClick={() => setIsProjectEditModalOpen(true)} 
                         style={{ cursor: "pointer" }}
-                        hidden={projectUserData.data.errorClassName === "PROJECT_PARTICIPATION_REQUIRED"} 
                     />
+                    )}
                 </h2>
                 <Divider1/>
                     <p 
                         style={{ 
                             fontSize: "15px", 
-                            color: "#4F3DBD", 
+                            color: projectDescription ? "#4F3DBD" : "#A9A9A9", 
+                            fontStyle: projectDescription ? "normal" : "italic",
                             height: "30px", 
                             lineHeight: "30px", 
                             padding: "0", 
@@ -812,7 +742,7 @@ export default function Project() {
                             alignItems: "center",
                             marginLeft: "30px"
                         }}>
-                        {description}
+                        {projectDescription || "프로젝트에 대한 설명을 추가하세요!"}
                     </p>
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
@@ -834,146 +764,7 @@ export default function Project() {
                     </div>
                 )}
 
-            {!showCreateSprintBox ? (
-                    <>
-                <P.ChartWrapper>
-                    <P.ChartTitle>Sprint {currentSprint.sprint_num}</P.ChartTitle>
-
-                    {/* 팀원 리스트 */}
-                    <P.ScrollableMemberList>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                    {currentSprint.member.map((member, index) => (
-                        <P.ProjectMember key={`${member.id}-${index}`}> 
-                        <P.ProfileContainer>
-                            <P.ProfileMain $profileImage={member.profileImage} />
-                            <P.ProfileIcon color={member.color} />
-                        </P.ProfileContainer>
-                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
-                        <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
-                        {member.id !== projectUserData.data.projectParticipantId && 
-                            member.name !== "알수없음" && 
-                            projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
-                            <Link 
-                            href={`/project/${project_id}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
-                            <P.FeedbackButton hidden={!isFeedbackDay}>
-                                동료 평가
-                            </P.FeedbackButton>
-                            </Link>
-                        )}
-                        </P.ProjectMember>
-                    ))}
-                    </P.ScrollableMemberList>
-
-                    {/* 기여도 차트 */}
-                    <P.DonutChartContainer>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                        {isClient && (
-                        <PieChart width={300} height={300}>
-                            <Pie
-                                data={currentSprint.member}
-                                dataKey="value"
-                                cx="50%"
-                                cy="50%"
-                                innerRadius="65%" 
-                                outerRadius="90%" 
-                                startAngle={90}
-                                endAngle={450}
-                                stroke="none"
-                            >
-                                {currentSprint.member.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                            </Pie>
-                        </PieChart>
-                        )}
-                    </P.DonutChartContainer>
-                </P.ChartWrapper>
-
-                <div style={{ width: '80%', minWidth: '400px', textAlign: 'left', marginTop: '5px', position: 'relative', }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', flex: 1 }}>
-                                <span style={{ fontSize: '23px', marginLeft: '20px' }}>Sprint {currentSprint.title}</span>
-                                <span style={{ fontSize: '12px', marginLeft: '15px' }}>
-                                    {currentSprint.startDt} ~ {currentSprint.dueDt}
-                                </span>
-                            </h2>
-                            <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
-                                <Image
-                                    src="/img/edit.png" 
-                                    alt="icon"
-                                    width={20}  
-                                    height={20}
-                                    priority
-                                    hidden={projectUserData.data.errorClassName === "PROJECT_PARTICIPATION_REQUIRED"}
-                                />
-                            </div>
-                            <SprintModal 
-                                isOpen={isSprintModalOpen}
-                                onClose={handleSprintModal}
-                                sprint={currentSprint.title}
-                                goal={currentSprint.goal}
-                                setGoal={setGoal}
-                                startDate={currentSprint.startDt}
-                                setStartDate={setStartDate}  
-                                dueDate={currentSprint.dueDt}
-                                setDueDate={setDueDate}  
-                                isLastSprint={currentSprint.last} 
-                            />
-                        </div>
-                        <Divider1 />
-                        <p style={{ fontSize: '14px', fontWeight: 400, color: '#4F3DBD', marginTop: '10px', marginLeft: '20px', marginBottom: '25px' }}>
-                            {currentSprint.goal}
-                        </p>
-                    </div>
-
-                <P.ProgressContainer>
-                    <P.ProgressLabels>
-                        <span>0</span>
-                        <span>50</span>
-                        <span>100</span>
-                    </P.ProgressLabels>
-                    <P.ProgressBarWrapper>
-                        <P.ProgressBar progress={currentSprint.progress} /> 
-                    </P.ProgressBarWrapper>
-                </P.ProgressContainer>
-                
-                <P.SprintBox>
-                    Task
-                    <P.TaskGrid>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
-                        {currentSprintTasks?.map((item, index) => (
-                            <P.TaskItem key={`task-${index}`}> 
-                                <P.TaskCheckbox
-                                    checked={item.toDoStatus === "COMPELTED"} readOnly
-                                />
-                                {item.task}
-                            </P.TaskItem>
-                        ))}
-                    </P.TaskGrid>
-                    <P.ButtonWrapper>
-                    {projectUserData.data.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
-                    <Link
-                        href={{
-                            pathname: `/project/${project_id}/sprint/${sprint_id}`,
-                            query: {
-                            sprint_num: currentSprint.sprint_num,
-                            sprint_start: currentSprint.startDt,
-                            sprint_end: currentSprint.dueDt,
-                            sprint_goal: currentSprint.goal,
-                            sprint_progress: currentSprint.progress
-                            }
-                        }}
-                        >
-                            <P.TaskButton>상세보기</P.TaskButton>
-                        </Link>
-                    )}
-                    </P.ButtonWrapper>
-                </P.SprintBox>
-                </>
-                ) : (
+                {(!sprintDataWithColors.length || showCreateSprintBox) ? (
                     // Sprint 생성 상자
                     <div style={{
                         width: '100%',
@@ -1016,8 +807,161 @@ export default function Project() {
                             dueDate={dueDate}
                             setDueDate={setDueDate}  
                             isLastSprint={true} 
+                            projectId={projectId}
+                            onSprintCreated={async () => {
+                                await getSprintTaskData();
+                                setShowCreateSprintBox(false);
+                                setCurrentSprintIndex(sprintDataWithColors.length); 
+                            }}
                         />
                     </div>
+                ) : (
+                    <>
+                <P.ChartWrapper>
+                    <P.ChartTitle>Sprint {currentSprint?.sprint_num}</P.ChartTitle>
+
+                    {/* 팀원 리스트 */}
+                    <P.ScrollableMemberList>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
+                    {currentSprint?.member?.map((member, index) => (
+                        <P.ProjectMember key={`${member.id}-${index}`}> 
+                        <P.ProfileContainer>
+                            <P.ProfileMain $profileImage={member.profileImage} />
+                            <P.ProfileIcon color={member.color} />
+                        </P.ProfileContainer>
+                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
+                        <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
+                        {projectUser && member.id !== projectUser.projectParticipantId &&
+                            member.name !== "알수없음" && 
+                            <Link 
+                            href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                            <P.FeedbackButton hidden={!isFeedbackDay}>
+                                동료 평가
+                            </P.FeedbackButton>
+                            </Link>
+                        }
+                        </P.ProjectMember>
+                    ))}
+                    </P.ScrollableMemberList>
+
+                    {/* 기여도 차트 */}
+                    <P.DonutChartContainer>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
+                        {isClient && (
+                        <PieChart width={300} height={300}>
+                            <Pie
+                                data={currentSprint?.member}
+                                dataKey="value"
+                                cx="50%"
+                                cy="50%"
+                                innerRadius="65%" 
+                                outerRadius="90%" 
+                                startAngle={90}
+                                endAngle={450}
+                                stroke="none"
+                            >
+                                {currentSprint?.member.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                        )}
+                    </P.DonutChartContainer>
+                </P.ChartWrapper>
+
+                <div style={{ width: '80%', minWidth: '400px', textAlign: 'left', marginTop: '5px', position: 'relative', }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', flex: 1 }}>
+                                <span style={{ fontSize: '23px', marginLeft: '20px' }}>Sprint {currentSprint?.title}</span>
+                                <span style={{ fontSize: '12px', marginLeft: '15px' }}>
+                                    {currentSprint?.startDt} ~ {currentSprint?.dueDt}
+                                </span>
+                            </h2>
+                            <div onClick={handleSprintModal} style={{ cursor: "pointer", position: 'absolute', top: '15px', right: '0px' }}>
+                                {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
+                                <Image
+                                    src="/img/edit.png" 
+                                    alt="icon"
+                                    width={20}  
+                                    height={20}
+                                    priority
+                                />
+                                )}
+                            </div>
+                            <SprintModal 
+                                isOpen={isSprintModalOpen}
+                                onClose={handleSprintModal}
+                                sprint={currentSprint?.title}
+                                goal={currentSprint?.goal}
+                                setGoal={setGoal}
+                                startDate={currentSprint?.startDt}
+                                setStartDate={setStartDate}  
+                                dueDate={currentSprint?.dueDt}
+                                setDueDate={setDueDate}  
+                                isLastSprint={currentSprint?.last} 
+                                onSprintCreated={() => {
+                                    getSprintTaskData().then(() => {
+                                        setShowCreateSprintBox(false);
+                                        setTimeout(() => {
+                                            setCurrentSprintIndex(prev => prev + 1);
+                                        }, 100);
+                                    });
+                                }}
+                            />
+                        </div>
+                        <Divider1 />
+                        <p style={{ fontSize: '14px', fontWeight: 400, color: '#4F3DBD', marginTop: '10px', marginLeft: '20px', marginBottom: '25px' }}>
+                            {currentSprint?.goal}
+                        </p>
+                    </div>
+
+                <P.ProgressContainer>
+                    <P.ProgressLabels>
+                        <span>0</span>
+                        <span>50</span>
+                        <span>100</span>
+                    </P.ProgressLabels>
+                    <P.ProgressBarWrapper>
+                        <P.ProgressBar progress={currentSprint?.progress} /> 
+                    </P.ProgressBarWrapper>
+                </P.ProgressContainer>
+                
+                <P.SprintBox>
+                    Task
+                    <P.TaskGrid>
+                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
+                     <--------------------------------------map 함수 부분--------------------------------------> */}
+                        {currentSprintTasks?.map((item, index) => (
+                            <P.TaskItem key={`task-${index}`}> 
+                                <P.TaskCheckbox
+                                    checked={item.toDoStatus === "COMPELTED"} readOnly
+                                />
+                                {item.task}
+                            </P.TaskItem>
+                        ))}
+                    </P.TaskGrid>
+                    <P.ButtonWrapper>
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
+                    <Link
+                        href={{
+                            pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
+                            query: {
+                            sprint_num: currentSprint?.sprint_num,
+                            sprint_start: currentSprint?.startDt,
+                            sprint_end: currentSprint?.dueDt,
+                            sprint_goal: currentSprint?.goal,
+                            sprint_progress: currentSprint?.progress
+                            }
+                        }}
+                        >
+                            <P.TaskButton>상세보기</P.TaskButton>
+                        </Link>
+                        )}
+                    </P.ButtonWrapper>
+                </P.SprintBox>
+                </>
                 )}
             
                 {/* 오른쪽 화살표 */}
@@ -1034,14 +978,15 @@ export default function Project() {
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
                 </h2>
                 <div onClick={openMeetingModalForCreate} style={{ cursor: "pointer", position: 'absolute', top: '20px', right: '5px' }}>
+                    {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                     <Image
                         src="/img/edit.png" 
                         alt="icon"
                         width={20}  
                         height={20}
                         priority  
-                        hidden={projectUserData.data.errorClassName === "PROJECT_PARTICIPATION_REQUIRED"}
                     />
+                    )}
                 </div>
                 {/* 미팅 modal */}
                 <MeetingModal 
@@ -1055,7 +1000,7 @@ export default function Project() {
                     setStartTime={setStartTime}
                     endTime={endTime}
                     setEndTime={setEndTime}
-                    sprintNum={currentSprint.sprint_num}
+                    sprintNum={currentSprint?.sprint_num}
                     isEditing={!!selectedMeeting} 
                 />
                 
@@ -1063,16 +1008,17 @@ export default function Project() {
                 <P.MeetingContainer>
                     {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
                      <--------------------------------------map 함수 부분--------------------------------------> */}
+                    {currentSprint?.sprint_start && currentSprint?.sprint_end && (
                     <SprintCalendar 
-                        sprintStart={currentSprint.sprint_start} 
-                        sprintEnd={currentSprint.sprint_end}
+                        sprintStart={currentSprint?.sprint_start} 
+                        sprintEnd={currentSprint?.sprint_end}
                         meetingData={
-                            (meetingData[currentSprint.sprint_num]?.content || []).map(meeting => {
+                            (meetingData[currentSprint?.sprint_num]?.content || []).map(meeting => {
                             const [date, startTime] = meeting.meetingStart.split("T");
                             const [, endTime] = meeting.meetingEnd.split("T");
                         
                             return {
-                                sprint_num: Number(currentSprint.sprint_num),
+                                sprint_num: Number(currentSprint?.sprint_num),
                                 title: meeting.meetingTitle,
                                 date: date,
                                 startTime: startTime.slice(0, 5),
@@ -1082,23 +1028,26 @@ export default function Project() {
                             })
                         }
                         onMeetingClick={(meeting) => {
-                            if (projectUserData.data?.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED") {
+                            {/*if (projectUserData.data?.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED") {*/}
                                 openMeetingModalForEdit(meeting);
-                            }
+                            {/*}}*/}
                         }}
                     />
+                    )}
                 </P.MeetingContainer>
             </div>
             )}
         </ContentContainer>
-        {isProjectEditModalOpen && (
+        {isProjectEditModalOpen && projectData && (
             <ProjectModal
                 onClose={() => setIsProjectEditModalOpen(false)}
                 isEditing={true}
-                currentTitle={projectData.data.projectTitle}
-                currentDescription={projectData.data.projectDescription}
-                currentStartDate={projectData.data.startDt}
-                currentDueDate={projectData.data.dueDt}
+                projectId={projectData.projectId}
+                currentTitle={projectData.projectTitle}
+                currentDescription={projectData.projectDescription}
+                currentStartDate={projectData.startDt}
+                currentDueDate={projectData.dueDt}
+                onProjectCreated={getProjectData}
             />
         )}
         </>

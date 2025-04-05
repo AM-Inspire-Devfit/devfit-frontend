@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["k.kakaocdn.net", "example.com"], 
+    domains: [
+        "k.kakaocdn.net", 
+        "img1.kakaocdn.net",
+        "lh3.googleusercontent.com",
+        "example.com"
+      ], 
   },
   compiler: {
         styledComponents: true, // styled-components 활성화

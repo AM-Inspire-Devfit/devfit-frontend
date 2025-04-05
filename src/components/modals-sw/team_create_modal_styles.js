@@ -48,7 +48,7 @@ export const CloseButton = styled.button`
 
 export const Description = styled.p`
   font-size: 14px;
-  color: #666;
+  color: #706767;
 `;
 
 export const Form = styled.form`
@@ -70,7 +70,7 @@ export const Label = styled.label`
 `;
 
 export const Required = styled.span`
-  color: red;
+  color: #706767;
   margin-left: 4px;
 `;
 

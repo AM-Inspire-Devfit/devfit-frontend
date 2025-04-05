@@ -5,6 +5,10 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Image from "next/image";
 
+import { useRouter } from "next/navigation"; 
+
+import { logout } from "@/app/api/logout/logout";
+
 export const NavbarContainer = styled.nav`
   width: 100%;
   height: 70px;
@@ -57,7 +61,23 @@ export const LogoutButton = styled.button`
   }
 `;
 
-const Navbar = () => {
+const Navbar = ({ projectId }) => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("로그아웃 하시겠습니까?");
+    if (!confirmLogout) return; 
+
+    try {
+        await logout(); // 로그아웃 요청
+        localStorage.removeItem("accessToken"); // 저장된 토큰 제거 
+        localStorage.removeItem("storedUser"); // 유저 정보 제거 
+        router.push("/login"); // 로그인 페이지로 이동
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃에 실패했습니다.");
+    }
+  };
 
   return (
     <NavbarContainer>
@@ -71,9 +91,19 @@ const Navbar = () => {
       </LogoContainer>
       </Link>
       <NavLinks>
-        <StyledLink href="/project/${project_id}/">Home</StyledLink>
-        <StyledLink href="/project/${project_id}/mypage">MyPage</StyledLink>
-        <LogoutButton>Logout</LogoutButton>
+      <StyledLink href={projectId ? `/project/${projectId}` : "/"}>Home</StyledLink>
+      <StyledLink 
+        href={projectId ? `/project/${projectId}/mypage` : "/"} 
+        onClick={(e) => {
+          if (!projectId) {
+            e.preventDefault();
+            alert("프로젝트 ID가 없습니다.");
+          }
+        }}
+      >
+        MyPage
+      </StyledLink>
+        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </NavLinks>
     </NavbarContainer>
   );

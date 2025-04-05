@@ -2,6 +2,10 @@ import styled from "styled-components";
 import * as m from '../../components/modal_s';
 import { IoClose } from "react-icons/io5";  
 
+import { createSprint } from "@/app/api/sprint/sprintApi";
+
+import { useAlert } from "@/context/AlertContext";
+
 const ModalContent = styled.div`
     background: white;
     padding: 30px;
@@ -48,8 +52,39 @@ const DateInputWrapper = styled.div`
 `;
 
 
-export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, startDate, setStartDate, dueDate, setDueDate, isLastSprint  }) {
+export default function SprintModal({ 
+    isOpen, onClose, sprint, goal, setGoal, startDate, 
+    setStartDate, dueDate, setDueDate, isLastSprint, projectId, onSprintCreated
+}) {
+    const { showAlert } = useAlert();
+
     if (!isOpen) return null;
+
+    const handleCreateSprint = async () => {
+        if (!goal || !startDate || !dueDate) {
+            showAlert("error", "모든 항목을 입력해주세요.");
+            return;
+        }
+        try {
+            const payload = {
+                projectId,
+                title: String(sprint), 
+                goal,
+                startDt: startDate,
+                dueDt: dueDate,
+            };
+
+            await createSprint(payload);
+            showAlert("success", `Sprint ${sprint} 생성 완료!`);
+            onClose();
+
+            if (onSprintCreated)  {
+                await onSprintCreated(); // 데이터 최신화
+            }
+        } catch (err) {
+            showAlert("error", err.message);
+        }
+    };
 
     return (
         <m.ModalOverlay>
@@ -66,6 +101,7 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
                     <Textarea 
                         value={goal} 
                         onChange={(e) => setGoal(e.target.value)}
+                        placeholder="Sprint의 중간 목표를 설정하세요!"
                     />
                 </GoalInputWrapper>
                 
@@ -102,7 +138,7 @@ export default function SprintModal({ isOpen, onClose, sprint, goal, setGoal, st
                 </DateInputWrapper>
 
                 <m.ButtonContainer>
-                    <m.SubmitButton onClick={onClose}>완료</m.SubmitButton>
+                    <m.SubmitButton onClick={handleCreateSprint}>완료</m.SubmitButton>
                 </m.ButtonContainer>
             </ModalContent>
         </m.ModalOverlay>
