@@ -748,7 +748,7 @@ export default function Project({projectId}) {
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
              <--------------------------------------map 함수 부분--------------------------------------> */}
             {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
-            <P.AlertBox key={sprint.id}>
+            <P.AlertBox key={`feedback-${sprint.sprint_num}`}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
                     <span>Sprint {sprint.sprint_num} 동료평가를 잊지 마세요!</span>
