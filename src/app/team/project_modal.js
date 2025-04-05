@@ -3,7 +3,8 @@ import { IoClose } from "react-icons/io5";
 
 import { useState, useEffect } from 'react';
 
-import { createProject, updateProjectData, updateProjectDueDate} from "@/app/api/project/projectApi";
+import { createProject, updateProjectData} from "@/app/api/project/projectApi";
+import { useAlert } from "@/context/AlertContext";
 
 export default function ProjectModal({ 
         onClose, 
@@ -16,6 +17,8 @@ export default function ProjectModal({
         projectId, // 프로젝트 수정
         onProjectCreated, 
     }) {
+
+    const { showAlert } = useAlert();
     const [projectName, setProjectName] = useState(currentTitle);
     const [projectDescription, setProjectDescription] = useState(currentDescription ?? "");
     const [startDate, setStartDate] = useState("");
@@ -41,25 +44,18 @@ export default function ProjectModal({
         try {
             if (isEditing) {
                 const trimmedTitle = projectName.trim();
-                const trimmedDesc = projectDescription.trim();
-                const prevDesc = currentDescription?.trim?.() ?? null;  
+                const trimmedDesc = projectDescription.trim(); 
 
-                // 이름과 설명이 이전 값과 다른지 확인
-                const titleChanged = trimmedTitle !== currentTitle;
-                const descChanged = (trimmedDesc === "" ? null : trimmedDesc) !== prevDesc;
+                const updatedData = {
+                    title: trimmedTitle,
+                    description: trimmedDesc,
+                    dueDt: dueDate,
+                };
 
-                if (titleChanged || descChanged) {
-                    const updatedData = {
-                        ...(titleChanged && { title: trimmedTitle }),
-                        ...(descChanged && { description: trimmedDesc }),
-                    };
-                    const res = await updateProjectData(projectId, updatedData);
-                    console.log("updateProjectData 응답값:", res);
-                }
-
-                const dueDateRes = await updateProjectDueDate(projectId, { dueDt: dueDate });
-                console.log("updateProjectDueDate 응답값:", dueDateRes);
+                const res = await updateProjectData(projectId, updatedData);
+                console.log("updateProjectData 응답값:", res);
                 console.log("프로젝트 수정 완료");
+                showAlert("success", "프로젝트 정보가 수정되었습니다.");
             } else {
                 // 프로젝트 생성
                 const projectData = {
@@ -71,6 +67,7 @@ export default function ProjectModal({
                 const res = await createProject(projectData);
                 console.log("createProject 응답값:", res);
                 console.log("프로젝트 생성 완료");
+                showAlert("success", "프로젝트가 생성되었습니다.");
             }
     
             onProjectCreated?.();
