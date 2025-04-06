@@ -3,6 +3,10 @@ import styled from "styled-components";
 import * as m from '../../components/modal_s';
 import { IoClose } from 'react-icons/io5';
 
+import { createTask, updateTask, deleteTask } from "@/app/api/task/taskApi";
+
+import { useAlert } from "@/context/AlertContext";
+
 const InputWrapper = styled(m.InputWrapper)`
     margin-bottom: 20px;
     padding-top: 5px;
@@ -30,10 +34,11 @@ const RadioInput = styled.input`
     height: 16px;
 `;
 
-export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
+export default function TaskModal({ isOpen, onClose, sprintTitle, sprintId, task, onTaskCreated}) {
+    const { showAlert } = useAlert();
+
     const [titleInput, setTitleInput] = useState("");
     const [difficulty, setDifficulty] = useState(""); 
-
 
     useEffect(() => {
         if (task) {
@@ -46,6 +51,44 @@ export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
     }, [task, isOpen]);
 
     if (!isOpen) return null;
+
+    const handleSubmit = async () => {
+        try {
+            const taskData = {
+                sprintId: sprintId,
+                description: titleInput,
+                taskDifficulty: difficulty
+            };
+    
+            if (task) { // 수정
+                await updateTask(task.taskId, taskData);
+                showAlert("success", "태스크 수정 성공");
+            } else { // 생성
+                await createTask({ ...taskData, sprintId });
+                showAlert("success", "태스크 생성 성공");
+            }
+
+            if (onTaskCreated) await onTaskCreated();
+            onClose(); // 모달 닫기
+        } catch (error) {
+            const message = error?.response?.data?.data?.message ?? "태스크를 생성에 실패했습니다.";
+        throw new Error(message);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteTask(task.taskId);
+            showAlert("success", "태스크 삭제 성공");
+
+            if (onTaskCreated) await onTaskCreated(); 
+            onClose();
+        } catch (error) {
+            const message = error?.message ?? "태스크 삭제에 실패했습니다.";
+            showAlert("error", message);
+        }
+    };
+
 
     return (
         <m.ModalOverlay>
@@ -64,7 +107,7 @@ export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
             <m.Title
                 style={{marginLeft: "10px"}}
             >
-                Sprint {sprintNum}
+                Sprint {sprintTitle}
             </m.Title>
 
             <InputWrapper>
@@ -107,11 +150,11 @@ export default function TaskModal({ isOpen, onClose, sprintNum, task}) {
 
             <m.ButtonContainer style={{ marginTop: "-5px", gap: "10px"}}>
                 {task && (
-                    <m.DeleteButton>
+                    <m.DeleteButton onClick={handleDelete}>
                         삭제
                     </m.DeleteButton>
                 )}
-                <m.SubmitButton>
+                <m.SubmitButton onClick={handleSubmit}>
                     {task ? "수정" : "생성"}
                 </m.SubmitButton>
 

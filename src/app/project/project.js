@@ -103,203 +103,6 @@ const sprintContributionData = [
     }
 ]
 
-const taskData = {
-    1: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 2,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "COMPELTED",
-            "assignedStatus": "COMPELTED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": false,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    },
-
-    2: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "COMPELTED",
-            "assignedStatus": "COMPELTED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 2,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "COMPELTED",
-            "assignedStatus": "COMPELTED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": false,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    }
-}
-
-
 const meetingData = {
     1: {
         "first": true,
@@ -546,7 +349,7 @@ export default function Project({projectId}) {
     
                 return {
                     sprint_id: sprintContent.id,
-                    sprint_num: sprintContent.title,
+                    sprint_title: sprintContent.title,
                     goal: sprintContent.goal,
                     sprint_start: sprintContent.startDt,
                     sprint_end: sprintContent.dueDt,
@@ -569,7 +372,7 @@ export default function Project({projectId}) {
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
     const currentSprint = processedSprintData[currentSprintIndex]; 
 
-    const sprint = processedSprintData.find(s => s.sprint_num === currentSprint?.sprint_num);
+    const sprint = processedSprintData.find(s => s.sprint_title === currentSprint?.sprint_title);
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
@@ -577,12 +380,13 @@ export default function Project({projectId}) {
     const [canShowNextArrow, setCanShowNextArrow] = useState(false);
 
     const getTaskDataBySprintId = (sprintId) => {
-        const task = taskData[sprintId];
-        if (!task || !task.data || !task.data.content) return [];
-
-        return task.data.content.map(item => ({
-            task: item.description,
-            toDoStatus: item.taskStatus
+        const sprint = sprintData.find(s => s.id === sprintId);
+        if (!sprint || !Array.isArray(sprint.taskList)) return [];
+    
+        return sprint.taskList.map(task => ({
+            task: task.description,
+            toDoStatus: task.taskStatus,
+            sosStatus: task.sosStatus
         }));
     };
 
@@ -683,7 +487,7 @@ export default function Project({projectId}) {
 
     const lastSprint = processedSprintData[processedSprintData.length - 1];
 
-    const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
+    const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_title, 10) || 0 : 0; 
 
     useEffect(() => {
         if (isSprintModalOpen && !isCreateSprintModalOpen && currentSprint) {
@@ -763,10 +567,10 @@ export default function Project({projectId}) {
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
              <--------------------------------------map 함수 부분--------------------------------------> */}
             {currentSprint?.sprint_end === today && (
-            <P.AlertBox key={`feedback-${sprint.sprint_num}`}>
+            <P.AlertBox key={`feedback-${sprint.sprint_title}`}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
-                    <span>Sprint {sprint.sprint_num} 동료평가를 잊지 마세요!</span>
+                    <span>Sprint {sprint.sprint_title} 동료평가를 잊지 마세요!</span>
                 </div>
             </P.AlertBox>
             )}
@@ -838,7 +642,7 @@ export default function Project({projectId}) {
                 ) : (
                     <>
                 <P.ChartWrapper>
-                    <P.ChartTitle>Sprint {currentSprint?.sprint_num}</P.ChartTitle>
+                    <P.ChartTitle>Sprint {currentSprint?.sprint_title}</P.ChartTitle>
 
                     {/* 팀원 리스트 */}
                     <P.ScrollableMemberList>
@@ -981,11 +785,13 @@ export default function Project({projectId}) {
                         href={{
                             pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
                             query: {
-                            sprint_num: currentSprint?.sprint_num,
-                            sprint_start: currentSprint?.startDt,
-                            sprint_end: currentSprint?.dueDt,
-                            sprint_goal: currentSprint?.goal,
-                            sprint_progress: currentSprint?.progress
+                                project_id: ProjectId,      
+                                sprint_id: Number(sprint_id),
+                                sprint_title: currentSprint?.sprint_title,
+                                sprint_start: currentSprint?.startDt,
+                                sprint_end: currentSprint?.dueDt,
+                                sprint_goal: currentSprint?.goal,
+                                sprint_progress: currentSprint?.progress
                             }
                         }}
                         >
@@ -1033,7 +839,7 @@ export default function Project({projectId}) {
                     setStartTime={setStartTime}
                     endTime={endTime}
                     setEndTime={setEndTime}
-                    sprintNum={currentSprint?.sprint_num}
+                    sprintTitle={currentSprint?.sprint_title}
                     isEditing={!!selectedMeeting} 
                 />
                 
@@ -1046,12 +852,12 @@ export default function Project({projectId}) {
                         sprintStart={currentSprint?.sprint_start} 
                         sprintEnd={currentSprint?.sprint_end}
                         meetingData={
-                            (meetingData[currentSprint?.sprint_num]?.content || []).map(meeting => {
+                            (meetingData[currentSprint?.sprint_title]?.content || []).map(meeting => {
                             const [date, startTime] = meeting.meetingStart.split("T");
                             const [, endTime] = meeting.meetingEnd.split("T");
                         
                             return {
-                                sprint_num: Number(currentSprint?.sprint_num),
+                                sprint_title: Number(currentSprint?.sprint_title),
                                 title: meeting.meetingTitle,
                                 date: date,
                                 startTime: startTime.slice(0, 5),
