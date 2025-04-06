@@ -1,6 +1,6 @@
 "use client";  
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from 'next/navigation';
 
 import Image from "next/image";
@@ -11,361 +11,95 @@ import * as T from './task_s';
 import TaskModal from './task_modal';
 import AssignModal from "./assign_modal";
 
-
-const projectUserData = {
-    "success": true,
-    "status": 200,
-    "data": {
-        "projectParticipantId": 1,
-        "projectNickname": "최현태",
-        "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-        "role": "ADMIN" 
-    },
-    "timestamp": "2025-03-19T21:42:40.59254"
-}
-
-const taskData = [
-{
-    "success": true,
-    "status": 200,
-    "data": {
-    "content": [
-        {
-        "taskId": 1,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 4,
-        "projectNickname": "최현태",
-        "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-        },
-        {
-        "taskId": 2,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "NOT_STARTED",
-        "assignedStatus": "NOT_ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": null,
-        "projectNickname": null,
-        "profileImageUrl": null
-        },
-        {
-        "taskId": 3,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 4,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 5,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": "2025-03-01",
-        "taskStatus": "COMPLETED",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 6,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": null,
-        "taskStatus": "NOT_STARTED",
-        "assignedStatus": "NOT_ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": null,
-        "projectNickname": null,
-        "profileImageUrl": null
-        }
-    ],
-    "pageable": {
-        "pageNumber": 0,
-        "pageSize": 6,
-        "sort": [],
-        "offset": 0,
-        "paged": true,
-        "unpaged": false
-    },
-    "first": true,
-    "last": false,
-    "size": 6,
-    "number": 0,
-    "sort": [],
-    "numberOfElements": 6,
-    "empty": false
-    },
-    "timestamp": "2025-03-20T16:38:14.792466"
-},
-{
-    "success": true,
-    "status": 200,
-    "data": {
-    "content": [
-        {
-        "taskId": 1,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 4,
-        "projectNickname": "최현태",
-        "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-        },
-        {
-        "taskId": 2,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "NOT_STARTED",
-        "assignedStatus": "NOT_ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": null,
-        "projectNickname": null,
-        "profileImageUrl": null
-        },
-        {
-        "taskId": 3,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 4,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 5,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": "2025-03-01",
-        "taskStatus": "COMPLETED",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 6,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": null,
-        "taskStatus": "NOT_STARTED",
-        "assignedStatus": "NOT_ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": null,
-        "projectNickname": null,
-        "profileImageUrl": null
-        }
-    ],
-    "pageable": {
-        "pageNumber": 0,
-        "pageSize": 6,
-        "sort": [],
-        "offset": 0,
-        "paged": true,
-        "unpaged": false
-    },
-    "first": false,
-    "last": false,
-    "size": 6,
-    "number": 0,
-    "sort": [],
-    "numberOfElements": 6,
-    "empty": false
-    },
-    "timestamp": "2025-03-20T16:38:14.792466"
-},
-{
-    "success": true,
-    "status": 200,
-    "data": {
-    "content": [
-        {
-        "taskId": 1,
-        "description": "피그마 화면 설계 수정ㅎ",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 4,
-        "projectNickname": "최현태",
-        "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-        },
-        {
-        "taskId": 2,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "NOT_STARTED",
-        "assignedStatus": "NOT_ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": null,
-        "projectNickname": null,
-        "profileImageUrl": null
-        },
-        {
-        "taskId": 3,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "MID",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 4,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": null,
-        "taskStatus": "ON_GOING",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 5,
-        "description": "피그마 화면 설계 수정",
-        "taskDifficulty": "HIGH",
-        "dueDt": "2025-03-01",
-        "taskStatus": "COMPLETED",
-        "assignedStatus": "ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": 2,
-        "projectNickname": "조수빈",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-        },
-        {
-        "taskId": 6,
-        "description": "피그마 화면 설계 수정ㅎㅎㅎ",
-        "taskDifficulty": "HIGH",
-        "dueDt": null,
-        "taskStatus": "NOT_STARTED",
-        "assignedStatus": "NOT_ASSIGNED",
-        "sosStatus": "NOT_SOS",
-        "memberId": null,
-        "projectNickname": null,
-        "profileImageUrl": null
-        }
-    ],
-    "pageable": {
-        "pageNumber": 0,
-        "pageSize": 6,
-        "sort": [],
-        "offset": 0,
-        "paged": true,
-        "unpaged": false
-    },
-    "first": false,
-    "last": true,
-    "size": 6,
-    "number": 0,
-    "sort": [],
-    "numberOfElements": 6,
-    "empty": false
-    },
-    "timestamp": "2025-03-20T16:38:14.792466"
-}
-]
-
+import { fetchProjectUser } from "@/app/api/project/projectApi";
+import { fetchTaskDataBySprint } from '@/app/api/task/taskApi';
 
 export default function Task() {
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 아래부터 시작------------------------------------>
+
+    const searchParams = useSearchParams();
+    const projectId = Number(searchParams.get('project_id'));
+    const sprintId = Number(searchParams.get('sprint_id'));
+    const sprintTitle = searchParams.get('sprint_title'); 
+    const sprintStart = searchParams.get('sprint_start');
+    const sprintEnd = searchParams.get('sprint_end');
+    const sprint_goal = searchParams.get('sprint_goal');
+    const sprint_progress = Number(searchParams.get('sprint_progress') || 0);
+
+    const [projectUser, setProjectUser] = useState(null);
+    const [tasks, setTasks] = useState([]);
+    const [hasMore, setHasMore] = useState(true);
+    const [lastTaskId, setLastTaskId] = useState(null);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
-    const [tasks, setTasks] = useState(taskData[0].data.content);
-    const [hasMore, setHasMore] = useState(!taskData[0].data.last);
 
-    const loadMoreTasks = () => {
-        const nextIndex = currentPageIndex + 1;
-        if (!hasMore || nextIndex >= taskData.length) return;
+    const [isLoading, setIsLoading] = useState(false);
 
-        const nextPage = taskData[nextIndex];
-        setTasks(prev => [...prev, ...nextPage.data.content]);
-        setCurrentPageIndex(nextIndex);
+    const TASK_PAGE_SIZE = 6;
 
-        if (nextPage.data.last) {
+    useEffect(() => {
+        if (!projectId) return;
+    
+        const fetchUser = async () => {
+            const user = await fetchProjectUser(projectId);
+            setProjectUser(user);
+        };
+    
+        fetchUser();
+    }, [projectId]);
+
+    const isLoadingRef = useRef(false);
+
+    const loadMoreTasks = async () => {
+        if (!hasMore || !sprintId || isLoadingRef.current) return;
+    
+        isLoadingRef.current = true; 
+    
+        try {
+            const data = await fetchTaskDataBySprint(sprintId, lastTaskId, TASK_PAGE_SIZE);
+            const newTasks = data.content?.filter(
+                (newTask) => !tasks.some((task) => task.taskId === newTask.taskId)
+            ) || [];
+    
+            if (newTasks.length > 0) {
+                setTasks((prev) => [...prev, ...newTasks]);
+                setLastTaskId(newTasks[newTasks.length - 1].taskId);
+            }
+    
+            if (!data.content || data.content.length < TASK_PAGE_SIZE || data.last || newTasks.length === 0) {
+                setHasMore(false);
+            }
+        } catch (error) {
+            console.error("태스크 로딩 실패:", error.message);
             setHasMore(false);
+        } finally {
+            isLoadingRef.current = false; 
         }
     };
 
     useEffect(() => {
-    const handleScroll = () => {
-        const scrollTop = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const docHeight = document.body.offsetHeight;
+        const handleScroll = () => {
+            const scrollTop = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const docHeight = document.body.offsetHeight;
     
-        if (hasMore && scrollTop + windowHeight >= docHeight - 100) {
+            if (hasMore && !isLoadingRef.current && scrollTop + windowHeight >= docHeight - 100) {
+                loadMoreTasks();
+            }
+        };
+    
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [hasMore]);
+
+    useEffect(() => {
+        if (sprintId) {
             loadMoreTasks();
         }
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-    }, [hasMore, currentPageIndex]);
-
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
-
-    const searchParams = useSearchParams();
-
-    const sprint_num = searchParams.get('sprint_num');
-    const sprint_start = searchParams.get('sprint_start');
-    const sprint_end = searchParams.get('sprint_end');
-    const sprint_goal = searchParams.get('sprint_goal');
-    const sprint_progress = Number(searchParams.get('sprint_progress') || 0);
+    }, [sprintId]);
 
     const currentSprint = {
-        sprint_num,
-        sprint_start,
-        sprint_end,
+        sprintTitle,
+        sprintStart,
+        sprintEnd,
         goal: sprint_goal,
         progress: sprint_progress
     };
@@ -423,10 +157,10 @@ export default function Task() {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <h2 style={{ fontWeight: 'bold', color: '#2E1A86' }}>
                     <span style={{ fontSize: '32px', marginLeft: '20px' }}>
-                        Sprint {currentSprint.sprint_num}
+                        Sprint {currentSprint.sprintTitle}
                     </span>
                     <span style={{ fontSize: '15px', marginLeft: '15px' }}>
-                        {currentSprint.sprint_start} ~ {currentSprint.sprint_end}
+                        {currentSprint.sprintStart} ~ {currentSprint.sprintEnd}
                     </span>
                 </h2>
             </div>
@@ -462,15 +196,12 @@ export default function Task() {
             </T.TaskContainerWrapper>
 
                 <T.TaskContainer>
-                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                <--------------------------------------map 함수 부분--------------------------------------> */}
                 {tasks.map((task, index) => {
                     const isCompleted = task.taskStatus === "COMPLETED";
                     const isOnGoing = task.taskStatus === "ON_GOING";
                     const isNotStarted = task.taskStatus === "NOT_STARTED";
                     const isSOS = task.sosStatus === "SOS";
-                    const isNotSOS = task.sosStatus === "NOT_SOS";
-                    const isMyTask = task.projectNickname === projectUserData.data.projectNickname && isOnGoing && !isSOS;
+                    const isMyTask = task.projectNickname === projectUser?.data?.projectNickname && isOnGoing && !isSOS;
 
                     return (
                         <T.TaskWrapper key={`${task.taskId}-${index}`}>
@@ -539,8 +270,15 @@ export default function Task() {
             <TaskModal
                 isOpen={isTaskModalOpen}
                 onClose={() => setTaskModalOpen(false)}
-                sprintNum={currentSprint.sprint_num}
+                sprintId={sprintId}
+                sprintTitle={currentSprint.sprintTitle}
                 task={selectedTask}
+                onTaskCreated={async () => {
+                    setTasks([]);
+                    setLastTaskId(null);
+                    setHasMore(true);
+                    await loadMoreTasks();
+                }}
             />
 
             <AssignModal
