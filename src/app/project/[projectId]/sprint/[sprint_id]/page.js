@@ -1,11 +1,12 @@
 import Task from '../../../../task/task';
 import Navbar from '@/components/Navbar';
 
-export default function TaskPage(){
+export default function TaskPage({ params }){
+    const projectId = Number(params.projectId);
     return(
         <>
-        <Navbar/>
-        <Task/>
+            <Navbar projectId={projectId}/>
+            <Task projectId={projectId}/>
         </>
         
     )

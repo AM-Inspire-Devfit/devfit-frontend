@@ -14,10 +14,10 @@ import AssignModal from "./assign_modal";
 import { fetchProjectUser } from "@/app/api/project/projectApi";
 import { fetchTaskDataBySprint } from '@/app/api/task/taskApi';
 
-export default function Task() {
+export default function Task({ projectId }) {
 
     const searchParams = useSearchParams();
-    const projectId = Number(searchParams.get('project_id'));
+
     const sprintId = Number(searchParams.get('sprint_id'));
     const sprintTitle = searchParams.get('sprint_title'); 
     const sprintStart = searchParams.get('sprint_start');
@@ -28,10 +28,9 @@ export default function Task() {
     const [projectUser, setProjectUser] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [hasMore, setHasMore] = useState(true);
-    const [lastTaskId, setLastTaskId] = useState(null);
-    const [currentPageIndex, setCurrentPageIndex] = useState(0);
+    const [lastTaskId, setLastTaskId] = useState(0);
+    const [isFetching, setIsFetching] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(false);
 
     const TASK_PAGE_SIZE = 6;
 
@@ -46,55 +45,60 @@ export default function Task() {
         fetchUser();
     }, [projectId]);
 
-    const isLoadingRef = useRef(false);
-
     const loadMoreTasks = async () => {
-        if (!hasMore || !sprintId || isLoadingRef.current) return;
-    
-        isLoadingRef.current = true; 
+        if (isFetching || !hasMore) return;
+        setIsFetching(true);
     
         try {
             const data = await fetchTaskDataBySprint(sprintId, lastTaskId, TASK_PAGE_SIZE);
-            const newTasks = data.content?.filter(
-                (newTask) => !tasks.some((task) => task.taskId === newTask.taskId)
-            ) || [];
-    
-            if (newTasks.length > 0) {
-                setTasks((prev) => [...prev, ...newTasks]);
-                setLastTaskId(newTasks[newTasks.length - 1].taskId);
+            const content = data.content ?? [];
+
+            if (content.length === 0) {
+            setHasMore(false);
+            } else {
+            setTasks((prev) => [...prev, ...content]);
+            setLastTaskId(content[content.length - 1].taskId);
             }
-    
-            if (!data.content || data.content.length < TASK_PAGE_SIZE || data.last || newTasks.length === 0) {
-                setHasMore(false);
+
+            if (data.last || content.length < TASK_PAGE_SIZE) {
+            setHasMore(false);
             }
+
         } catch (error) {
             console.error("태스크 로딩 실패:", error.message);
             setHasMore(false);
         } finally {
-            isLoadingRef.current = false; 
+            setIsFetching(false);
         }
     };
+    
 
     useEffect(() => {
-        const handleScroll = () => {
-            const scrollTop = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const docHeight = document.body.offsetHeight;
-    
-            if (hasMore && !isLoadingRef.current && scrollTop + windowHeight >= docHeight - 100) {
-                loadMoreTasks();
-            }
-        };
-    
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [hasMore]);
+    if (sprintId) {
+        setTasks([]);
+        setLastTaskId(0);
+        setHasMore(true);
 
-    useEffect(() => {
-        if (sprintId) {
+        const timeout = setTimeout(() => {
             loadMoreTasks();
+            }, 100); 
+        
+        return () => clearTimeout(timeout);
         }
     }, [sprintId]);
+
+    const handleScroll = () => {
+    if (!hasMore || isFetching) return;
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+        loadMoreTasks();
+    }
+    };
+    
+    useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+    }, [hasMore, isFetching]);
 
     const currentSprint = {
         sprintTitle,
@@ -201,7 +205,7 @@ export default function Task() {
                     const isOnGoing = task.taskStatus === "ON_GOING";
                     const isNotStarted = task.taskStatus === "NOT_STARTED";
                     const isSOS = task.sosStatus === "SOS";
-                    const isMyTask = task.projectNickname === projectUser?.data?.projectNickname && isOnGoing && !isSOS;
+                    const isMyTask = task.projectNickname === projectUser?.projectNickname && isOnGoing && !isSOS;
 
                     return (
                         <T.TaskWrapper key={`${task.taskId}-${index}`}>
@@ -230,11 +234,6 @@ export default function Task() {
                                 )}
                             </T.TaskRight>
                         </T.TaskBox>
-                        {isCompleted && (
-                            <T.TaskCompleteDateContainer>
-                                {task.finish_date}
-                            </T.TaskCompleteDateContainer>
-                        )}
                         {isNotStarted  && (
                             <T.TaskStatusButton
                                 onClick={() => {
@@ -270,6 +269,7 @@ export default function Task() {
             <TaskModal
                 isOpen={isTaskModalOpen}
                 onClose={() => setTaskModalOpen(false)}
+                projectId={projectId} 
                 sprintId={sprintId}
                 sprintTitle={currentSprint.sprintTitle}
                 task={selectedTask}
@@ -279,12 +279,19 @@ export default function Task() {
                     setHasMore(true);
                     await loadMoreTasks();
                 }}
+                role={projectUser?.role} 
             />
 
             <AssignModal
                 isOpen={isAssignModalOpen}
                 task={selectedTask}
                 onClose={() => setAssignModalOpen(false)}
+                onAssigned={async () => {
+                    setTasks([]);
+                    setLastTaskId(null);
+                    setHasMore(true);
+                    await loadMoreTasks();
+                }}
             />
         </>
     )
