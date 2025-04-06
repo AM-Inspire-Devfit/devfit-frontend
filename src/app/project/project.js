@@ -773,7 +773,7 @@ export default function Project({projectId}) {
                         {currentSprintTasks?.map((item, index) => (
                             <P.TaskItem key={`task-${index}`}> 
                                 <P.TaskCheckbox
-                                    checked={item.toDoStatus === "COMPELTED"} readOnly
+                                    checked={item.toDoStatus === "COMPLETED"} readOnly
                                 />
                                 {item.task}
                             </P.TaskItem>

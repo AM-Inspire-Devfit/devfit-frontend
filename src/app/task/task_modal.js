@@ -34,7 +34,7 @@ const RadioInput = styled.input`
     height: 16px;
 `;
 
-export default function TaskModal({ isOpen, onClose, sprintTitle, sprintId, task, onTaskCreated}) {
+export default function TaskModal({ isOpen, onClose, sprintTitle, sprintId, task, onTaskCreated, role}) {
     const { showAlert } = useAlert();
 
     const [titleInput, setTitleInput] = useState("");
@@ -115,6 +115,7 @@ export default function TaskModal({ isOpen, onClose, sprintTitle, sprintId, task
                     <m.Input 
                         value={titleInput}
                         onChange={(e) => setTitleInput(e.target.value)}
+                        placeholder="task를 입력하세요!"
                     />
             </InputWrapper>
 
@@ -149,7 +150,7 @@ export default function TaskModal({ isOpen, onClose, sprintTitle, sprintId, task
             </InputWrapper>
 
             <m.ButtonContainer style={{ marginTop: "-5px", gap: "10px"}}>
-                {task && (
+                {task && role === "ADMIN" && (
                     <m.DeleteButton onClick={handleDelete}>
                         삭제
                     </m.DeleteButton>

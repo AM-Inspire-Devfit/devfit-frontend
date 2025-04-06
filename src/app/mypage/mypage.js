@@ -13,7 +13,9 @@ import LeaderModal from "./leader_modal";
 
 import { fetchProjectData, fetchProjectUser } from "@/app/api/project/projectApi";
 import { fetchMySprintTaskData  } from "@/app/api/sprint/sprintApi";
+import { completeTask, sosTask } from  "@/app/api/task/taskApi";
 
+import { useAlert } from "@/context/AlertContext";
 
 const teamData = {
     "success": true,
@@ -27,287 +29,9 @@ const teamData = {
     "timestamp": "2025-02-10T14:18:46.135007"
 }
 
-
-const taskData = [
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": "2025-03-01",
-            "taskStatus": "COMPLETED",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": false,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    },
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 2,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": "2025-03-01",
-            "taskStatus": "COMPLETED",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": false,
-        "last": false,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    },
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정ㅎ",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 2,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": "2025-03-01",
-            "taskStatus": "COMPLETED",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정ㅎㅎㅎ",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "ON_GOING",
-            "assignedStatus": "ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": 4,
-            "projectNickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": false,
-        "last": true,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    }
-]
-
 export default function My({ projectId }) {
+    const { showAlert } = useAlert();
+
     const ProjectId = Number(projectId);
 
     const [projectUserData, setProjectUserData] = useState(null);
@@ -319,6 +43,8 @@ export default function My({ projectId }) {
     const [mySprints, setMySprints] = useState([]);
     const [lastSprintId, setLastSprintId] = useState(null);
     const [sprintLast, setSprintLast] = useState(false);
+    
+    const [currentSprint, setCurrentSprint] = useState(null);
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
 
     useEffect(() => {
@@ -355,6 +81,7 @@ export default function My({ projectId }) {
     
                 if (index !== -1) {
                     setCurrentSprintIndex(index);
+                    setCurrentSprint(newSprints[index]);
                 } else {
                     const upcomingIndex = newSprints.findIndex(s => s.startDt > today);
                     setCurrentSprintIndex(upcomingIndex !== -1 ? upcomingIndex : Math.max(0, newSprints.length - 1));
@@ -370,6 +97,12 @@ export default function My({ projectId }) {
             console.error("스프린트 불러오기 실패:", error.message);
         }
     };
+
+    useEffect(() => {
+        if (mySprints.length > 0 && mySprints[currentSprintIndex]) {
+            setCurrentSprint(mySprints[currentSprintIndex]);
+        }
+    }, [currentSprintIndex, mySprints]);
 
     useEffect(() => {
         if (ProjectId) {
@@ -390,49 +123,40 @@ export default function My({ projectId }) {
         }
     };
 
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 아래부터 시작------------------------------------>
+    const refreshCurrentSprint = async () => {
+        try {
+            const response = await fetchMySprintTaskData(ProjectId);
+            const updatedSprints = response.content;
     
-    const [visibleTasks, setVisibleTasks] = useState([]);
-    const [taskPage, setTaskPage] = useState(0);
-    const [hasMoreTasks, setHasMoreTasks] = useState(true);
-
-    const loadMoreTasks = () => {
-        if (taskPage < taskData.length) {
-            const newTasks = taskData[taskPage].data.content;
-            setVisibleTasks((prev) => [...prev, ...newTasks]);
-            setTaskPage((prev) => prev + 1);
+            setMySprints(updatedSprints);
     
-            if (taskPage + 1 >= taskData.length) {
-                setHasMoreTasks(false);
+            if (updatedSprints.length > 0 && updatedSprints[currentSprintIndex]) {
+                setCurrentSprint(updatedSprints[currentSprintIndex]);
             }
+        } catch (error) {
+            console.error("현재 스프린트 갱신 실패:", error.message);
         }
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + document.documentElement.scrollTop >=
-                document.documentElement.offsetHeight - 100
-            ) {
-                loadMoreTasks();
-            }
-        };
-    
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [taskPage, hasMoreTasks]);
-
-    const currentSprint = mySprints[currentSprintIndex];
-    const currentTasks = taskData[currentSprintIndex]?.data.content || [];
-
-    useEffect(() => {
-        if (visibleTasks.length === 0 && taskData.length > 0) {
-            loadMoreTasks();
+    const handleCompleteTask = async (taskId) => {
+        try {
+            await completeTask(taskId);
+            showAlert("success", "태스크를 완료했습니다.");
+            await refreshCurrentSprint(); 
+        } catch (err) {
+            showAlert("error", err.message);
         }
-    }, []);
-     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
+    };
+
+    const handleSOSTask = async (taskId) => {
+        try {
+            await sosTask(taskId);
+            showAlert("success", "태스크가 SOS 상태로 변경되었습니다.");
+            await refreshCurrentSprint();
+        } catch (err) {
+            showAlert("error", err.message);
+        }
+    };
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -512,7 +236,9 @@ export default function My({ projectId }) {
 
                         <M.ContributionWrapper>
                             <M.ContributionTitle>기여도</M.ContributionTitle>
-                            <ContributionCircle percentage={currentSprint?.progress} />
+                            {typeof currentSprint?.progress === "number" && !isNaN(currentSprint.progress) && (
+                                <ContributionCircle percentage={currentSprint.progress} />
+                            )}
                         </M.ContributionWrapper>
 
                         <M.BoxDivider />
@@ -535,9 +261,7 @@ export default function My({ projectId }) {
 
                 <M.TaskHeader>Todo</M.TaskHeader>
                 <T.TaskContainer>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                    <--------------------------------------map 함수 부분--------------------------------------> */}
-                    {visibleTasks.map((task, index) => (
+                    {currentSprint?.taskList?.map((task, index) => (
                         <T.TaskWrapper key={index}>
                             <T.TaskBox 
                                 $isCompleted={task.taskStatus === "COMPLETED"} 
@@ -560,14 +284,14 @@ export default function My({ projectId }) {
                             )}
                             {task.taskStatus === "ON_GOING" && task.sosStatus !== "SOS" && (
                                 <T.ButtonContainer>
-                                <T.CButton>완료</T.CButton>
-                                <T.SButton>SOS</T.SButton>
+                                <T.CButton onClick={() => handleCompleteTask(task.taskId)}>완료</T.CButton>
+                                <T.SButton onClick={() => handleSOSTask(task.taskId)}>SOS</T.SButton>
                                 </T.ButtonContainer>
                             )}
                             {task.taskStatus === "ON_GOING" && task.sosStatus === "SOS" && (
                                 <T.ButtonContainer>
-                                <T.CButton>완료</T.CButton>
-                                <T.SButton $isSOS={true}>SOS</T.SButton>
+                                <T.CButton onClick={() => handleCompleteTask(task.taskId)}>완료</T.CButton>
+                                <T.SButton $isSOS={true} onClick={() => handleSosTask(task.taskId)}>SOS</T.SButton>
                                 </T.ButtonContainer>
                             )}
                         </T.TaskWrapper>
