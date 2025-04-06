@@ -12,7 +12,7 @@ import ApproveModal from "./approve_modal";
 import LeaderModal from "./leader_modal";
 
 import { fetchProjectData, fetchProjectUser } from "@/app/api/project/projectApi";
-
+import { fetchMySprintTaskData  } from "@/app/api/sprint/sprintApi";
 
 
 const teamData = {
@@ -27,74 +27,6 @@ const teamData = {
     "timestamp": "2025-02-10T14:18:46.135007"
 }
 
-const sprintData = [
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "id": 1,
-            "title": "1",
-            "goal": "MVP 개발",
-            "startDt": "2025-03-21",
-            "dueDt": "2026-03-01",
-            "status": "COMPLETED",
-            "progress": 33
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 1,
-            "sort": [],
-            "offset": 0,
-            "unpaged": false,
-            "paged": true
-        },
-        "first": true,
-        "last": false,
-        "size": 1,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 1,
-        "empty": false
-        },
-        "timestamp": "2025-03-21T22:34:50.563296"
-    },
-    {
-        "success": true,
-        "status": 200,
-        "data": {
-            "content": [
-            {
-                "id": 1,
-                "title": "2",
-                "goal": "MVP 개발222222",
-                "startDt": "2025-03-21",
-                "dueDt": "2026-03-01",
-                "status": "ON_GOING",
-                "progress": 50
-            }
-            ],
-            "pageable": {
-            "pageNumber": 0,
-            "pageSize": 1,
-            "sort": [],
-            "offset": 0,
-            "unpaged": false,
-            "paged": true
-            },
-            "first": false,
-            "last": true,
-            "size": 1,
-            "number": 0,
-            "sort": [],
-            "numberOfElements": 1,
-            "empty": false
-        },
-        "timestamp": "2025-03-21T22:34:50.563296"
-    }
-];
 
 const taskData = [
     {
@@ -384,6 +316,9 @@ export default function My({ projectId }) {
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
     const [isLeaderModalOpen, setIsLeaderModalOpen] = useState(false);
 
+    const [mySprints, setMySprints] = useState([]);
+    const [lastSprintId, setLastSprintId] = useState(null);
+    const [sprintLast, setSprintLast] = useState(false);
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
 
     useEffect(() => {
@@ -407,12 +342,52 @@ export default function My({ projectId }) {
         getProjectInfo();
     }, []);
 
+    const loadMySprints = async (cursor = null) => {
+        try {
+            const response = await fetchMySprintTaskData(ProjectId, cursor);
+            const newSprints = response.content;
+    
+            if (cursor === null) {
+                setMySprints(newSprints);
+                
+                const today = new Date().toISOString().split('T')[0];
+                const index = newSprints.findIndex(s => s.startDt <= today && s.dueDt >= today);
+    
+                if (index !== -1) {
+                    setCurrentSprintIndex(index);
+                } else {
+                    const upcomingIndex = newSprints.findIndex(s => s.startDt > today);
+                    setCurrentSprintIndex(upcomingIndex !== -1 ? upcomingIndex : Math.max(0, newSprints.length - 1));
+                }
+            } else {
+                setMySprints(prev => [...prev, ...newSprints]);
+            }
+    
+            const newLastId = newSprints.length > 0 ? newSprints[newSprints.length - 1].id : null;
+            setLastSprintId(newLastId);
+            setSprintLast(response.last);
+        } catch (error) {
+            console.error("스프린트 불러오기 실패:", error.message);
+        }
+    };
+
+    useEffect(() => {
+        if (ProjectId) {
+            loadMySprints();
+        }
+    }, [ProjectId]);
+
     const handlePrevSprint = () => {
         setCurrentSprintIndex((prev) => Math.max(prev - 1, 0));
     };
 
-    const handleNextSprint = () => {
-        setCurrentSprintIndex((prev) => Math.min(prev + 1, sprintData.length - 1));
+    const handleNextSprint = async () => {
+        if (currentSprintIndex === mySprints.length - 1 && !sprintLast) {
+            await loadMySprints(lastSprintId); 
+            setCurrentSprintIndex(prev => prev + 1);
+        } else {
+            setCurrentSprintIndex(prev => prev + 1);
+        }
     };
 
     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
@@ -448,7 +423,7 @@ export default function My({ projectId }) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [taskPage, hasMoreTasks]);
 
-    const currentSprint = sprintData[currentSprintIndex].data.content[0];
+    const currentSprint = mySprints[currentSprintIndex];
     const currentTasks = taskData[currentSprintIndex]?.data.content || [];
 
     useEffect(() => {
@@ -458,24 +433,6 @@ export default function My({ projectId }) {
     }, []);
      // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
     // <--------------------------------------------여기 위까지 끝-------------------------------------->
-
-    useEffect(() => {
-        const today = new Date().toISOString().split('T')[0];
-        const sprintIndex = sprintData.findIndex(sprint =>
-            sprint.sprint_start <= today && sprint.sprint_end >= today
-        );
-    
-        if (sprintIndex !== -1) {
-            setCurrentSprintIndex(sprintIndex);
-        } else {
-            const upcomingSprintIndex = sprintData.findIndex(sprint => sprint.sprint_start > today);
-            if (upcomingSprintIndex !== -1) {
-                setCurrentSprintIndex(upcomingSprintIndex);
-            } else {
-                setCurrentSprintIndex(sprintData.length - 1);
-            }
-        }
-    }, []); // 컴포넌트가 최초 마운트될 때만 실행
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -547,15 +504,15 @@ export default function My({ projectId }) {
                         )}
 
                         <M.SprintInfo>
-                            <M.SprintTitle>Sprint {currentSprint.title}</M.SprintTitle>
-                            <M.SprintDescription>{currentSprint.goal}</M.SprintDescription>
+                            <M.SprintTitle>Sprint {currentSprint?.title}</M.SprintTitle>
+                            <M.SprintDescription>{currentSprint?.goal}</M.SprintDescription>
                         </M.SprintInfo>
 
                         <M.BoxDivider />
 
                         <M.ContributionWrapper>
                             <M.ContributionTitle>기여도</M.ContributionTitle>
-                            <ContributionCircle percentage={currentSprint.progress} />
+                            <ContributionCircle percentage={currentSprint?.progress} />
                         </M.ContributionWrapper>
 
                         <M.BoxDivider />
@@ -568,7 +525,7 @@ export default function My({ projectId }) {
                         </M.RoleWrapper>
 
                         {/* 오른쪽 화살표 */}
-                        {currentSprintIndex < sprintData.length - 1 && (
+                        {(currentSprintIndex < mySprints.length - 1 || !sprintLast) && (
                             <div style={{ position: 'absolute', right: '-60px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
                             <AiOutlineRight size={50} color="#796AD9" />
                             </div>
