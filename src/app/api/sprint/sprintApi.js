@@ -27,8 +27,7 @@ export const fetchSprintTaskData = async (projectId, baseSprintId = null, direct
         console.log("프로젝트별 스프린트 & 태스크 목록 조회:", res.data);
         return res.data.data;
     } catch (error) {
-        const message = error?.response?.data?.data?.message ?? "프로젝트별 스프린트 & 태스크 목록을 조회할 수 없습니다.";
-        throw new Error(message);
+        console.log(error);
     }
 };
 

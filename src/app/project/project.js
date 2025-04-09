@@ -210,6 +210,10 @@ export default function Project({projectId}) {
 
     const ProjectId = Number(projectId);
 
+    const isExternalUser = useMemo(() => {
+        return projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED";
+    }, [projectUser]);
+
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
     }, []);
@@ -232,8 +236,14 @@ export default function Project({projectId}) {
     
         try {
             const user = await fetchProjectUser(projectId);
+            console.log("🎯 fetched projectUser", user);
             setProjectUser(user);
         } catch (error) {
+            console.log("❌ fetchProjectUser error", error);
+
+        if (error.message === "해당 프로젝트 참여자가 아닙니다.") {
+            setProjectUser({ errorClassName: "PROJECT_PARTICIPATION_REQUIRED" });
+            }
         }
     };
 
@@ -292,38 +302,61 @@ export default function Project({projectId}) {
     };
 
     useEffect(() => {
-        const loadInitialSprints = async () => {
-            const response = await fetchSprintTaskData(projectId, null, "PREV");
-            console.log("fetch 성공:", response);
-            if (!response || !response.content?.length) return;
-            
-            // 첫 번째 스프린트
-            setSprintData([response.content[0]]);
-            setCurrentSprintIndex(0);
-            setLastSprintId(response.content[0]?.id || null);
+    }, [isExternalUser, sprintData]);
     
-            setHasPrev(!response.last);
-            setSprintLast(response.last);
-            setHasNext(false); // NEXT는 처음에 무조건 false로 시작
+    const loadInitialSprints = async () => {
+        const response = await fetchSprintTaskData(projectId, null, "PREV");
+        console.log("fetch 성공:", response);
 
-            // 종료일을 기준으로 오른쪽 화살표 표시 여부 설정
-            const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-            const sprintEndKST = new Date(new Date(response.content[0]?.dueDt + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
+        if (!response) {
+            console.warn("🚨 스프린트 데이터 fetch 실패 (undefined 응답)");
+            setSprintData([]);
+            setShowCreateSprintBox(false);
+            return;
+        }
 
-            nowKST.setHours(0, 0, 0, 0); 
-            sprintEndKST.setHours(0, 0, 0, 0); 
+        if (response.success === false && isExternalUser) {
+            setShowCreateSprintBox(false);  
+            setSprintData([]);  
+            return;  
+        }
 
-            if (nowKST > sprintEndKST) {
-                setCanShowNextArrow(true); // 종료일이 지난 경우에 화살표 보이기
-            } else {
-                setCanShowNextArrow(false); // 종료일이 지나지 않은 경우에 화살표 숨기기
-            }
-        };
-    
+        if (!response || !response.content?.length) return;
+        
+        // 첫 번째 스프린트
+        setSprintData([response.content[0]]);
+        setCurrentSprintIndex(0);
+        setLastSprintId(response.content[0]?.id || null);
+
+        setHasPrev(!response.last);
+        setSprintLast(response.last || response.content.length === 1);
+        setHasNext(false); // NEXT는 처음에 무조건 false로 시작
+
+        // 종료일을 기준으로 오른쪽 화살표 표시 여부 설정
+        const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+        const sprintEndKST = new Date(new Date(response.content[0]?.dueDt + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
+
+        nowKST.setHours(0, 0, 0, 0); 
+        sprintEndKST.setHours(0, 0, 0, 0); 
+
+        if (nowKST > sprintEndKST) {
+            setCanShowNextArrow(true); // 종료일이 지난 경우에 화살표 보이기
+        } else {
+            setCanShowNextArrow(false); // 종료일이 지나지 않은 경우에 화살표 숨기기
+        }
+    };
+
+    useEffect(() => {
         if (projectId && !sprintData.length) {
             loadInitialSprints();
         }
-    }, [projectId, sprintData]);
+    }, [projectId, sprintData, isExternalUser]);
+    
+    useEffect(() => {
+        if (isExternalUser && !sprintData.length) {
+            loadInitialSprints();  // isExternalUser와 sprintData가 초기화되었을 때만 호출
+        }
+    }, [isExternalUser, sprintData]); // isExternalUser와 sprintData 변경 시
 
     // <-------------------스프린트 모달--------------------------->
     // <-------------------스프린트 모달--------------------------->
@@ -402,7 +435,7 @@ export default function Project({projectId}) {
                     item.data?.[0]?.sprintId === sprintContent.id
                 )?.data ?? [];
         
-                const isLast = idx === sprintData.length - 1 && sprintLast;
+                const isLast = idx === sprintData.length - 1;
     
                 return {
                     sprint_id: sprintContent.id,
@@ -432,7 +465,7 @@ export default function Project({projectId}) {
     const sprint = processedSprintData.find(s => s.sprint_title === currentSprint?.sprint_title);
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
-    const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
+    const [showCreateSprintBox, setShowCreateSprintBox] = useState(null);; // Sprint 생성 박스 표시 여부
     
     const [canShowNextArrow, setCanShowNextArrow] = useState(false);
 
@@ -561,6 +594,10 @@ export default function Project({projectId}) {
         console.log("currentSprintIndex 값:", currentSprintIndex);
     }, [hasPrev]);
 
+    if (isExternalUser === null) {
+        return null; // 또는 로딩 UI를 보여줄 수도 있음
+    }
+
     // 신규 미팅 생성
     const openMeetingModalForCreate = () => {
         setSelectedMeeting(null);
@@ -620,7 +657,7 @@ export default function Project({projectId}) {
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
              <--------------------------------------map 함수 부분--------------------------------------> */}
-            {currentSprint?.sprint_end === today && (
+            {currentSprint?.sprint_end === today && isExternalUser === true && (
             <P.AlertBox key={`feedback-${sprint.sprint_title}`}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
@@ -640,7 +677,29 @@ export default function Project({projectId}) {
                     </div>
                 )}
 
-                {(!processedSprintData.length || showCreateSprintBox) ? (
+                {isExternalUser === true && sprintData.length === 0 ? (
+                // 외부인이고 스프린트가 없을 때 → "스프린트가 존재하지 않습니다"
+                <div
+                    style={{
+                        width: '100%',
+                        height: '600px',
+                        backgroundColor: '#F6F3FF',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '16px',
+                        color: '#6C5CE7',
+                        fontSize: '20px',
+                        fontWeight: '500',
+                        textAlign: 'center',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)'
+                    }}
+                >
+                    <div style={{ fontSize: '40px', marginBottom: '20px' }}>📭</div>
+                    <div>아직 생성된 Sprint가 없습니다</div>
+                </div>
+                ) : isExternalUser === false && (sprintData.length === 0 || showCreateSprintBox) ? (
                     // Sprint 생성 상자
                     <div style={{
                         width: '100%',
