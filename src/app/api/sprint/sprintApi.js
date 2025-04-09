@@ -13,13 +13,17 @@ export const createSprint = async (sprintData) => {
 };
 
 // 프로젝트별 스프린트 & 태스크 목록 조회
-export const fetchSprintTaskData = async (projectId, lastSprintId = null) => {
+export const fetchSprintTaskData = async (projectId, baseSprintId = null, direction = "NEXT") => {
     try {
-        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/project`,
-            { 
-                params: lastSprintId ? { lastSprintId } : {} 
-            }
-        );
+        const params = {};
+
+        if (baseSprintId !== null) {
+            params.baseSprintId = baseSprintId;
+            params.direction = direction;
+        }
+
+        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/project`, { params });
+
         console.log("프로젝트별 스프린트 & 태스크 목록 조회:", res.data);
         return res.data.data;
     } catch (error) {
