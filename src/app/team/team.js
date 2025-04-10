@@ -28,6 +28,8 @@ import { fetchProjectListData } from "@/app/api/project/projectApi";
 
 import { useAlert } from "@/context/AlertContext";
 
+import axiosWithAuthorization from "@/context/axiosWithAuthorization";
+
 export default function Team({ teamId }) {
     const { showAlert } = useAlert();
 
@@ -141,6 +143,16 @@ export default function Team({ teamId }) {
             setInviteModal(true);
         }
     };
+    //project 가입 신청
+    const requestProjectJoin = async (projectId) => {
+        try {
+          const res = await axiosWithAuthorization.post(`/projects/${projectId}/registration`);
+          return res.data.data.teamName;
+        } catch (error) {
+            showAlert("error", error.response.data.data.message);
+            console.log(error.response.data);
+        }
+      };
 
     useEffect(() => {
         if (!TeamId) return;
@@ -387,6 +399,16 @@ export default function Team({ teamId }) {
             ...prev,
             [projectId]: !prev[projectId]
         }));
+
+        try {
+            requestProjectJoin(projectId);
+        } catch (error) {
+            // 실패 시 상태를 다시 되돌림 (rollback)
+            setPendingProjects((prev) => ({
+                ...prev,
+                [projectId]: !prev[projectId]
+            }));
+        }
     };
     
     if (!teamInfo) {
