@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const AlertContainer = styled.div`
   position: fixed;
-  top: 20px;
+  top: 100px;
   right: 20px;
   background-color: ${({ type }) =>
     type === "error" ? "#ff4d4f" : "#52c41a"};
