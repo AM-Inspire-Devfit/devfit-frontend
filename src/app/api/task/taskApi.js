@@ -59,14 +59,14 @@ export const assignTask = async (taskId) => {
     }
 };
 
-// 태스크 완료
+// 태스크 완료/미완료 
 export const completeTask = async (taskId) => {
     try {
         const res = await axiosWithAuthorization.patch(`/tasks/${taskId}`);
         console.log("태스크 완료:", res.data);
         return res.data.data;
     } catch (error) {
-        const message = error?.response?.data?.data?.message ?? "태스크를 완료했습니다.";
+        const message = error?.response?.data?.data?.message;
         throw new Error(message);
     }
 };
@@ -78,7 +78,7 @@ export const sosTask = async (taskId) => {
         console.log("태스크 SOS 처리:", res.data);
         return res.data.data;
     } catch (error) {
-        const message = error?.response?.data?.data?.message ?? "태스크가 SOS 처리되었습니다.";
+        const message = error?.response?.data?.data?.message;
         throw new Error(message);
     }
 };

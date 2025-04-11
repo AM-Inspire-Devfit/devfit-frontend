@@ -14,7 +14,10 @@ import AssignModal from "./assign_modal";
 import { fetchProjectUser } from "@/app/api/project/projectApi";
 import { fetchTaskDataBySprint } from '@/app/api/task/taskApi';
 
+import { useAlert } from "@/context/AlertContext";
+
 export default function Task({ projectId }) {
+    const { showAlert } = useAlert();
 
     const searchParams = useSearchParams();
 
@@ -205,15 +208,31 @@ export default function Task({ projectId }) {
                     const isOnGoing = task.taskStatus === "ON_GOING";
                     const isNotStarted = task.taskStatus === "NOT_STARTED";
                     const isSOS = task.sosStatus === "SOS";
-                    const isMyTask = task.projectNickname === projectUser?.projectNickname && isOnGoing && !isSOS;
+                    const isMyTask = task.memberId === projectUser?.projectParticipantId && isOnGoing && !isSOS;
+                    const isMySOS = task.memberId === projectUser?.projectParticipantId && isOnGoing && isSOS;
+                    const isProjectAdmin = projectUser?.role === "ADMIN" && isOnGoing;
 
                     return (
                         <T.TaskWrapper key={`${task.taskId}-${index}`}>
                         <T.TaskBox 
                             $isCompleted={isCompleted} 
                             $isSOS={isSOS}
-                            onClick={() => handleEditTaskModal(task)}
-                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                                // NOT_STARTED이면 누구나 모달 열 수 있음
+                                if (isNotStarted) {
+                                    handleEditTaskModal(task);
+                                }
+                                // ON_GOING일 때는 Task 담당자, 관리자만 열 수 있음
+                                else if (isOnGoing && (isMyTask || isMySOS || isProjectAdmin)) {
+                                    handleEditTaskModal(task);
+                                }
+                            }}
+                            style={{
+                                cursor:
+                                    (isNotStarted || (isOnGoing && (isMyTask || isMySOS || isProjectAdmin)))
+                                        ? "pointer"
+                                        : "default"
+                            }}
                         >
                             <T.TaskLeft>
                             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -252,8 +271,12 @@ export default function Task({ projectId }) {
                         {isSOS && (
                             <T.SOSButton
                                 onClick={() => {
-                                setSelectedTask(task);
-                                setAssignModalOpen(true);
+                                    if (isMySOS) {
+                                        alert("본인의 SOS task를 할당 받을 수 없습니다");
+                                        return;
+                                    }
+                                    setSelectedTask(task);
+                                    setAssignModalOpen(true);
                                 }}
                             >
                                 SOS

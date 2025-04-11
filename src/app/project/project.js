@@ -236,10 +236,10 @@ export default function Project({projectId}) {
     
         try {
             const user = await fetchProjectUser(projectId);
-            console.log("🎯 fetched projectUser", user);
+            console.log("fetched projectUser", user);
             setProjectUser(user);
         } catch (error) {
-            console.log("❌ fetchProjectUser error", error);
+            console.log("fetchProjectUser error", error);
 
         if (error.message === "해당 프로젝트 참여자가 아닙니다.") {
             setProjectUser({ errorClassName: "PROJECT_PARTICIPATION_REQUIRED" });
@@ -309,7 +309,7 @@ export default function Project({projectId}) {
         console.log("fetch 성공:", response);
 
         if (!response) {
-            console.warn("🚨 스프린트 데이터 fetch 실패 (undefined 응답)");
+            console.warn("스프린트 데이터 fetch 실패");
             setSprintData([]);
             setShowCreateSprintBox(false);
             return;
@@ -545,16 +545,17 @@ export default function Project({projectId}) {
         // processedSprintData가 업데이트될 때마다 종료일을 기준으로 오른쪽 화살표를 보일지 말지를 결정
         if (currentSprint) {
             const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-            const sprintEndKST = new Date(new Date(currentSprint.sprint_end + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
+            nowKST.setHours(0, 0, 0, 0);
     
-            nowKST.setHours(0, 0, 0, 0); 
-            sprintEndKST.setHours(0, 0, 0, 0); 
+            const sprintEndKST = new Date(currentSprint.sprint_end);
+            sprintEndKST.setDate(sprintEndKST.getDate() + 1); // 마감일 다음날
+            sprintEndKST.setHours(0, 0, 0, 0);
     
-            // 종료일이 지나면 오른쪽 화살표를 보이도록 설정
-            const isNextArrowVisible = nowKST > sprintEndKST;
+            const isNextArrowVisible = nowKST >= sprintEndKST;
+    
             setCanShowNextArrow(isNextArrowVisible);
         }
-    }, [currentSprint]); 
+    }, [currentSprint]);
 
     useEffect(() => {
         if (pendingPrependCount > 0) {
@@ -657,7 +658,9 @@ export default function Project({projectId}) {
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
              <--------------------------------------map 함수 부분--------------------------------------> */}
-            {currentSprint?.sprint_end === today && isExternalUser === true && (
+            
+            {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && 
+currentSprint?.sprint_end === today && isExternalUser === true && (
             <P.AlertBox key={`feedback-${sprint.sprint_title}`}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 

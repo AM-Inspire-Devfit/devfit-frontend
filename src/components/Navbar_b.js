@@ -28,7 +28,7 @@ const Navbar_ = () => {
 
     return (
         <n.NavbarContainer>
-            <Link href="/boarding/" passHref>
+            <Link href="/home" passHref>
             <n.LogoContainer>
                 <Image 
                     src="/img/devfit-logo.png" 

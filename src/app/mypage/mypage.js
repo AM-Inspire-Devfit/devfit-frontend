@@ -47,6 +47,8 @@ export default function My({ projectId }) {
     const [currentSprint, setCurrentSprint] = useState(null);
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
 
+    const [clickCountMap, setClickCountMap] = useState({});
+
     useEffect(() => {
         const getProjectInfo = async () => {
             try {
@@ -147,20 +149,48 @@ export default function My({ projectId }) {
     };
 
     const handleCompleteTask = async (taskId) => {
+        const currentCount = clickCountMap[taskId] || 0;
+        const nextCount = currentCount + 1;
+    
         try {
             await completeTask(taskId);
-            showAlert("success", "태스크를 완료했습니다.");
-            await refreshCurrentSprint(); 
+    
+            if (nextCount % 2 === 1) {
+                showAlert("success", "태스크를 완료했습니다.");
+            } else {
+                showAlert("success", "태스크가 미완료 처리되었습니다.");
+            }
+    
+            await refreshCurrentSprint();
+    
+            setClickCountMap(prev => ({
+                ...prev,
+                [taskId]: nextCount,
+            }));
         } catch (err) {
             showAlert("error", err.message);
         }
     };
 
     const handleSOSTask = async (taskId) => {
+        const currentCount = clickCountMap[taskId] || 0;
+        const nextCount = currentCount + 1;
+
         try {
             await sosTask(taskId);
-            showAlert("success", "태스크가 SOS 상태로 변경되었습니다.");
+
+            if (nextCount % 2 === 1) {
+                showAlert("success", "태스크가 SOS 상태로 변경되었습니다.");
+            } else {
+                showAlert("success", "태스크가 NOT SOS 상태로 변경되었습니다.");
+            }
+    
             await refreshCurrentSprint();
+    
+            setClickCountMap(prev => ({
+                ...prev,
+                [taskId]: nextCount,
+            }));
         } catch (err) {
             showAlert("error", err.message);
         }
@@ -291,8 +321,8 @@ export default function My({ projectId }) {
                             </T.TaskBox>
 
                             {task.taskStatus === "COMPLETED" && (
-                                <T.NCButton>
-                                    미완료
+                                <T.NCButton onClick={() => handleCompleteTask(task.taskId)}>
+                                    되돌리기
                                 </T.NCButton>
                             )}
                             {task.taskStatus === "ON_GOING" && task.sosStatus !== "SOS" && (
@@ -303,8 +333,7 @@ export default function My({ projectId }) {
                             )}
                             {task.taskStatus === "ON_GOING" && task.sosStatus === "SOS" && (
                                 <T.ButtonContainer>
-                                <T.CButton onClick={() => handleCompleteTask(task.taskId)}>완료</T.CButton>
-                                <T.SButton $isSOS={true} onClick={() => handleSosTask(task.taskId)}>SOS</T.SButton>
+                                <T.SButton $isSOS={true} onClick={() => handleSOSTask(task.taskId)}>SOS</T.SButton>
                                 </T.ButtonContainer>
                             )}
                         </T.TaskWrapper>

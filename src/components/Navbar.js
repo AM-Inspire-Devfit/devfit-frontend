@@ -81,7 +81,7 @@ const Navbar = ({ projectId }) => {
 
   return (
     <NavbarContainer>
-      <Link href="/boarding/" passHref>
+      <Link href="/home" passHref>
       <LogoContainer>
         <Image 
           src="/img/devfit-logo.png" 
