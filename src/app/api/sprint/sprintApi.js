@@ -32,13 +32,17 @@ export const fetchSprintTaskData = async (projectId, baseSprintId = null, direct
 };
 
 // [개인페이지] 회원별 프로젝트 내 스프린트 목록 조회
-export const fetchMySprintTaskData = async (projectId, lastSprintId = null) => {
+export const fetchMySprintTaskData = async (projectId, baseSprintId = null, direction = "NEXT") => {
     try {
-        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/me`,
-            { 
-                params: lastSprintId ? { lastSprintId } : {} 
-            }
-        );
+        const params = {};
+
+        if (baseSprintId !== null) {
+            params.baseSprintId = baseSprintId;
+            params.direction = direction;
+        }
+
+        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/me`, { params });
+        
         console.log("[개인페이지] 회원별 프로젝트 내 스프린트 목록 조회:", res.data);
         return res.data.data;
     } catch (error) {

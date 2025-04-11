@@ -68,31 +68,38 @@ export default function My({ projectId }) {
         getProjectInfo();
     }, []);
 
-    const loadMySprints = async (cursor = null) => {
+    const loadMySprints = async (baseSprintId = null, direction = "NEXT") => {
         try {
-            const response = await fetchMySprintTaskData(ProjectId, cursor);
+            const response = await fetchMySprintTaskData(ProjectId, baseSprintId, direction);
             const newSprints = response.content;
     
-            if (cursor === null) {
+            if (baseSprintId === null) {
+                // 최초 로딩
                 setMySprints(newSprints);
-                
+    
                 const today = new Date().toISOString().split('T')[0];
                 const index = newSprints.findIndex(s => s.startDt <= today && s.dueDt >= today);
     
+                let finalIndex;
                 if (index !== -1) {
-                    setCurrentSprintIndex(index);
-                    setCurrentSprint(newSprints[index]);
+                    finalIndex = index;
                 } else {
                     const upcomingIndex = newSprints.findIndex(s => s.startDt > today);
-                    setCurrentSprintIndex(upcomingIndex !== -1 ? upcomingIndex : Math.max(0, newSprints.length - 1));
+                    finalIndex = upcomingIndex !== -1 ? upcomingIndex : Math.max(0, newSprints.length - 1);
                 }
+    
+                setCurrentSprintIndex(finalIndex);
+                setCurrentSprint(newSprints[finalIndex]);
             } else {
-                setMySprints(prev => [...prev, ...newSprints]);
+                // 이전 스프린트 추가
+                setMySprints((prev) => [...prev, ...newSprints]);
+                setCurrentSprintIndex((prev) => prev + newSprints.length); // 새로 추가한 만큼 index 이동
             }
     
-            const newLastId = newSprints.length > 0 ? newSprints[newSprints.length - 1].id : null;
+            const newLastId = newSprints.length > 0 ? newSprints[newSprints.length - 1].id : lastSprintId;
             setLastSprintId(newLastId);
             setSprintLast(response.last);
+    
         } catch (error) {
             console.error("스프린트 불러오기 실패:", error.message);
         }
@@ -110,17 +117,18 @@ export default function My({ projectId }) {
         }
     }, [ProjectId]);
 
-    const handlePrevSprint = () => {
-        setCurrentSprintIndex((prev) => Math.max(prev - 1, 0));
+    const handlePrevSprint = async () => {
+        const currentBaseSprint = mySprints[currentSprintIndex];
+    
+        if (currentSprintIndex === mySprints.length - 1 && !sprintLast) {
+            await loadMySprints(currentBaseSprint.id, "PREV");
+        } else {
+            setCurrentSprintIndex((prev) => Math.min(prev + 1, mySprints.length - 1));
+        }
     };
 
-    const handleNextSprint = async () => {
-        if (currentSprintIndex === mySprints.length - 1 && !sprintLast) {
-            await loadMySprints(lastSprintId); 
-            setCurrentSprintIndex(prev => prev + 1);
-        } else {
-            setCurrentSprintIndex(prev => prev + 1);
-        }
+    const handleNextSprint = () => {
+        setCurrentSprintIndex((prev) => Math.max(prev - 1, 0));
     };
 
     const refreshCurrentSprint = async () => {
@@ -209,7 +217,7 @@ export default function My({ projectId }) {
 
                 <div style={{ width: '750px', textAlign: 'left', position: 'relative', marginTop: '10px'}}>
                     <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '100px' }}>
-                        <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px' }}>{teamData.data.teamName}</span>
+                        <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px' }}>{projectData?.teamName}</span>
                         <span>{projectData?.projectTitle}</span>
                     </h2>
                     <Divider1 />
@@ -220,7 +228,12 @@ export default function My({ projectId }) {
                     <M.SprintBox id="sprint-box" style={{ position: 'relative' }}>
 
                         {/* 왼쪽 화살표 */}
-                        {currentSprintIndex > 0 && (
+                        {(() => {
+                            const shouldShowLeftArrow = currentSprintIndex < mySprints.length - 1 || !sprintLast;
+                            console.log("currentSprintIndex:", currentSprintIndex, "/", mySprints.length);
+                            console.log("왼쪽 화살표 조건:", currentSprintIndex > 0);
+                            return shouldShowLeftArrow;
+                            })() && (
                             <div style={{ position: 'absolute', left: '-60px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} 
                             onClick={handlePrevSprint}>
                             <AiOutlineLeft size={50} color="#796AD9" />
@@ -251,7 +264,7 @@ export default function My({ projectId }) {
                         </M.RoleWrapper>
 
                         {/* 오른쪽 화살표 */}
-                        {(currentSprintIndex < mySprints.length - 1 || !sprintLast) && (
+                        {currentSprintIndex > 0 && (
                             <div style={{ position: 'absolute', right: '-60px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
                             <AiOutlineRight size={50} color="#796AD9" />
                             </div>
