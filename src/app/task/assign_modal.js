@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import * as m from '../../components/modal_s';
 
+import { assignTask } from "@/app/api/task/taskApi"; 
+import { useAlert } from "@/context/AlertContext";
+
 const ButtonGroup = styled.div`
     display: flex;
     gap: 20px;
@@ -23,8 +26,21 @@ const Button = styled.button`
 `;
 
 
-export default function AssignModal({ isOpen, onClose, task }) {
-    if (!isOpen) return null;
+export default function AssignModal({ isOpen, onClose, task,  onAssigned  }) {
+    const { showAlert } = useAlert();
+
+    if (!isOpen || !task) return null;
+
+    const handleAssign = async () => {
+        try {
+            await assignTask(task.taskId);
+            showAlert("success", "태스크 할당 완료");
+            if (onAssigned) await onAssigned(); 
+            onClose();
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    };
 
     return (
         <m.ModalOverlay onClick={onClose}>
@@ -42,7 +58,7 @@ export default function AssignModal({ isOpen, onClose, task }) {
                     할당 받으시겠습니까?
                 </div>
                 <ButtonGroup>
-                    <m.ModalButton onClick={onClose}>예</m.ModalButton>
+                    <m.ModalButton onClick={handleAssign}>예</m.ModalButton>
                     <m.ModalButton onClick={onClose}>아니오</m.ModalButton>
                 </ButtonGroup>
             </m.ModalContent>

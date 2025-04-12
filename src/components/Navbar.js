@@ -69,10 +69,10 @@ const Navbar = ({ projectId }) => {
     if (!confirmLogout) return; 
 
     try {
-        await logout(); // 로그아웃 요청
-        localStorage.removeItem("accessToken"); // 저장된 토큰 제거 
-        localStorage.removeItem("storedUser"); // 유저 정보 제거 
-        router.push("/login"); // 로그인 페이지로 이동
+        await logout(); 
+        localStorage.removeItem("accessToken"); 
+        localStorage.removeItem("storedUser"); 
+        router.push("/login"); 
     } catch (error) {
       console.error("로그아웃 실패:", error);
       alert("로그아웃에 실패했습니다.");
@@ -81,7 +81,7 @@ const Navbar = ({ projectId }) => {
 
   return (
     <NavbarContainer>
-      <Link href="/boarding/" passHref>
+      <Link href="/home" passHref>
       <LogoContainer>
         <Image 
           src="/img/devfit-logo.png" 

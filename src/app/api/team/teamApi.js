@@ -23,26 +23,13 @@ export const fetchTeamCode = async (teamId) => {
     }
 }
 
-// 팀 이모지 수정
-export const updateTeamEmoji = async (teamId, emoji) => {
-    try {
-        const res = await axiosWithAuthorization.patch(`/teams/${teamId}/emoji`, {
-            teamEmoji: emoji,
-        });
-        console.log("팀 이모지 수정:", res.data);
-        return res.data.data;
-    } catch (error) {
-        const message = error?.response?.data?.data?.message ?? "팀 이모지를 업데이트할 수 없습니다.";
-        throw new Error(message);
-    }
-};
-
-// 팀 이름 & 설명 수정
-export const updateTeamData = async (teamId, teamName, teamDescription) => {
+// 팀 이름 & 설명 & 이모지 수정
+export const updateTeamData = async (teamId, teamName, teamDescription, teamEmoji) => {
     try {
         const res = await axiosWithAuthorization.patch(`/teams/${teamId}`, {
             teamName,
             teamDescription,
+            teamEmoji,
         });
         console.log("팀 정보 수정 성공:", res.data);
         return res.data.data;
@@ -67,22 +54,31 @@ export const fetchTeamAdmin = async (teamId) => {
 }
 
 // (팀장 제외, 본인 포함) 팀원 목록 조회
-export const fetchRandomTeamMembers = async (teamId) => {
+export const fetchTeamMembers = async (teamId, lastMemberId = null) => {
     try {
         const res = await axiosWithAuthorization.get(`/members/${teamId}/list`, {
-          params: { size: 3 }, // 3명
+        params: {
+            size: 3, 
+            lastMemberId: lastMemberId,
+        },
         });
+
+        console.log("팀원 데이터:", res.data);
+
         const memberData = res.data.data.content.map((m) => ({
             id: m.memberId,
             name: m.nickname,
             profileImage: m.profileImageUrl,
         }));
 
-        console.log("랜덤 팀원 정보 조회:", memberData);
-        return memberData;
-    
+        const isLastPage = res.data.data.last;
+        return { 
+            members: memberData, 
+            isLastPage 
+        };
+
     } catch (error) {
-        const message = error?.response?.data?.data?.message ?? "랜덤 팀원 조회를 할 수 없습니다.";
+        const message = error?.response?.data?.data?.message ?? "팀원 조회를 할 수 없습니다.";
         throw new Error(message);
     }
 };

@@ -23,7 +23,7 @@ import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
 import { fetchUserData } from "../api/user/userApi";
-import { fetchTeamData, fetchTeamCode, updateTeamEmoji, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamData, fetchTeamAdmin, fetchTeamMembers} from "@/app/api/team/teamApi";
 import { fetchProjectListData } from "@/app/api/project/projectApi";
 
 import { useAlert } from "@/context/AlertContext";
@@ -32,9 +32,11 @@ export default function Team({ teamId }) {
     const { showAlert } = useAlert();
 
     const [currentUser, setCurrentUser] = useState(null);
+    const [allMembers, setAllMembers] = useState([]);
 
     const [teamInfo, setTeamInfo] = useState(null);
 
+    const [hasMore, setHasMore] = useState(true);
     const [myProjects, setMyProjects] = useState([]);
     const [otherProjects, setOtherProjects] = useState([]);
 
@@ -57,23 +59,22 @@ export default function Team({ teamId }) {
     const [deleteModal, setDeleteModal] = useState(false);
     const [adminLModal, setAdminLModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
-    
-    const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
     const [teamAdmin, setTeamAdmin] = useState(null);
+
     const [teamMembers, setTeamMembers] = useState([]);
-
     const [displayedMembers, setDisplayedMembers] = useState([]);
-    const [currentPageIndex, setCurrentPageIndex] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMoreMembers, setHasMoreMembers] = useState(true);
 
-    const [lastProjectId, setLastProjectId] = useState(null); // 첫 페이지는 null
+    const [lastProjectId, setLastProjectId] = useState(null); 
+    const [lastMemberId, setLastMemberId] = useState(null);
 
     const [teamErrorMessage, setTeamErrorMessage] = useState("");
-
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------여기부터 아래부터 시작-------------------------------------->
+    const [isFetching, setIsFetching] = useState(false);
+    const [isMembersFetching, setIsMembersFetching] = useState(false);
     
+    const TeamId = Number(teamId);
+
     useEffect(() => {
         const getUserInfo = async () => {
             try {
@@ -87,12 +88,23 @@ export default function Team({ teamId }) {
         getUserInfo();
     }, []);
 
+    const getTeamAdmin = async () => {
+        try {
+            const adminData = await fetchTeamAdmin(TeamId); // teamId 넘기기
+            setTeamAdmin({
+                id: adminData.memberId,
+                name: adminData.nickname,
+                profileImage: adminData.profileImageUrl,
+            });
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    };
+
     useEffect(() => {
         console.log("currentUser:", currentUser);
         console.log("teamAdmin:", teamAdmin);
     }, [currentUser, teamAdmin]);
-    
-    const TeamId = Number(teamId);
 
     useEffect(() => {
         if (!TeamId) return;
@@ -111,23 +123,6 @@ export default function Team({ teamId }) {
         getTeamInfo();
     }, [TeamId]);
 
-    const handleEmojiClick = async (emojiData) => {
-        const newEmoji = emojiData.emoji;
-    
-        try {
-            const updated = await updateTeamEmoji(TeamId, newEmoji);
-    
-            setTeamInfo((prev) => ({
-                ...prev,
-                teamEmoji: updated.teamEmoji, 
-            }));
-        } catch (error) {
-            showAlert("error", error.message);
-        }
-    
-        setShowEmojiPicker(false); // emoji Picker 닫기
-    };
-
     // 초대코드 생성 모달
     const handleInviteClick = async () => {
         try {
@@ -145,43 +140,47 @@ export default function Team({ teamId }) {
     useEffect(() => {
         if (!TeamId) return;
     
-        const getTeamAdmin = async () => {
-            try {
-                const adminData = await fetchTeamAdmin(TeamId); // teamId 넘기기
-                setTeamAdmin({
-                    id: adminData.memberId,
-                    name: adminData.nickname,
-                    profileImage: adminData.profileImageUrl,
-                });
-            } catch (error) {
-                showAlert("error", error.message);
-            }
-        };
-    
         getTeamAdmin();
     }, [TeamId]);
 
+    const getTeamMembers = async () => {
+        if (isMembersFetching || !hasMoreMembers) return; 
+    
+        setIsMembersFetching(true);
+        try {
+            const res = await fetchTeamMembers(TeamId, lastMemberId); 
+    
+            const nMembers = res.members || [];
+            const isLastPage = res.isLastPage;
+    
+            const formattedMembers = nMembers.map((member) => ({
+                ...member,
+                role: "member",
+            }));
+    
+            setTeamMembers((prev) => [...prev, ...formattedMembers]);
+            setDisplayedMembers((prev) => [...prev, ...formattedMembers]);
+    
+            if (formattedMembers.length > 0) {
+                const nextLastId = formattedMembers[formattedMembers.length - 1].id;
+                setLastMemberId(nextLastId); 
+            }
+    
+            if (isLastPage) {
+                setHasMoreMembers(false);
+            }
+
+        } catch (error) {
+            showAlert("error", error.message);
+        } finally {
+            setIsMembersFetching(false);
+        }
+    };
+
     useEffect(() => {
         if (!TeamId) return;
-    
-        const getRandomTeamMembers = async () => {
-            try {
-                const members = await fetchRandomTeamMembers(TeamId);
-                const formattedMembers = members.map((member) => ({
-                    ...member,
-                    role: "member",
-                }));
-                setTeamMembers(formattedMembers);
-                setDisplayedMembers(formattedMembers);
-            } catch (error) {
-                showAlert("error", error.message);
-            }
-        };
-    
-        getRandomTeamMembers();
+        getTeamMembers();
     }, [TeamId]);
-
-    const [allMembers, setAllMembers] = useState([]);
 
     useEffect(() => {
         if (teamAdmin) {
@@ -190,71 +189,77 @@ export default function Team({ teamId }) {
     }, [teamAdmin, displayedMembers]);
     const toggleListRef = useRef(null);
 
-    // 팀원 스크롤 이벤트
-    useEffect(() => {
-        const listEl = toggleListRef.current;
-        if (!listEl) return;
-    
-        const handleScroll = () => {
-            const { scrollTop, scrollHeight, clientHeight } = listEl;
-            if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
-                const nextPageIndex = currentPageIndex + 1;
-                if (nextPageIndex < teamMemberData.length) {
-                    const nextPage = teamMemberData[nextPageIndex];
-                    const newMembers = nextPage.data.content.map(member => ({
-                        id: member.memberId,
-                        name: member.nickname,
-                        profileImage: member.profileImageUrl,
-                        role: "member"
-                    }));
-                    setDisplayedMembers(prev => [...prev, ...newMembers]);
-                    setAllMembers(prev => [...prev, ...newMembers]);
-                    setCurrentPageIndex(nextPageIndex);
-                    setHasMore(!nextPage.data.last);
-                }
-            }
-        };
-    
-        listEl.addEventListener('scroll', handleScroll);
-        return () => listEl.removeEventListener('scroll', handleScroll);
-    }, [hasMore, currentPageIndex]);
+    const handleMemberScroll = () => {
+        if (!hasMoreMembers || isMembersFetching) return;
 
-    const fetchAllProjects = async () => {
-        try {
-            const allProjects = await fetchProjectListData(
-                TeamId,
-                null,
-                null,
-                10   
-            );
-
-            const myProjectsArray = [];
-            const otherProjectsArray = [];
-
-            allProjects?.content?.forEach(project => {
-                if (project.isParticipant) {
-                    myProjectsArray.push(project);
-                } else {
-                    otherProjectsArray.push(project);
-                }
-            });
-
-            setMyProjects(myProjectsArray);
-            setOtherProjects(otherProjectsArray);
-        } catch (error) {
-            showAlert("error", error.message);
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 20) {
+            getTeamMembers(); 
         }
     };
-    
+
+    // 팀원 스크롤 이벤트
     useEffect(() => {
-        if (TeamId) {
+        window.addEventListener("scroll", handleMemberScroll);
+        return () => window.removeEventListener("scroll", handleMemberScroll);
+    }, [hasMoreMembers, isMembersFetching, lastMemberId]); 
+
+
+    const fetchAllProjects = async () => {
+        if (isFetching || !hasMore) return; 
+        setIsFetching(true);
+        
+        try {
+            const res = await fetchProjectListData(TeamId, null, lastProjectId, 10);
+            const content = res?.content || [];
+
+            if (content.length === 0) {
+                setHasMore(false);
+                return;
+            }
+
+            const newMyProjects = [];
+            const newOtherProjects = [];
+
+            content.forEach(project => {
+                if (project.isParticipant) newMyProjects.push(project);
+                else newOtherProjects.push(project);
+            });
+
+            setMyProjects(prev => [...prev, ...newMyProjects]);
+            setOtherProjects(prev => [...prev, ...newOtherProjects]);
+
+            const last = content[content.length - 1];
+            setLastProjectId(last.projectInfo.projectId);
+            if (res.last) setHasMore(false);
+        } catch (error) {
+            showAlert("error", error.message);
+            setHasMore(false);
+        } finally {
+            setIsFetching(false); // 호출 종료
+        }
+    };
+
+    const handleScroll = () => {
+        if (!hasMore || isFetching) return;
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
             fetchAllProjects();
         }
-    }, [TeamId]);
+    };
 
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [hasMore, isFetching]);
 
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
+    const refreshProjectList = async () => {
+        setMyProjects([]);
+        setOtherProjects([]);
+        setLastProjectId(null);
+        setHasMore(true);
+        await fetchAllProjects();
+    };
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -292,24 +297,66 @@ export default function Team({ teamId }) {
             saveTeamInfo();
         }
     };
+
+    const originalTeamName = useRef("");
+
+    // 팀 정보 로드 시 초기 값 저장
+    useEffect(() => {
+        if (teamInfo) {
+            originalTeamName.current = teamInfo.teamName;
+        }
+    }, [teamInfo]);
     
     const saveTeamInfo = async () => {
         const name = teamInfo.teamName?.trim();
-        const desc = teamInfo.teamDescription?.trim();
+        const desc = teamInfo.teamDescription?.trim(); 
     
         if (!name) {
             alert("팀 이름은 필수입니다.");
+
+            try {
+                const latestTeamInfo = await fetchTeamData(TeamId);
+
+                // 원래 팀 이름으로만 수정 요청, 설명은 유지
+                const updated = await updateTeamData(TeamId, latestTeamInfo.teamName, desc, null);
+
+                setTeamInfo(updated);
+                originalTeamName.current = updated.teamName;
+            } catch (error) {
+                showAlert("error", "팀 정보를 다시 불러오는 데 실패했습니다.");
+            }
+    
+            setIsEditing(false);
             return;
         }
     
         try {
-            const updated = await updateTeamData(TeamId, name, desc);
+            const updated = await updateTeamData(TeamId, name, desc, null);
             setTeamInfo(updated);
+            originalTeamName.current = updated.teamName;
             setIsEditing(false);
             showAlert("success", "팀 정보가 수정되었습니다.");
         } catch (error) {
             alert(error.message);
         }
+    };
+
+    const handleEmojiClick = async (emojiData) => {
+        const newEmoji = emojiData.emoji?.trim(); 
+    
+        try {
+            const updated = await updateTeamData(TeamId, null, null, newEmoji);
+    
+            setTeamInfo((prev) => ({
+                ...prev,
+                teamEmoji: updated.teamEmoji, 
+            }));
+            showAlert("success", "이모지가 수정되었습니다.");
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    
+        setShowEmojiPicker(false); // emoji Picker 닫기
     };
     
     // 이모지 클릭 시 위치 계산
@@ -388,6 +435,11 @@ export default function Team({ teamId }) {
             [projectId]: !prev[projectId]
         }));
     };
+
+    // 멤버 이름 3글자 이상이면 축약 표시
+    const reduceMemberName = (name) => {
+        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+    };
     
     if (!teamInfo) {
         return (
@@ -431,7 +483,12 @@ export default function Team({ teamId }) {
                             <T.StyledInput
                                 type="text"
                                 value={teamInfo.teamName}
-                                onChange={(e) => setTeamInfo({ ...teamInfo, teamName: e.target.value })} 
+                                onChange={(e) =>
+                                    setTeamInfo((prev) => ({
+                                        ...prev,
+                                        teamName: e.target.value,
+                                    }))
+                                }
                                 onKeyDown={handleKeyDown}
                                 autoFocus
                                 style={{
@@ -490,7 +547,7 @@ export default function Team({ teamId }) {
                                 height: "25px", 
                                 lineHeight: "25px", 
                                 marginTop: "5px",
-                                color: teamInfo.teamDescription ? "black" : "#A9A9A9", 
+                                color: teamInfo.teamDescription ? "#796AD9" : "#A9A9A9", 
                                 fontStyle: teamInfo.teamDescription ? "normal" : "italic" 
                             }}>
                                 {teamInfo.teamDescription || "팀에 대한 설명을 추가하세요!"}
@@ -541,12 +598,12 @@ export default function Team({ teamId }) {
                                     width={50} height={50} 
                                 />
                                 </S.MemberProfile>
-                                <S.MemberName isLeader={true}>{teamAdmin.name}</S.MemberName>
+                                <S.MemberName isLeader={true}>{reduceMemberName(teamAdmin.name)}</S.MemberName>
                             </S.MemberItem>
                         )}
                     {/* <------------------------------------ 팀원들(3명) --------------------------------------> */}
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px", marginBottom: "20px"}}>
-                        {teamMembers.map((member, index) => (
+                        {teamMembers.slice(0, 3).map((member, index) => (
                             <S.MemberItem 
                                 key={member.id} 
                                 style={{ position: "relative", marginLeft: index === 0 ? "0" : "-22px" }}>
@@ -585,7 +642,7 @@ export default function Team({ teamId }) {
                                     }}
                                 />
                             </S.ToggleMemberImage>
-                            <S.ToggleMemberText>{member.name || "사용자"}</S.ToggleMemberText>
+                            <S.ToggleMemberText>{reduceMemberName(member.name)|| "사용자"}</S.ToggleMemberText>
                         </S.ToggleMemberItem>
                         ))}
                         </S.ToggleMemberList>
@@ -606,7 +663,7 @@ export default function Team({ teamId }) {
              <--------------------------------------map 함수 부분--------------------------------------> */}
             {myProjects.length > 0 ? (
                 myProjects.map(project => (
-                <S.ProjectBox key={project.projectInfo.projectId}>
+                <S.ProjectBox key={`my-${project.projectInfo.projectId}`}>
                     <S.ProjectContent>
                     <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
                     <S.ProjectInfo>
@@ -687,7 +744,7 @@ export default function Team({ teamId }) {
              <--------------------------------------map 함수 부분--------------------------------------> */}
             {otherProjects.length > 0 ? (
                 otherProjects.map((project) => (
-                <S.ProjectBox key={project.projectInfo.projectId}>
+                <S.ProjectBox key={`other-${project.projectInfo.projectId}`}>
                     <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
                     <S.ProjectInfo>
                         <S.ProjectDescription>
@@ -740,7 +797,7 @@ export default function Team({ teamId }) {
         <ProjectModal  
             teamId={TeamId} 
             onClose={() => setAddModal(false)} 
-            onProjectCreated={fetchAllProjects}
+            onProjectCreated={refreshProjectList}
         />}
 
         {/* 프로젝트 삭제 modal */}
@@ -748,7 +805,7 @@ export default function Team({ teamId }) {
         <DeleteModal 
             selectedProject={selectedProject} 
             onClose={() => setDeleteModal(false)}
-            onProjectDeleted={fetchAllProjects}
+            onProjectDeleted={refreshProjectList}
         />
         )}
 

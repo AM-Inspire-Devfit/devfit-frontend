@@ -1,7 +1,6 @@
 "use client";  
 
-import { useState, useEffect, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import Link from "next/link";
 
@@ -29,10 +28,6 @@ import { useAlert } from "@/context/AlertContext";
         "#9966FF", "#FF9F40", "#C9CBCF", "#8D44AD",
         "#27AE60", "#D35400"
     ];
-
-
-    const sprintData = [
-]
 
 const sprintContributionData = [
     {
@@ -106,203 +101,6 @@ const sprintContributionData = [
         "timestamp": "2025-03-20T21:45:31.228694"
     }
 ]
-
-const taskData = {
-    1: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 2,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "COMPELTED",
-            "assignedStatus": "COMPELTED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": false,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    },
-
-    2: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "taskId": 1,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "COMPELTED",
-            "assignedStatus": "COMPELTED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 2,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 3,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "MID",
-            "dueDt": null,
-            "taskStatus": "COMPELTED",
-            "assignedStatus": "COMPELTED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 4,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 5,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            },
-            {
-            "taskId": 6,
-            "description": "피그마 화면 설계 수정",
-            "taskDifficulty": "HIGH",
-            "dueDt": null,
-            "taskStatus": "NOT_STARTED",
-            "assignedStatus": "NOT_ASSIGNED",
-            "sosStatus": "NOT_SOS",
-            "memberId": null,
-            "projectNickname": null,
-            "profileImageUrl": null
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 6,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": false,
-        "size": 6,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 6,
-        "empty": false
-        },
-        "timestamp": "2025-03-20T16:38:14.792466"
-    }
-}
-
 
 const meetingData = {
     1: {
@@ -391,7 +189,14 @@ export default function Project({projectId}) {
 
     const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState(false);
 
+    const [lastSprintId, setLastSprintId] = useState(null);
+    const [sprintLast, setSprintLast] = useState(false); // 마지막 페이지 여부
     const [sprintData, setSprintData] = useState([]);
+
+    const [pendingPrependCount, setPendingPrependCount] = useState(null);
+
+    const [hasPrev, setHasPrev] = useState(false); // 이전 스프린트 존재 여부
+    const [hasNext, setHasNext] = useState(false); // 다음 스프린트 존재 여부
 
     //meeting
     const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -404,8 +209,10 @@ export default function Project({projectId}) {
     const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
 
     const ProjectId = Number(projectId);
-    const searchParams = useSearchParams();
-    const teamName = searchParams.get("teamName");
+
+    const isExternalUser = useMemo(() => {
+        return projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED";
+    }, [projectUser]);
 
     useEffect(() => {
         setIsClient(true); // 클라이언트에서만 true
@@ -429,29 +236,130 @@ export default function Project({projectId}) {
     
         try {
             const user = await fetchProjectUser(projectId);
+            console.log("fetched projectUser", user);
             setProjectUser(user);
         } catch (error) {
+            console.log("fetchProjectUser error", error);
+
+        if (error.message === "해당 프로젝트 참여자가 아닙니다.") {
+            setProjectUser({ errorClassName: "PROJECT_PARTICIPATION_REQUIRED" });
+            }
         }
     };
 
-    useEffect(() => {   
-        if (projectId) getProjectData();
+    useEffect(() => {
+        if (projectId) {
+            getProjectData(); 
+        }
     }, [projectId]);
 
 
-    const getSprintTaskData = async () => {
+    const getSprintTaskData = async (baseSprintId = null, direction = "NEXT", checkOnly = false) => {
         try {
-            const response = await fetchSprintTaskData(projectId);
-            console.log("스프린트 응답 데이터:", response);
-            setSprintData(response.content);
+            const response = await fetchSprintTaskData(projectId, baseSprintId, direction);
+    
+            if (checkOnly) return response;
+    
+            if (direction === "PREV") {
+                const updated = [...response.content, ...sprintData];
+    
+                const uniqueMap = new Map();
+                updated.forEach(s => {
+                    uniqueMap.set(String(s.id), s); // id를 key로 해서 중복 제거
+                });
+    
+                const unique = Array.from(uniqueMap.values());
+                setSprintData(unique);
+                setHasPrev(!response.last);
+            }
+    
+            setHasNext(!response.last);
+    
+            const newLastId = response.content.length > 0
+                ? response.content[response.content.length - 1].id
+                : null;
+            setLastSprintId(newLastId);
+            setSprintLast(response.last);
+    
+            // 스프린트 종료일이 지나면 오른쪽 화살표 보이기
+            const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+            const sprintEndKST = new Date(new Date(response.content[0]?.dueDt + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
+    
+            nowKST.setHours(0, 0, 0, 0); 
+            sprintEndKST.setHours(0, 0, 0, 0); 
+
+            // 종료일이 지난 경우에만 화살표를 보이게 설정
+            const isNextArrowVisible = nowKST > sprintEndKST;
+
+            console.log(`nowKST: ${nowKST}, sprintEndKST: ${sprintEndKST}, isNextArrowVisible: ${isNextArrowVisible}`);
+
+            setCanShowNextArrow(isNextArrowVisible); // 상태를 갱신
+
+            return response;
         } catch (error) {
             showAlert("error", error.message);
         }
     };
 
     useEffect(() => {
-    if (projectId) getSprintTaskData();
-    }, [projectId]);
+    }, [isExternalUser, sprintData]);
+    
+    const loadInitialSprints = async () => {
+        const response = await fetchSprintTaskData(projectId, null, "PREV");
+        console.log("fetch 성공:", response);
+
+        if (!response) {
+            console.warn("스프린트 데이터 fetch 실패");
+            setSprintData([]);
+            setShowCreateSprintBox(false);
+            return;
+        }
+
+        if (response.success === false && isExternalUser) {
+            setShowCreateSprintBox(false);  
+            setSprintData([]);  
+            return;  
+        }
+
+        if (!response || !response.content?.length) return;
+        
+        // 첫 번째 스프린트
+        setSprintData([response.content[0]]);
+        setCurrentSprintIndex(0);
+        setLastSprintId(response.content[0]?.id || null);
+
+        setHasPrev(!response.last);
+        setSprintLast(response.last || response.content.length === 1);
+        setHasNext(false); // NEXT는 처음에 무조건 false로 시작
+
+        // 종료일을 기준으로 오른쪽 화살표 표시 여부 설정
+        const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+        const sprintEndKST = new Date(new Date(response.content[0]?.dueDt + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
+
+        nowKST.setHours(0, 0, 0, 0); 
+        sprintEndKST.setHours(0, 0, 0, 0); 
+
+        if (nowKST > sprintEndKST) {
+            setCanShowNextArrow(true); // 종료일이 지난 경우에 화살표 보이기
+        } else {
+            setCanShowNextArrow(false); // 종료일이 지나지 않은 경우에 화살표 숨기기
+        }
+    };
+
+    useEffect(() => {
+        if (projectId && !sprintData.length) {
+            loadInitialSprints();
+        }
+    }, [projectId, sprintData, isExternalUser]);
+    
+    useEffect(() => {
+        if (isExternalUser && !sprintData.length) {
+            loadInitialSprints();  // isExternalUser와 sprintData가 초기화되었을 때만 호출
+        }
+    }, [isExternalUser, sprintData]); // isExternalUser와 sprintData 변경 시
+
+    // <-------------------스프린트 모달--------------------------->
+    // <-------------------스프린트 모달--------------------------->
 
     // sprint 수정 모달 열기/닫기 함수
     const handleSprintModal = () => setIsSprintModalOpen(prev => !prev);
@@ -488,9 +396,8 @@ export default function Project({projectId}) {
         return enableScroll;
     }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen, isProjectEditModalOpen]);
 
+    // <----------------프로젝트 멤버별 기여도 --------------------->
 
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 아래부터 시작------------------------------------>
     const mergeProjectMembersWithContributions = (projectMembers, contributionData) => {
         return projectMembers.map((member, index) => {
             const contribution = contributionData.find(
@@ -518,30 +425,26 @@ export default function Project({projectId}) {
         }));
     };
 
-    useEffect(() => {
-        console.log("📦 sprintData 구조 확인:", sprintData);
-      }, [sprintData]);
-
-    const sprintDataWithColors = useMemo(() => {
+    const processedSprintData = useMemo(() => {
         if (!Array.isArray(sprintData)) return [];
     
-        const result = sprintData
-            .map((sprintObj, idx) => {
-                const sprintContent = sprintObj; // 중요 포인트
-                if (!sprintContent) return null;
+        const result = sprintData.map((sprintContent, idx) => {
+            if (!sprintContent) return null;
     
                 const sprintContributionsForSprint = sprintContributionData.find(item =>
                     item.data?.[0]?.sprintId === sprintContent.id
                 )?.data ?? [];
+        
+                const isLast = idx === sprintData.length - 1;
     
                 return {
                     sprint_id: sprintContent.id,
-                    sprint_num: sprintContent.title,
+                    sprint_title: sprintContent.title,
                     goal: sprintContent.goal,
                     sprint_start: sprintContent.startDt,
                     sprint_end: sprintContent.dueDt,
                     progress: sprintContent.progress ?? 0,
-                    last: sprintObj.last,
+                    last: isLast,
                     title: sprintContent.title,
                     startDt: sprintContent.startDt,
                     dueDt: sprintContent.dueDt,
@@ -553,27 +456,27 @@ export default function Project({projectId}) {
             })
             .filter(Boolean);
     
-        console.log("🎯 sprintDataWithColors 결과:", result); 
         return result;
     }, [sprintData, projectMembers]);
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
-    const currentSprint = sprintDataWithColors[currentSprintIndex]; 
+    const currentSprint = processedSprintData[currentSprintIndex]; 
 
-    const sprint = sprintDataWithColors.find(s => s.sprint_num === currentSprint?.sprint_num);
+    const sprint = processedSprintData.find(s => s.sprint_title === currentSprint?.sprint_title);
     const sprint_id = sprint ? sprint.sprint_id : "default_sprint";
 
-    const [showCreateSprintBox, setShowCreateSprintBox] = useState(false); // Sprint 생성 박스 표시 여부
+    const [showCreateSprintBox, setShowCreateSprintBox] = useState(null);; // Sprint 생성 박스 표시 여부
     
     const [canShowNextArrow, setCanShowNextArrow] = useState(false);
 
     const getTaskDataBySprintId = (sprintId) => {
-        const task = taskData[sprintId];
-        if (!task || !task.data || !task.data.content) return [];
-
-        return task.data.content.map(item => ({
-            task: item.description,
-            toDoStatus: item.taskStatus
+        const sprint = sprintData.find(s => s.id === sprintId);
+        if (!sprint || !Array.isArray(sprint.taskList)) return [];
+    
+        return sprint.taskList.map(task => ({
+            task: task.description,
+            toDoStatus: task.taskStatus,
+            sosStatus: task.sosStatus
         }));
     };
 
@@ -581,94 +484,94 @@ export default function Project({projectId}) {
         ? getTaskDataBySprintId(currentSprint.sprint_id)
         : [];
 
-    useEffect(() => {
-        if (!sprintDataWithColors.length) return;
-    
-        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
-            sprint.sprint_start <= today && sprint.sprint_end >= today
-        );
-    
-        if (sprintIndex !== -1) {
-            setCurrentSprintIndex(sprintIndex);
-        } else {
-            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
-            if (upcomingSprintIndex !== -1) {
-                setCurrentSprintIndex(upcomingSprintIndex);
+    const handleNextSprint = async () => {
+        console.log("오른쪽 화살표 클릭됨");
+
+        if (currentSprint?.last) {
+            if (!sprintLast) {
+                await getSprintTaskData(currentSprint.sprint_id, "NEXT"); // 다음 스프린트 불러오기
             } else {
-                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
+                setShowCreateSprintBox(true); // 스프린트 기간이 끝났을 때 생성 상자 표시
             }
-        }
-    }, [sprintDataWithColors]);
-
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
-
-
-    const handleNextSprint = () => {
-        if (currentSprint.last) {
-            setShowCreateSprintBox(true); // 마지막 Sprint에서 클릭하면 생성 상자 표시
         } else {
-            setCurrentSprintIndex(prevIndex => prevIndex + 1);
+            setCurrentSprintIndex((prev) => prev + 1);
+        }
+    };
+    
+    const handlePrevSprint = async () => {
+        console.log("왼쪽 화살표 클릭됨");
+    
+        if (showCreateSprintBox) {
+            setShowCreateSprintBox(false);
+            setCurrentSprintIndex(processedSprintData.length - 1);
+            return;
+        }
+    
+        if (currentSprintIndex === 0 && hasPrev) {
+            console.log("이전 스프린트 fetch 시작");
+    
+            const response = await getSprintTaskData(currentSprint.sprint_id, "PREV", false);
+            console.log("받아온 이전 스프린트 응답:", response);
+
+            // 인덱스 먼저 감소
+            setCurrentSprintIndex(prev => prev - 1);
+    
+            if (response?.content?.length > 0) {
+                const newSprints = response.content;
+    
+                setSprintData(prev => {
+                    const merged = [...newSprints, ...prev];
+                    const map = new Map();
+    
+                    merged.forEach(s => {
+                        map.set(String(s.id), s); 
+                    });
+    
+                    const unique = Array.from(map.values());
+                    console.log("sprintData 업데이트:", unique.map(s => s.title));
+                    return unique;
+                });
+    
+                setPendingPrependCount(newSprints.length);
+
+            }
+        } else if (currentSprintIndex > 0) {
+            console.log("인덱스만 감소");
+            setCurrentSprintIndex(prev => prev - 1);
         }
     };
 
-    const handlePrevSprint = () => {
-        if (showCreateSprintBox) {
-            setShowCreateSprintBox(false); // Sprint 생성 화면에서 이전 Sprint로 돌아가기
-            setCurrentSprintIndex(sprintDataWithColors.length - 1); // 마지막 Sprint로 이동
-        } else if (currentSprintIndex > 0) {
-            setCurrentSprintIndex(prevIndex => prevIndex - 1); // 이전 Sprint로 이동
+    useEffect(() => {
+        // processedSprintData가 업데이트될 때마다 종료일을 기준으로 오른쪽 화살표를 보일지 말지를 결정
+        if (currentSprint) {
+            const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+            nowKST.setHours(0, 0, 0, 0);
+    
+            const sprintEndKST = new Date(currentSprint.sprint_end);
+            sprintEndKST.setDate(sprintEndKST.getDate() + 1); // 마감일 다음날
+            sprintEndKST.setHours(0, 0, 0, 0);
+    
+            const isNextArrowVisible = nowKST >= sprintEndKST;
+    
+            setCanShowNextArrow(isNextArrowVisible);
         }
-    };
+    }, [currentSprint]);
+
+    useEffect(() => {
+        if (pendingPrependCount > 0) {
+            setCurrentSprintIndex(prev => prev + pendingPrependCount);
+            setPendingPrependCount(0); // 다시 초기화
+        }
+    }, [sprintData]); // sprintData가 업데이트 되었을 때 실행
 
     const isFeedbackDay = currentSprint && currentSprint.sprint_end === today;
-    const sprintsWithFeedback = Array.isArray(sprintDataWithColors)
-        ? sprintDataWithColors.filter(sprint => sprint.sprint_end === today)
+    const sprintsWithFeedback = Array.isArray(processedSprintData)
+        ? processedSprintData.filter(sprint => sprint.sprint_end === today)
         : [];
 
-    useEffect(() => {
-        if (!currentSprint) return;
-    
-        const isLastSprint = currentSprintIndex === sprintDataWithColors.length - 1;
-    
-        const isNotParticipant =
-            projectUser?.errorClassName === "PROJECT_PARTICIPATION_REQUIRED" || projectUser === null;
-    
-        if (isLastSprint) {
-            if (isNotParticipant) {
-                setCanShowNextArrow(false);
-            } else {
-                const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-                const sprintEndKST = new Date(new Date(currentSprint.sprint_end + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
-                setCanShowNextArrow(nowKST > sprintEndKST);
-            }
-        } else {
-            setCanShowNextArrow(true);
-        }
-    }, [currentSprint, projectUser, currentSprintIndex]);
+    const lastSprint = processedSprintData[processedSprintData.length - 1];
 
-    const lastSprint = sprintDataWithColors[sprintDataWithColors.length - 1];
-
-    const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_num, 10) || 0 : 0; 
-
-    useEffect(() => {
-        if (!sprintDataWithColors.length) return;
-
-        const sprintIndex = sprintDataWithColors.findIndex(sprint =>
-            sprint.sprint_start <= today && sprint.sprint_end >= today
-        );
-    
-        if (sprintIndex !== -1) {
-            setCurrentSprintIndex(sprintIndex);
-        } else {
-            const upcomingSprintIndex = sprintDataWithColors.findIndex(sprint => sprint.sprint_start > today);
-            if (upcomingSprintIndex !== -1) {
-                setCurrentSprintIndex(upcomingSprintIndex);
-            } else {
-                setCurrentSprintIndex(Math.max(0, sprintDataWithColors.length - 1));
-            }
-        }
-    }, []);
+    const lastSprintNum = lastSprint ? parseInt(lastSprint.sprint_title, 10) || 0 : 0; 
 
     useEffect(() => {
         if (isSprintModalOpen && !isCreateSprintModalOpen && currentSprint) {
@@ -686,6 +589,15 @@ export default function Project({projectId}) {
             setDueDate(""); 
         }
     }, [isCreateSprintModalOpen]);
+
+    useEffect(() => {
+        console.log("hasPrev 값 변경됨:", hasPrev);
+        console.log("currentSprintIndex 값:", currentSprintIndex);
+    }, [hasPrev]);
+
+    if (isExternalUser === null) {
+        return null; // 또는 로딩 UI를 보여줄 수도 있음
+    }
 
     // 신규 미팅 생성
     const openMeetingModalForCreate = () => {
@@ -707,7 +619,11 @@ export default function Project({projectId}) {
         setIsMeetingModalOpen(true);
     };
 
-
+    // 멤버 이름 3글자 이상이면 축약 표시
+    const reduceMemberName = (name) => {
+        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+    };
+        
 
     return (
         <>
@@ -715,7 +631,7 @@ export default function Project({projectId}) {
             <div style={{ width: '750px', textAlign: 'left' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
-                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{teamName} </span> 
+                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{projectData?.teamName} </span> 
                         <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
                     </div>
                     {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
@@ -747,24 +663,50 @@ export default function Project({projectId}) {
             </div>
             {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
              <--------------------------------------map 함수 부분--------------------------------------> */}
-            {sprintsWithFeedback.length > 0 && sprintsWithFeedback.map((sprint) => (
-            <P.AlertBox key={`feedback-${sprint.sprint_num}`}>
+            
+            {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && 
+currentSprint?.sprint_end === today && isExternalUser === true && (
+            <P.AlertBox key={`feedback-${sprint.sprint_title}`}>
                 <div>
                     <P.AlertIcon>🔔</P.AlertIcon> 
-                    <span>Sprint {sprint.sprint_num} 동료평가를 잊지 마세요!</span>
+                    <span>Sprint {sprint.sprint_title} 동료평가를 잊지 마세요!</span>
                 </div>
             </P.AlertBox>
-            ))}
+            )}
 
             <P.BoxContainer>
                 {/* 왼쪽 화살표 (첫 Sprint가 아닐 때만 표시) */}
-                {currentSprintIndex > 0 && (
-                    <div style={{ position: 'absolute', left: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handlePrevSprint}>
+                {!(currentSprintIndex === 0 && hasPrev === false) && (
+                    <div
+                        style={{ position: 'absolute', left: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                        onClick={handlePrevSprint}
+                    >
                         <AiOutlineLeft size={80} color="#796AD9" />
                     </div>
                 )}
 
-                {(!sprintDataWithColors.length || showCreateSprintBox) ? (
+                {isExternalUser === true && sprintData.length === 0 ? (
+                <div
+                    style={{
+                        width: '100%',
+                        height: '600px',
+                        backgroundColor: '#F6F3FF',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '16px',
+                        color: '#6C5CE7',
+                        fontSize: '20px',
+                        fontWeight: '500',
+                        textAlign: 'center',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)'
+                    }}
+                >
+                    <div style={{ fontSize: '40px', marginBottom: '20px' }}>📭</div>
+                    <div>아직 생성된 Sprint가 없습니다</div>
+                </div>
+                ) : isExternalUser === false && (sprintData.length === 0 || showCreateSprintBox) ? (
                     // Sprint 생성 상자
                     <div style={{
                         width: '100%',
@@ -799,7 +741,8 @@ export default function Project({projectId}) {
                         <SprintModal 
                             isOpen={isCreateSprintModalOpen}
                             onClose={() => setIsCreateSprintModalOpen(false)}
-                            sprint={lastSprintNum + 1} 
+                            sprintId={currentSprint?.sprint_id}
+                            title={lastSprintNum + 1}
                             goal={goal}
                             setGoal={setGoal}
                             startDate={startDate}
@@ -809,28 +752,30 @@ export default function Project({projectId}) {
                             isLastSprint={true} 
                             projectId={projectId}
                             onSprintCreated={async () => {
-                                await getSprintTaskData();
+                                setSprintData([]);           
+                                setLastSprintId(null);
+                                setSprintLast(false);
+                                await getSprintTaskData();  
                                 setShowCreateSprintBox(false);
-                                setCurrentSprintIndex(sprintDataWithColors.length); 
+                                setCurrentSprintIndex(processedSprintData.length); 
                             }}
+                            isEdit={false} 
                         />
                     </div>
                 ) : (
                     <>
                 <P.ChartWrapper>
-                    <P.ChartTitle>Sprint {currentSprint?.sprint_num}</P.ChartTitle>
+                    <P.ChartTitle>Sprint {currentSprint?.sprint_title}</P.ChartTitle>
 
                     {/* 팀원 리스트 */}
                     <P.ScrollableMemberList>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                     {currentSprint?.member?.map((member, index) => (
                         <P.ProjectMember key={`${member.id}-${index}`}> 
                         <P.ProfileContainer>
                             <P.ProfileMain $profileImage={member.profileImage} />
                             <P.ProfileIcon color={member.color} />
                         </P.ProfileContainer>
-                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
+                        <span style={{ marginLeft: '10px' }}>{reduceMemberName(member.name)}</span>
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
                         {projectUser && member.id !== projectUser.projectParticipantId &&
                             member.name !== "알수없음" && 
@@ -847,8 +792,6 @@ export default function Project({projectId}) {
 
                     {/* 기여도 차트 */}
                     <P.DonutChartContainer>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {isClient && (
                         <PieChart width={300} height={300}>
                             <Pie
@@ -892,8 +835,11 @@ export default function Project({projectId}) {
                             </div>
                             <SprintModal 
                                 isOpen={isSprintModalOpen}
-                                onClose={handleSprintModal}
-                                sprint={currentSprint?.title}
+                                onClose={() => {
+                                    handleSprintModal();                
+                                }}
+                                sprintId={currentSprint?.sprint_id}
+                                title={currentSprint?.title}
                                 goal={currentSprint?.goal}
                                 setGoal={setGoal}
                                 startDate={currentSprint?.startDt}
@@ -901,14 +847,24 @@ export default function Project({projectId}) {
                                 dueDate={currentSprint?.dueDt}
                                 setDueDate={setDueDate}  
                                 isLastSprint={currentSprint?.last} 
-                                onSprintCreated={() => {
-                                    getSprintTaskData().then(() => {
-                                        setShowCreateSprintBox(false);
-                                        setTimeout(() => {
-                                            setCurrentSprintIndex(prev => prev + 1);
-                                        }, 100);
-                                    });
+                                onSprintEdited={async () => {
+                                    await getSprintTaskData(); 
+                                    const index = sprintData.findIndex(s => s.id === currentSprint?.sprint_id);
+                                    if (index !== -1) {
+                                        setCurrentSprintIndex(index); 
+                                    }
                                 }}
+                                onSprintDeleted={async () => {
+                                    setSprintData([]);
+                                    setLastSprintId(null);
+                                    setSprintLast(false);
+                                
+                                    await getSprintTaskData(); 
+                                
+                                    setCurrentSprintIndex(0);  
+                                    setShowCreateSprintBox(false); 
+                                }}
+                                isEdit={true} 
                             />
                         </div>
                         <Divider1 />
@@ -931,12 +887,10 @@ export default function Project({projectId}) {
                 <P.SprintBox>
                     Task
                     <P.TaskGrid>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {currentSprintTasks?.map((item, index) => (
                             <P.TaskItem key={`task-${index}`}> 
                                 <P.TaskCheckbox
-                                    checked={item.toDoStatus === "COMPELTED"} readOnly
+                                    checked={item.toDoStatus === "COMPLETED"} readOnly
                                 />
                                 {item.task}
                             </P.TaskItem>
@@ -948,11 +902,13 @@ export default function Project({projectId}) {
                         href={{
                             pathname: `/project/${ProjectId}/sprint/${sprint_id}`,
                             query: {
-                            sprint_num: currentSprint?.sprint_num,
-                            sprint_start: currentSprint?.startDt,
-                            sprint_end: currentSprint?.dueDt,
-                            sprint_goal: currentSprint?.goal,
-                            sprint_progress: currentSprint?.progress
+                                project_id: ProjectId,      
+                                sprint_id: Number(sprint_id),
+                                sprint_title: currentSprint?.sprint_title,
+                                sprint_start: currentSprint?.startDt,
+                                sprint_end: currentSprint?.dueDt,
+                                sprint_goal: currentSprint?.goal,
+                                sprint_progress: currentSprint?.progress
                             }
                         }}
                         >
@@ -965,14 +921,18 @@ export default function Project({projectId}) {
                 )}
             
                 {/* 오른쪽 화살표 */}
-                {canShowNextArrow && !showCreateSprintBox && (
-                    <div style={{ position: 'absolute', right: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={handleNextSprint}>
+                {(currentSprintIndex < processedSprintData.length - 1 || 
+                    (sprintLast && canShowNextArrow)) && !showCreateSprintBox && (
+                    <div
+                        style={{ position: 'absolute', right: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                        onClick={handleNextSprint}
+                    >
                         <AiOutlineRight size={80} color="#796AD9" />
                     </div>
                 )}
             </P.BoxContainer>
                 
-            {!showCreateSprintBox && (
+            {processedSprintData.length > 0 && (
             <div style={{ width: '750px', textAlign: 'left', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
                 <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px' }}>
                     <span style= {{ fontSize: '28px', marginLeft: '20px'}}>팀 미팅</span>
@@ -1000,25 +960,23 @@ export default function Project({projectId}) {
                     setStartTime={setStartTime}
                     endTime={endTime}
                     setEndTime={setEndTime}
-                    sprintNum={currentSprint?.sprint_num}
+                    sprintTitle={currentSprint?.sprint_title}
                     isEditing={!!selectedMeeting} 
                 />
                 
                 <Divider1/>
                 <P.MeetingContainer>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                     {currentSprint?.sprint_start && currentSprint?.sprint_end && (
                     <SprintCalendar 
                         sprintStart={currentSprint?.sprint_start} 
                         sprintEnd={currentSprint?.sprint_end}
                         meetingData={
-                            (meetingData[currentSprint?.sprint_num]?.content || []).map(meeting => {
+                            (meetingData[currentSprint?.sprint_title]?.content || []).map(meeting => {
                             const [date, startTime] = meeting.meetingStart.split("T");
                             const [, endTime] = meeting.meetingEnd.split("T");
                         
                             return {
-                                sprint_num: Number(currentSprint?.sprint_num),
+                                sprint_title: Number(currentSprint?.sprint_title),
                                 title: meeting.meetingTitle,
                                 date: date,
                                 startTime: startTime.slice(0, 5),
@@ -1028,9 +986,7 @@ export default function Project({projectId}) {
                             })
                         }
                         onMeetingClick={(meeting) => {
-                            {/*if (projectUserData.data?.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED") {*/}
                                 openMeetingModalForEdit(meeting);
-                            {/*}}*/}
                         }}
                     />
                     )}
