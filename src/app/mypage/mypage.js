@@ -17,18 +17,6 @@ import { completeTask, sosTask } from  "@/app/api/task/taskApi";
 
 import { useAlert } from "@/context/AlertContext";
 
-const teamData = {
-    "success": true,
-    "status": 200,
-    "data": {
-        "teamId": "1",
-        "teamName": "Side Effect",
-        "teamDescription": "Lg CNS AM Inspire Camp 1기 스터디그룹 2조",
-        "teamEmoji": "🍇"
-    },
-    "timestamp": "2025-02-10T14:18:46.135007"
-}
-
 export default function My({ projectId }) {
     const { showAlert } = useAlert();
 

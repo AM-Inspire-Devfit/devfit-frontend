@@ -23,7 +23,7 @@ import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 
 import { fetchUserData } from "../api/user/userApi";
-import { fetchTeamData, fetchTeamCode, updateTeamData, fetchTeamAdmin, fetchRandomTeamMembers} from "@/app/api/team/teamApi";
+import { fetchTeamData, fetchTeamCode, updateTeamData, fetchTeamAdmin, fetchTeamMembers} from "@/app/api/team/teamApi";
 import { fetchProjectListData } from "@/app/api/project/projectApi";
 
 import { useAlert } from "@/context/AlertContext";
@@ -32,9 +32,11 @@ export default function Team({ teamId }) {
     const { showAlert } = useAlert();
 
     const [currentUser, setCurrentUser] = useState(null);
+    const [allMembers, setAllMembers] = useState([]);
 
     const [teamInfo, setTeamInfo] = useState(null);
 
+    const [hasMore, setHasMore] = useState(true);
     const [myProjects, setMyProjects] = useState([]);
     const [otherProjects, setOtherProjects] = useState([]);
 
@@ -57,23 +59,22 @@ export default function Team({ teamId }) {
     const [deleteModal, setDeleteModal] = useState(false);
     const [adminLModal, setAdminLModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
-    
-    const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
     const [teamAdmin, setTeamAdmin] = useState(null);
+
     const [teamMembers, setTeamMembers] = useState([]);
-
     const [displayedMembers, setDisplayedMembers] = useState([]);
-    const [currentPageIndex, setCurrentPageIndex] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMoreMembers, setHasMoreMembers] = useState(true);
 
-    const [lastProjectId, setLastProjectId] = useState(null); // 첫 페이지는 null
+    const [lastProjectId, setLastProjectId] = useState(null); 
+    const [lastMemberId, setLastMemberId] = useState(null);
 
     const [teamErrorMessage, setTeamErrorMessage] = useState("");
-
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------여기부터 아래부터 시작-------------------------------------->
+    const [isFetching, setIsFetching] = useState(false);
+    const [isMembersFetching, setIsMembersFetching] = useState(false);
     
+    const TeamId = Number(teamId);
+
     useEffect(() => {
         const getUserInfo = async () => {
             try {
@@ -87,12 +88,23 @@ export default function Team({ teamId }) {
         getUserInfo();
     }, []);
 
+    const getTeamAdmin = async () => {
+        try {
+            const adminData = await fetchTeamAdmin(TeamId); // teamId 넘기기
+            setTeamAdmin({
+                id: adminData.memberId,
+                name: adminData.nickname,
+                profileImage: adminData.profileImageUrl,
+            });
+        } catch (error) {
+            showAlert("error", error.message);
+        }
+    };
+
     useEffect(() => {
         console.log("currentUser:", currentUser);
         console.log("teamAdmin:", teamAdmin);
     }, [currentUser, teamAdmin]);
-    
-    const TeamId = Number(teamId);
 
     useEffect(() => {
         if (!TeamId) return;
@@ -128,43 +140,47 @@ export default function Team({ teamId }) {
     useEffect(() => {
         if (!TeamId) return;
     
-        const getTeamAdmin = async () => {
-            try {
-                const adminData = await fetchTeamAdmin(TeamId); // teamId 넘기기
-                setTeamAdmin({
-                    id: adminData.memberId,
-                    name: adminData.nickname,
-                    profileImage: adminData.profileImageUrl,
-                });
-            } catch (error) {
-                showAlert("error", error.message);
-            }
-        };
-    
         getTeamAdmin();
     }, [TeamId]);
 
+    const getTeamMembers = async () => {
+        if (isMembersFetching || !hasMoreMembers) return; 
+    
+        setIsMembersFetching(true);
+        try {
+            const res = await fetchTeamMembers(TeamId, lastMemberId); 
+    
+            const nMembers = res.members || [];
+            const isLastPage = res.isLastPage;
+    
+            const formattedMembers = nMembers.map((member) => ({
+                ...member,
+                role: "member",
+            }));
+    
+            setTeamMembers((prev) => [...prev, ...formattedMembers]);
+            setDisplayedMembers((prev) => [...prev, ...formattedMembers]);
+    
+            if (formattedMembers.length > 0) {
+                const nextLastId = formattedMembers[formattedMembers.length - 1].id;
+                setLastMemberId(nextLastId); 
+            }
+    
+            if (isLastPage) {
+                setHasMoreMembers(false);
+            }
+
+        } catch (error) {
+            showAlert("error", error.message);
+        } finally {
+            setIsMembersFetching(false);
+        }
+    };
+
     useEffect(() => {
         if (!TeamId) return;
-    
-        const getRandomTeamMembers = async () => {
-            try {
-                const members = await fetchRandomTeamMembers(TeamId);
-                const formattedMembers = members.map((member) => ({
-                    ...member,
-                    role: "member",
-                }));
-                setTeamMembers(formattedMembers);
-                setDisplayedMembers(formattedMembers);
-            } catch (error) {
-                showAlert("error", error.message);
-            }
-        };
-    
-        getRandomTeamMembers();
+        getTeamMembers();
     }, [TeamId]);
-
-    const [allMembers, setAllMembers] = useState([]);
 
     useEffect(() => {
         if (teamAdmin) {
@@ -173,71 +189,77 @@ export default function Team({ teamId }) {
     }, [teamAdmin, displayedMembers]);
     const toggleListRef = useRef(null);
 
-    // 팀원 스크롤 이벤트
-    useEffect(() => {
-        const listEl = toggleListRef.current;
-        if (!listEl) return;
-    
-        const handleScroll = () => {
-            const { scrollTop, scrollHeight, clientHeight } = listEl;
-            if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
-                const nextPageIndex = currentPageIndex + 1;
-                if (nextPageIndex < teamMemberData.length) {
-                    const nextPage = teamMemberData[nextPageIndex];
-                    const newMembers = nextPage.data.content.map(member => ({
-                        id: member.memberId,
-                        name: member.nickname,
-                        profileImage: member.profileImageUrl,
-                        role: "member"
-                    }));
-                    setDisplayedMembers(prev => [...prev, ...newMembers]);
-                    setAllMembers(prev => [...prev, ...newMembers]);
-                    setCurrentPageIndex(nextPageIndex);
-                    setHasMore(!nextPage.data.last);
-                }
-            }
-        };
-    
-        listEl.addEventListener('scroll', handleScroll);
-        return () => listEl.removeEventListener('scroll', handleScroll);
-    }, [hasMore, currentPageIndex]);
+    const handleMemberScroll = () => {
+        if (!hasMoreMembers || isMembersFetching) return;
 
-    const fetchAllProjects = async () => {
-        try {
-            const allProjects = await fetchProjectListData(
-                TeamId,
-                null,
-                null,
-                10   
-            );
-
-            const myProjectsArray = [];
-            const otherProjectsArray = [];
-
-            allProjects?.content?.forEach(project => {
-                if (project.isParticipant) {
-                    myProjectsArray.push(project);
-                } else {
-                    otherProjectsArray.push(project);
-                }
-            });
-
-            setMyProjects(myProjectsArray);
-            setOtherProjects(otherProjectsArray);
-        } catch (error) {
-            showAlert("error", error.message);
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 20) {
+            getTeamMembers(); 
         }
     };
-    
+
+    // 팀원 스크롤 이벤트
     useEffect(() => {
-        if (TeamId) {
+        window.addEventListener("scroll", handleMemberScroll);
+        return () => window.removeEventListener("scroll", handleMemberScroll);
+    }, [hasMoreMembers, isMembersFetching, lastMemberId]); 
+
+
+    const fetchAllProjects = async () => {
+        if (isFetching || !hasMore) return; 
+        setIsFetching(true);
+        
+        try {
+            const res = await fetchProjectListData(TeamId, null, lastProjectId, 10);
+            const content = res?.content || [];
+
+            if (content.length === 0) {
+                setHasMore(false);
+                return;
+            }
+
+            const newMyProjects = [];
+            const newOtherProjects = [];
+
+            content.forEach(project => {
+                if (project.isParticipant) newMyProjects.push(project);
+                else newOtherProjects.push(project);
+            });
+
+            setMyProjects(prev => [...prev, ...newMyProjects]);
+            setOtherProjects(prev => [...prev, ...newOtherProjects]);
+
+            const last = content[content.length - 1];
+            setLastProjectId(last.projectInfo.projectId);
+            if (res.last) setHasMore(false);
+        } catch (error) {
+            showAlert("error", error.message);
+            setHasMore(false);
+        } finally {
+            setIsFetching(false); // 호출 종료
+        }
+    };
+
+    const handleScroll = () => {
+        if (!hasMore || isFetching) return;
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
             fetchAllProjects();
         }
-    }, [TeamId]);
+    };
 
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [hasMore, isFetching]);
 
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
+    const refreshProjectList = async () => {
+        setMyProjects([]);
+        setOtherProjects([]);
+        setLastProjectId(null);
+        setHasMore(true);
+        await fetchAllProjects();
+    };
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -284,8 +306,6 @@ export default function Team({ teamId }) {
             originalTeamName.current = teamInfo.teamName;
         }
     }, [teamInfo]);
-
-    const nameInputRef = useRef(null);
     
     const saveTeamInfo = async () => {
         const name = teamInfo.teamName?.trim();
@@ -307,7 +327,7 @@ export default function Team({ teamId }) {
             }
     
             setIsEditing(false);
-            return; // isEditing 유지
+            return;
         }
     
         try {
@@ -578,7 +598,7 @@ export default function Team({ teamId }) {
                         )}
                     {/* <------------------------------------ 팀원들(3명) --------------------------------------> */}
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "30px", marginBottom: "20px"}}>
-                        {teamMembers.map((member, index) => (
+                        {teamMembers.slice(0, 3).map((member, index) => (
                             <S.MemberItem 
                                 key={member.id} 
                                 style={{ position: "relative", marginLeft: index === 0 ? "0" : "-22px" }}>
@@ -638,7 +658,7 @@ export default function Team({ teamId }) {
              <--------------------------------------map 함수 부분--------------------------------------> */}
             {myProjects.length > 0 ? (
                 myProjects.map(project => (
-                <S.ProjectBox key={project.projectInfo.projectId}>
+                <S.ProjectBox key={`my-${project.projectInfo.projectId}`}>
                     <S.ProjectContent>
                     <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
                     <S.ProjectInfo>
@@ -719,7 +739,7 @@ export default function Team({ teamId }) {
              <--------------------------------------map 함수 부분--------------------------------------> */}
             {otherProjects.length > 0 ? (
                 otherProjects.map((project) => (
-                <S.ProjectBox key={project.projectInfo.projectId}>
+                <S.ProjectBox key={`other-${project.projectInfo.projectId}`}>
                     <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
                     <S.ProjectInfo>
                         <S.ProjectDescription>
@@ -772,7 +792,7 @@ export default function Team({ teamId }) {
         <ProjectModal  
             teamId={TeamId} 
             onClose={() => setAddModal(false)} 
-            onProjectCreated={fetchAllProjects}
+            onProjectCreated={refreshProjectList}
         />}
 
         {/* 프로젝트 삭제 modal */}
@@ -780,7 +800,7 @@ export default function Team({ teamId }) {
         <DeleteModal 
             selectedProject={selectedProject} 
             onClose={() => setDeleteModal(false)}
-            onProjectDeleted={fetchAllProjects}
+            onProjectDeleted={refreshProjectList}
         />
         )}
 

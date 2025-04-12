@@ -681,7 +681,6 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                 )}
 
                 {isExternalUser === true && sprintData.length === 0 ? (
-                // 외부인이고 스프린트가 없을 때 → "스프린트가 존재하지 않습니다"
                 <div
                     style={{
                         width: '100%',
@@ -765,8 +764,6 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
 
                     {/* 팀원 리스트 */}
                     <P.ScrollableMemberList>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                     {currentSprint?.member?.map((member, index) => (
                         <P.ProjectMember key={`${member.id}-${index}`}> 
                         <P.ProfileContainer>
@@ -790,8 +787,6 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
 
                     {/* 기여도 차트 */}
                     <P.DonutChartContainer>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {isClient && (
                         <PieChart width={300} height={300}>
                             <Pie
@@ -887,8 +882,6 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                 <P.SprintBox>
                     Task
                     <P.TaskGrid>
-                    {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                     <--------------------------------------map 함수 부분--------------------------------------> */}
                         {currentSprintTasks?.map((item, index) => (
                             <P.TaskItem key={`task-${index}`}> 
                                 <P.TaskCheckbox

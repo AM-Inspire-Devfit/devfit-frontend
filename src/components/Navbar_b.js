@@ -16,9 +16,9 @@ const Navbar_ = () => {
         if (!confirmLogout) return; 
         
         try {
-            await logout(); // 로그아웃 요청
-            localStorage.removeItem("accessToken"); // 저장된 토큰 제거 
-            localStorage.removeItem("storedUser"); // 유저 정보 제거 
+            await logout(); 
+            localStorage.removeItem("accessToken"); 
+            localStorage.removeItem("storedUser"); 
             router.push("/login");
         } catch (error) {
             console.error("로그아웃 실패:", error);

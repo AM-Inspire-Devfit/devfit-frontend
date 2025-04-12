@@ -93,7 +93,7 @@ export default function Task({ projectId }) {
     const handleScroll = () => {
     if (!hasMore || isFetching) return;
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
+    if (scrollTop + clientHeight >= scrollHeight - 90) {
         loadMoreTasks();
     }
     };
@@ -114,7 +114,6 @@ export default function Task({ projectId }) {
     const [isTaskModalOpen, setTaskModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     const [isAssignModalOpen, setAssignModalOpen] = useState(false);
-    const [selectedTaskTitle, setSelectedTaskTitle] = useState("");
 
     // Task 생성 modal
     const handleAddTaskModal = () => {
