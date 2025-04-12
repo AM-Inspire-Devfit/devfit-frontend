@@ -619,6 +619,11 @@ export default function Project({projectId}) {
         setIsMeetingModalOpen(true);
     };
 
+    // 멤버 이름 3글자 이상이면 축약 표시
+    const reduceMemberName = (name) => {
+        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+    };
+        
 
     return (
         <>
@@ -770,7 +775,7 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                             <P.ProfileMain $profileImage={member.profileImage} />
                             <P.ProfileIcon color={member.color} />
                         </P.ProfileContainer>
-                        <span style={{ marginLeft: '10px' }}>{member.name}</span>
+                        <span style={{ marginLeft: '10px' }}>{reduceMemberName(member.name)}</span>
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
                         {projectUser && member.id !== projectUser.projectParticipantId &&
                             member.name !== "알수없음" && 

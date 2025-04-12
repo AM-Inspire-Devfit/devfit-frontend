@@ -435,6 +435,11 @@ export default function Team({ teamId }) {
             [projectId]: !prev[projectId]
         }));
     };
+
+    // 멤버 이름 3글자 이상이면 축약 표시
+    const reduceMemberName = (name) => {
+        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+    };
     
     if (!teamInfo) {
         return (
@@ -593,7 +598,7 @@ export default function Team({ teamId }) {
                                     width={50} height={50} 
                                 />
                                 </S.MemberProfile>
-                                <S.MemberName isLeader={true}>{teamAdmin.name}</S.MemberName>
+                                <S.MemberName isLeader={true}>{reduceMemberName(teamAdmin.name)}</S.MemberName>
                             </S.MemberItem>
                         )}
                     {/* <------------------------------------ 팀원들(3명) --------------------------------------> */}
@@ -637,7 +642,7 @@ export default function Team({ teamId }) {
                                     }}
                                 />
                             </S.ToggleMemberImage>
-                            <S.ToggleMemberText>{member.name || "사용자"}</S.ToggleMemberText>
+                            <S.ToggleMemberText>{reduceMemberName(member.name)|| "사용자"}</S.ToggleMemberText>
                         </S.ToggleMemberItem>
                         ))}
                         </S.ToggleMemberList>

@@ -147,6 +147,11 @@ export default function Task({ projectId }) {
     
         return enableScroll;
     }, [isTaskModalOpen, isAssignModalOpen]);
+
+    // 멤버 이름 3글자 이상이면 축약 표시
+    const reduceMemberName = (name) => {
+        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+    };
     
 
     return (
@@ -247,7 +252,7 @@ export default function Task({ projectId }) {
                                 {task.profileImageUrl && task.projectNickname && (
                                     <>
                                         <T.AssigneeProfile $profileImage={task.profileImageUrl}  />
-                                        <T.AssigneeName>{task.projectNickname}</T.AssigneeName>
+                                        <T.AssigneeName>{reduceMemberName(task.projectNickname)}</T.AssigneeName>
                                     </>
                                 )}
                             </T.TaskRight>
