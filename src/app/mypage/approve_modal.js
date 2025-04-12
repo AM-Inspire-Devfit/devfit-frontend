@@ -298,12 +298,7 @@ export default function ApproveModal({ isOpen, onClose, projectId }) {
                                     {request.projectRegistrationStatus === "REJECTED" && (
                                         <ApproveButton onClick={() => handleApprove(request.registrationId)}>승인</ApproveButton>
                                     )}
-<<<<<<< HEAD
-=======
-                                    {request.projectRegistrationStatus === "APPROVED" && (
-                                        <RejectButton onClick={() => handleReject(request.registrationId)}>거절</RejectButton>
-                                    )}
->>>>>>> 91f3e64 (feat: project 가입 신청/승인/거부)
+
                                 </ButtonGroup>
                             </RequestItem>
                         ))
