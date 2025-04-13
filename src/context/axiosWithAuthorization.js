@@ -36,14 +36,14 @@ axiosWithAuthorization.interceptors.response.use(
       if (newAccessToken) {
         // 새 토큰 저장
         localStorage.setItem("accessToken", newAccessToken);
-        console.log("new Token"+newAccessToken)
+        console.log("new Token: "+newAccessToken)
         //새 토큰으로 Authorization 재설정
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         //재시도
         return axiosWithAuthorization(originalRequest);
       }
 
-      //헤더에 토토이 없으면 로그인 페이지 리디렉션
+      //헤더에 토큰 없으면 로그인 페이지 리디렉션
       localStorage.removeItem("accessToken");
       console.log("리프레시 토큰 만료")
       window.location.href = "/login";
