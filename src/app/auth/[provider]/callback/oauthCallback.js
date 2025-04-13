@@ -37,7 +37,7 @@ const OAuthCallback = () => {
       //성공: 보딩 페이지로 리다이렉트
       window.location.href = "/home";
     } catch (error) {
-      // window.location.href = "/boarding";
+      window.location.href = "/boarding";
       console.log("토큰 요청 실패:", error.response ? error.response.data : error.message);
     }
   };
