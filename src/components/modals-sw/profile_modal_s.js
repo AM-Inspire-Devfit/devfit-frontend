@@ -100,10 +100,11 @@ export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 50%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
+  border: 5px solid #ddd; 
 `;
 
-// 추가: 수정 아이콘
 export const EditIcon = styled.img`
   position: absolute;
   width: 40px;

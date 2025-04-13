@@ -37,6 +37,7 @@ export const ProfileImage = styled.img`
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
+  aspect-ratio: 1 / 1;
   border: 2px solid #ddd;  
 `;
 
