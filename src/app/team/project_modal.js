@@ -104,9 +104,10 @@ export default function ProjectModal({
                     <m.Label style={{ color: "black", fontWeight: "bold", width: "90px" }}>프로젝트 명 *</m.Label>
                     <m.Input 
                         style={{ flex: 1, marginTop: "10px" }}
-                        placeholder="프로젝트 이름을 입력하세요"
+                        placeholder="프로젝트 이름을 입력하세요 (15자 이내)"
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
+                        maxLength={15}
                         />
                 </m.InputWrapper>
 
@@ -126,9 +127,10 @@ export default function ProjectModal({
                             resize: "none",
                             marginTop: "15px"
                         }}
-                        placeholder="프로젝트에 대한 설명을 입력하세요"
+                        placeholder="프로젝트에 대한 설명을 입력하세요 (100자 이내)"
                         value={projectDescription}
                         onChange={(e) => setProjectDescription(e.target.value)}
+                        maxLength={100}
                     />
                 </m.InputWrapper>
 
