@@ -629,9 +629,9 @@ export default function Project({projectId}) {
         <>
         <ContentContainer>
             <div style={{ width: '750px', textAlign: 'left' }}>
-                <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
+                <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
-                    <span style={{ color: '#9377FF', fontSize: '20px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{projectData?.teamName} </span> 
+                    <span style={{ color: '#9377FF', fontSize: '18px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{projectData?.teamName} </span> 
                         <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
                     </div>
                     {projectUser && projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
@@ -652,11 +652,12 @@ export default function Project({projectId}) {
                             color: projectDescription ? "#4F3DBD" : "#A9A9A9", 
                             fontStyle: projectDescription ? "normal" : "italic",
                             height: "30px", 
-                            lineHeight: "30px", 
+                            lineHeight: "20px", 
                             padding: "0", 
                             display: "flex",
                             alignItems: "center",
-                            marginLeft: "30px"
+                            marginLeft: "25px",
+                            marginTop: "20px"
                         }}>
                         {projectDescription || "프로젝트에 대한 설명을 추가하세요!"}
                     </p>

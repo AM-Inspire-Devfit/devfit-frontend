@@ -462,6 +462,11 @@ export default function Team({ teamId }) {
     const reduceMemberName = (name) => {
         return name.length > 3 ? name.slice(0, 3) + ".." : name;
     };
+
+    // 프로젝트 이름 7글자 이상이면 축약 표시
+    const reduceProjectName = (name) => {
+        return name.length > 5 ? name.slice(0, 5) + ".." : name;
+    };
     
     if (!teamInfo) {
         return (
@@ -560,7 +565,8 @@ export default function Team({ teamId }) {
                                     outline: "none",
                                     background: "transparent",
                                     padding: "0",
-                                    lineHeight: "25px"
+                                    lineHeight: "25px",
+                                    width: "600px",
                                 }}
                             />
                         ) : (
@@ -569,10 +575,11 @@ export default function Team({ teamId }) {
                                 height: "25px", 
                                 lineHeight: "25px", 
                                 marginTop: "5px",
+                                width: "600px",
                                 color: teamInfo.teamDescription ? "#796AD9" : "#A9A9A9", 
                                 fontStyle: teamInfo.teamDescription ? "normal" : "italic" 
                             }}>
-                                {teamInfo.teamDescription || "팀에 대한 설명을 추가하세요!"}
+                                {teamInfo.teamDescription || "팀에 대한 설명을 추가하세요! (100자 이내)"}
                             </T.Subtitle>
                         )}
                     </T.TitleRight>
@@ -687,7 +694,7 @@ export default function Team({ teamId }) {
                 myProjects.map(project => (
                 <S.ProjectBox key={`my-${project.projectInfo.projectId}`}>
                     <S.ProjectContent>
-                    <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
+                    <S.ProjectTitle>{reduceProjectName(project.projectInfo.projectTitle)}</S.ProjectTitle>
                     <S.ProjectInfo>
                         <S.ProjectDescription>
                             {project.projectInfo.projectDescription}
@@ -767,7 +774,7 @@ export default function Team({ teamId }) {
             {otherProjects.length > 0 ? (
                 otherProjects.map((project) => (
                 <S.ProjectBox key={`other-${project.projectInfo.projectId}`}>
-                    <S.ProjectTitle>{project.projectInfo.projectTitle}</S.ProjectTitle>
+                    <S.ProjectTitle>{reduceProjectName(project.projectInfo.projectTitle)}</S.ProjectTitle>
                     <S.ProjectInfo>
                         <S.ProjectDescription>
                             {project.projectInfo.projectDescription}
