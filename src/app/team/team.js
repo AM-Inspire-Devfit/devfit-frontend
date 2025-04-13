@@ -531,6 +531,7 @@ export default function Team({ teamId }) {
                                     padding: "0",
                                     lineHeight: "35px",
                                 }}
+                                maxLength={15}
                             />
                         ) : (
                             <T.Title style={{ height: "35px", lineHeight: "35px", marginBottom: "5px", marginLeft: "5px",}}>
@@ -568,6 +569,7 @@ export default function Team({ teamId }) {
                                     lineHeight: "25px",
                                     width: "600px",
                                 }}
+                                maxLength={100}
                             />
                         ) : (
                             <T.Subtitle 
