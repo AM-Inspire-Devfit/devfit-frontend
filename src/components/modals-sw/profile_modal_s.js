@@ -15,18 +15,18 @@ export const ModalOverlay = styled.div`
 
 export const ModalContent = styled.div`
   background: white;
-  width: 700px;         /* 전체 폭 */
-  min-height: 400px;    /* 전체 높이 */
+  width: 700px;
+  min-height: 400px;
   border: 2px solid #7b4fc3;
   border-radius: 10px;
-  display: flex;        /* 사이드바 + 내용영역 가로 배치 */
+  display: flex;
   position: relative;
-  overflow: hidden;     /* 둥근 모서리 영역 밖 숨김 */
+  overflow: hidden;
 `;
 
 export const Sidebar = styled.div`
   width: 180px;
-  background-color: #f2e8ff; /* 연보라색 */
+  background-color: #f2e8ff;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -47,22 +47,16 @@ export const SidebarItem = styled.button`
   &:before {
     content: "";
     position: absolute;
-    /* 기존: left: -10px; -> 수정 */
     left: 0;  
     top: 0;
     bottom: 0;
-    width: 10px; /* 막대 두께 */
+    width: 10px;
     background-color: #7b4fc3;
-
-    /* 오른쪽만 둥글게 => 왼쪽은 0, 오른쪽은 8px */
     border-radius: 0 8px 8px 0; 
-
-    /* 활성화 여부에 따라 표시 */
     opacity: ${({ $active }) => ($active ? 1 : 0)};
     transition: opacity 0.3s ease;
   }
 `;
-
 
 export const ContentArea = styled.div`
   flex: 1;
@@ -87,49 +81,43 @@ export const SectionTitle = styled.h2`
   font-size: 20px;
   color: #7b4fc3;
   margin-bottom: 20px;
-  
 `;
 
 export const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 40px; /* 이미지와 폼 사이 간격 */
-  margin-top: 20px; /* 위쪽 여백 */
+  gap: 40px;
+  margin-top: 20px;
 `;
 
 export const ProfileImageWrapper = styled.div`
   position: relative;
-  width: 180px;  /* 프로필 이미지 영역 크기 */
-  height: 180px; 
+  width: 180px;
+  height: 180px;
 `;
 
 export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  object-fit: cover; 
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 5px solid #ddd; 
 `;
 
-// 프로필 이미지 위에 겹치는 수정 아이콘 
-// export const EditIcon = styled.img`
-//   position: absolute;
-//   right: 0;
-//   bottom: 0;
-//   width: 40px; 
-//   height: 40px;
-//   cursor: pointer;
-// `;
+export const EditIcon = styled.img`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+`;
 
 export const ProfileForm = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px; 
-`;
-
-
-export const InputWrapper = styled.div`
-  width: 80%;
-  margin-bottom: 20px;
 `;
 
 export const Label = styled.label`
@@ -142,8 +130,8 @@ export const Input = styled.input`
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
-  border-color:#7b4fc3;
-  border-radius:10px;
+  border-color: #7b4fc3;
+  border-radius: 10px;
 `;
 
 export const SaveButton = styled.button`
@@ -163,21 +151,17 @@ export const WarningMessage = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 10px 10px 10px 10px ;
+  padding: 10px;
   margin-top: 50px;
   margin-bottom: 20px;
   box-sizing: border-box;
-  font-size:20px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
 export const WithdrawButton = styled(SaveButton)`
   background: #7b4fc3;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
 `;
-
 
 export const ConfirmModal = styled.div`
   position: fixed;
