@@ -333,6 +333,7 @@ export default function My({ projectId }) {
         <ApproveModal
             isOpen={isApproveModalOpen}
             onClose={() => setIsApproveModalOpen(false)}
+            projectId={ProjectId}
         />
 
         <LeaderModal 
