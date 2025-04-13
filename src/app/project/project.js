@@ -21,6 +21,7 @@ import { fetchSprintTaskData } from "@/app/api/sprint/sprintApi";
 
 import Image from "next/image";
 
+import axiosWithAuthorization from "@/context/axiosWithAuthorization";
 import { useAlert } from "@/context/AlertContext";
 
     const colorData = [
@@ -102,74 +103,6 @@ const sprintContributionData = [
     }
 ]
 
-const meetingData = {
-    1: {
-        "first": true,
-        "last": true,
-        "size": 1073741824,
-        "content": [
-            {
-            "meetingTitle": "미팅 타이틀",
-            "meetingStart": "2025-02-20T16:38:14.792466",
-            "meetingEnd": "2025-02-20T18:38:14.792466"
-            }
-        ],
-        "number": 1073741824,
-        "sort": {
-            "empty": true,
-            "unsorted": true,
-            "sorted": true
-        },
-        "pageable": {
-            "offset": 9007199254740991,
-            "sort": {
-            "empty": true,
-            "unsorted": true,
-            "sorted": true
-            },
-            "paged": true,
-            "unpaged": true,
-            "pageNumber": 1073741824,
-            "pageSize": 1073741824
-        },
-        "numberOfElements": 1073741824,
-        "empty": true
-    },
-
-    2: {
-        "first": true,
-        "last": true,
-        "size": 1073741824,
-        "content": [
-            {
-            "meetingTitle": "미팅 타이틀",
-            "meetingStart": "2025-03-20T16:00:14.792466",
-            "meetingEnd": "2025-03-20T18:00:14.792466",
-            }
-        ],
-        "number": 1073741824,
-        "sort": {
-            "empty": true,
-            "unsorted": true,
-            "sorted": true
-        },
-        "pageable": {
-            "offset": 9007199254740991,
-            "sort": {
-            "empty": true,
-            "unsorted": true,
-            "sorted": true
-            },
-            "paged": true,
-            "unpaged": true,
-            "pageNumber": 1073741824,
-            "pageSize": 1073741824
-        },
-        "numberOfElements": 1073741824,
-        "empty": true
-    }
-};
-
 
 export default function Project({projectId}) {
     const { showAlert } = useAlert();
@@ -199,8 +132,12 @@ export default function Project({projectId}) {
     const [hasNext, setHasNext] = useState(false); // 다음 스프린트 존재 여부
 
     //meeting
+    const [hasMoreMeetings, setHasMoreMeetings] = useState(false);
+    const [lastMeetingtId, setLastMeetingId] = useState(null); 
+    const [meetingList, setMeetingList] = useState([]);
     const [selectedMeeting, setSelectedMeeting] = useState(null);
     const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+    const [selectedMeetingId, setSelectedMeetingId] = useState(null);
     const [meetingTitle, setMeetingTitle] = useState("");
     const [meetingDate, setMeetingDate] = useState("");
     const [startTime, setStartTime] = useState("");
@@ -584,9 +521,71 @@ export default function Project({projectId}) {
         return null; // 또는 로딩 UI를 보여줄 수도 있음
     }
 
+
+    const fetchMeetingList = async (sprintId, lastId = null) => {
+        try {
+          const response = await axiosWithAuthorization.get(`/meetings/${sprintId}/list`, {
+            params: {
+              lastMeetingId: lastId,  // null이면 첫 페이지 조회
+              pageSize: 10,
+            },
+          });
+          console.log("미팅 목록 조회 응답:", response.data);
+          const data = response.data.data;
+          
+          // 만약 content에 항목이 있다면, 마지막 미팅의 ID를 저장
+          if (data.content && data.content.length > 0 && data.content[0].meetingId !== undefined) {
+            const lastItem = data.content[data.content.length - 1];
+            setLastMeetingId(lastItem.meetingId);
+          }
+          
+          setHasMoreMeetings(!data.last);  // 더 불러올 페이지가 있는지 확인
+          setMeetingList(data.content);    // content 배열만 저장
+          return data.content;
+        } catch (error) {
+            console.log(error);
+          showAlert("error", error.response?.data?.message || "미팅 목록 조회 오류");
+          return [];
+        }
+      };
+    
+      // 현재 스프린트 변경 시 미팅 목록 새로 조회 (초기 페이지)
+      useEffect(() => {
+        if (currentSprint?.sprint_id) {
+          setLastMeetingId(null);
+          fetchMeetingList(currentSprint.sprint_id, null).then((data) => {
+            setMeetingList(data);
+          });
+        }
+      }, [currentSprint]);
+    
+      // "더보기" 함수: 추가 페이지 조회 및 기존 목록에 append
+      const loadMoreMeetings = async () => {
+        if (!currentSprint?.sprint_id || !hasMoreMeetings) return;
+        const more = await fetchMeetingList(currentSprint.sprint_id, lastMeetingId);
+        setMeetingList((prev) => [...prev, ...more]);
+      };
+      
+    
+      const meetingData = meetingList.map((meeting) => {
+        const [date, startFull] = meeting.meetingStart.split("T");
+        const [, endFull] = meeting.meetingEnd.split("T");
+        return {
+            id: meeting.meetingId,
+            sprint_title: Number(currentSprint?.sprint_title),
+            title: meeting.meetingTitle,
+            date: date, // "YYYY-MM-DD"
+            startTime: startFull.slice(0, 5), // "HH:mm"
+            endTime: endFull.slice(0, 5), // "HH:mm"
+            toDoStatus: "STATUS_COMPLETED", //기본값
+        };
+      });
+      
+
     // 신규 미팅 생성
     const openMeetingModalForCreate = () => {
         setSelectedMeeting(null);
+        setSelectedMeetingId(null);
         setMeetingTitle("");
         setMeetingDate("");
         setStartTime("");
@@ -597,12 +596,22 @@ export default function Project({projectId}) {
     // 기존 미팅 수정
     const openMeetingModalForEdit = (meeting) => {
         setSelectedMeeting(meeting);
+        setSelectedMeetingId(meeting.id);
+        console.log(meeting.id + "???")
         setMeetingTitle(meeting.title);
         setMeetingDate(meeting.date);
         setStartTime(meeting.startTime);
         setEndTime(meeting.endTime);
         setIsMeetingModalOpen(true);
     };
+
+    const refreshMeetingList = async () => {
+        if (currentSprint?.sprint_id) {
+          setLastMeetingId(null);
+          const data = await fetchMeetingList(currentSprint.sprint_id, null);
+          setMeetingList(data);
+        }
+      };
 
     // 멤버 이름 3글자 이상이면 축약 표시
     const reduceMemberName = (name) => {
@@ -963,6 +972,7 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                 <MeetingModal 
                     isOpen={isMeetingModalOpen} 
                     onClose={() => setIsMeetingModalOpen(false)}
+                    meetingId={selectedMeetingId}
                     meetingTitle={meetingTitle}
                     setMeetingTitle={setMeetingTitle}
                     meetingDate={meetingDate}
@@ -971,35 +981,22 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                     setStartTime={setStartTime}
                     endTime={endTime}
                     setEndTime={setEndTime}
+                    sprintId = {currentSprint?.sprint_id}
                     sprintTitle={currentSprint?.sprint_title}
                     isEditing={!!selectedMeeting} 
+                    onMeetingSaved={refreshMeetingList} 
+                    onMeetingDeleted={refreshMeetingList}
                 />
                 
                 <Divider1/>
                 <P.MeetingContainer>
                     {currentSprint?.sprint_start && currentSprint?.sprint_end && (
-                    <SprintCalendar 
+                        <SprintCalendar 
                         sprintStart={currentSprint?.sprint_start} 
                         sprintEnd={currentSprint?.sprint_end}
-                        meetingData={
-                            (meetingData[currentSprint?.sprint_title]?.content || []).map(meeting => {
-                            const [date, startTime] = meeting.meetingStart.split("T");
-                            const [, endTime] = meeting.meetingEnd.split("T");
-                        
-                            return {
-                                sprint_title: Number(currentSprint?.sprint_title),
-                                title: meeting.meetingTitle,
-                                date: date,
-                                startTime: startTime.slice(0, 5),
-                                endTime: endTime.slice(0, 5),
-                                toDoStatus: "STATUS_COMPLETED", // 기본값
-                            };
-                            })
-                        }
-                        onMeetingClick={(meeting) => {
-                                openMeetingModalForEdit(meeting);
-                        }}
-                    />
+                        meetingData={meetingData}
+                        onMeetingClick={(meeting) =>openMeetingModalForEdit(meeting)}
+                        />
                     )}
                 </P.MeetingContainer>
             </div>
