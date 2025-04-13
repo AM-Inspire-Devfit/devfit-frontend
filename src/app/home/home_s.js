@@ -196,7 +196,7 @@ export const TitleContainer = styled.div`
 export const Title = styled.h2`
   font-size: 1.2em;
   color: #7b4fc3;
-  font-weight: 300;
+  font-weight: 400;
   text-align: left;
   margin: 0;
   flex: 1;

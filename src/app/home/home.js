@@ -9,6 +9,7 @@ import axiosWithAuthorization from "@/context/axiosWithAuthorization";
 import { ClipLoader } from "react-spinners"; 
 import * as S from "./home_s";
 import { useAlert } from "@/context/AlertContext";
+import { AiOutlinePlus, AiOutlineUserAdd } from 'react-icons/ai';
 
 export default function Home() {
   //액세스 토큰
@@ -196,7 +197,10 @@ export default function Home() {
   }, [selectedId]);
 
 
-
+  // 팀 설명 15글자 이상이면 축약 표시
+  const reduceDescription = (name) => {
+    return name.length > 10 ? name.slice(0, 10) + ".." : name;
+};
 
   return (
     <>
@@ -230,14 +234,14 @@ export default function Home() {
           <S.TeamOptionContainer>
             <S.OptionTitle>나의 팀</S.OptionTitle>
             <S.TeamButton onClick={() => setIsCreateModalOpen(true)}>
-              <S.TeamIcon src={"/img/team/team-create-icon.png"} alt="팀 생성 아이콘" />
+              <AiOutlinePlus size={25} style={{ marginRight: '8px' }} />
               팀 생성
             </S.TeamButton>
 
             <S.Divider />
 
             <S.TeamButton onClick={() => setIsJoinModalOpen(true)}>
-              <S.TeamIcon src="/img/team/team-join-icon.png" alt="팀 참여 아이콘" />
+              <AiOutlineUserAdd size={25} style={{ marginRight: '8px' }} />
               팀 참여
             </S.TeamButton>
 
@@ -285,7 +289,9 @@ export default function Home() {
                     </S.MoreButton>
                   </S.TitleContainer>
 
-                  <S.Description>{team.teamDescription}</S.Description>
+                  <S.Description style={{ visibility: team.teamDescription?.trim() ? 'visible' : 'hidden' }}>
+                    {reduceDescription(team.teamDescription || "내용없음")}
+                  </S.Description>
                   {team.teamEmoji && <S.CardEmoji>{team.teamEmoji}</S.CardEmoji>}
 
                   <S.DropdownMenu
