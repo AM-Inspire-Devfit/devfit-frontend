@@ -89,20 +89,19 @@ const ProfileModal = ({ isOpen, onClose , profile, onProfileUpdated }) => {
             <>
               <S.SectionTitle>회원 탈퇴</S.SectionTitle>
               <S.WarningMessage>
-                회원 탈퇴 시 현재 팀/프로젝트 정보가 모두 삭제됩니다.
-                계속 진행하시겠습니까?
+              당신은 나갈 수 없습니다...
               </S.WarningMessage>
               
-              <S.WithdrawButton onClick={() => setIsConfirmModalOpen(true)}>
+              {/* <S.WithdrawButton onClick={() => setIsConfirmModalOpen(true)}>
                 회원 탈퇴
-              </S.WithdrawButton>
+              </S.WithdrawButton> */}
             </>
           )}
         </S.ContentArea>
       </S.ModalContent>
       {isConfirmModalOpen && (
         <S.ConfirmModal>
-          <S.ConfirmText>회원 탈퇴를 진행하시겠습니까?</S.ConfirmText>
+          <S.ConfirmText><h3>당신은 나갈 수 없습니다...</h3></S.ConfirmText>
           <S.ButtonContainer>
             <S.ConfirmButton>예</S.ConfirmButton>
             <S.CancelButton onClick={() => setIsConfirmModalOpen(false)}>
