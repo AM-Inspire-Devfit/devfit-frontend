@@ -208,6 +208,19 @@ export default function Project({projectId}) {
 
     const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
 
+    const checkSprintDue = (dueDate, includeNextDay = false) => {
+        if (!dueDate) return false;
+    
+        const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+        nowKST.setHours(0, 0, 0, 0);
+    
+        const sprintEndKST = new Date(new Date(dueDate).getTime() + 9 * 60 * 60 * 1000);
+        if (includeNextDay) sprintEndKST.setDate(sprintEndKST.getDate() + 1);
+        sprintEndKST.setHours(0, 0, 0, 0);
+    
+        return nowKST >= sprintEndKST;
+    };
+
     const ProjectId = Number(projectId);
 
     const isExternalUser = useMemo(() => {
@@ -281,19 +294,8 @@ export default function Project({projectId}) {
             setLastSprintId(newLastId);
             setSprintLast(response.last);
     
-            // 스프린트 종료일이 지나면 오른쪽 화살표 보이기
-            const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-            const sprintEndKST = new Date(new Date(response.content[0]?.dueDt + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
-    
-            nowKST.setHours(0, 0, 0, 0); 
-            sprintEndKST.setHours(0, 0, 0, 0); 
-
-            // 종료일이 지난 경우에만 화살표를 보이게 설정
-            const isNextArrowVisible = nowKST > sprintEndKST;
-
-            console.log(`nowKST: ${nowKST}, sprintEndKST: ${sprintEndKST}, isNextArrowVisible: ${isNextArrowVisible}`);
-
-            setCanShowNextArrow(isNextArrowVisible); // 상태를 갱신
+            const isNextArrowVisible = checkSprintDue(response.content[0]?.dueDt);
+            setCanShowNextArrow(isNextArrowVisible);
 
             return response;
         } catch (error) {
@@ -332,18 +334,8 @@ export default function Project({projectId}) {
         setSprintLast(response.last || response.content.length === 1);
         setHasNext(false); // NEXT는 처음에 무조건 false로 시작
 
-        // 종료일을 기준으로 오른쪽 화살표 표시 여부 설정
-        const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-        const sprintEndKST = new Date(new Date(response.content[0]?.dueDt + "T23:59:59").getTime() + 9 * 60 * 60 * 1000);
-
-        nowKST.setHours(0, 0, 0, 0); 
-        sprintEndKST.setHours(0, 0, 0, 0); 
-
-        if (nowKST > sprintEndKST) {
-            setCanShowNextArrow(true); // 종료일이 지난 경우에 화살표 보이기
-        } else {
-            setCanShowNextArrow(false); // 종료일이 지나지 않은 경우에 화살표 숨기기
-        }
+        const isNextArrowVisible = checkSprintDue(response.content[0]?.dueDt);
+        setCanShowNextArrow(isNextArrowVisible);
     };
 
     useEffect(() => {
@@ -405,10 +397,10 @@ export default function Project({projectId}) {
             );
     
             const score = contribution?.score ?? 0;
-            const nickname = (!member.projectNickname || member.projectNickname === "UNKNOWN_PROJECT_NICKNAME") 
+            const nickname = (!member.nickname || member.nickname === "UNKNOWN_PROJECT_NICKNAME" || member.status === "INACTIVE" ) 
                 ? "알수없음" 
-                : member.projectNickname;
-            const profileImage = (!member.profileImageUrl || member.profileImageUrl === "UNKNOWN_PROJECT_PROFILE_URL") 
+                : member.nickname;
+            const profileImage = (!member.profileImageUrl || member.profileImageUrl === "UNKNOWN_PROJECT_PROFILE_URL" || member.status === "INACTIVE") 
                 ? "/img/default_profile.png" 
                 : member.profileImageUrl;
                 
@@ -542,27 +534,17 @@ export default function Project({projectId}) {
     };
 
     useEffect(() => {
-        // processedSprintData가 업데이트될 때마다 종료일을 기준으로 오른쪽 화살표를 보일지 말지를 결정
-        if (currentSprint) {
-            const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-            nowKST.setHours(0, 0, 0, 0);
-    
-            const sprintEndKST = new Date(currentSprint.sprint_end);
-            sprintEndKST.setDate(sprintEndKST.getDate() + 1); // 마감일 다음날
-            sprintEndKST.setHours(0, 0, 0, 0);
-    
-            const isNextArrowVisible = nowKST >= sprintEndKST;
-    
-            setCanShowNextArrow(isNextArrowVisible);
-        }
-    }, [currentSprint]);
-
-    useEffect(() => {
         if (pendingPrependCount > 0) {
             setCurrentSprintIndex(prev => prev + pendingPrependCount);
             setPendingPrependCount(0); // 다시 초기화
         }
     }, [sprintData]); // sprintData가 업데이트 되었을 때 실행
+
+    useEffect(() => {
+        if (currentSprint?.sprint_end) {
+            setCanShowNextArrow(checkSprintDue(currentSprint.sprint_end));
+        }
+    }, [currentSprint]);
 
     const isFeedbackDay = currentSprint && currentSprint.sprint_end === today;
     const sprintsWithFeedback = Array.isArray(processedSprintData)
@@ -629,7 +611,20 @@ export default function Project({projectId}) {
         <>
         <ContentContainer>
             <div style={{ width: '750px', textAlign: 'left' }}>
-                <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#2E1A86', marginTop: '10px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
+                <p style={{
+                    fontSize: '13px',
+                    color: '#fff', 
+                    backgroundColor: '#8E7BDF',
+                    margin: 0,
+                    marginLeft: '20px',
+                    fontWeight: 800,
+                    padding: '4px 10px', 
+                    borderRadius: '6px', 
+                    display: 'inline-block', 
+                }}>
+                    {projectData?.startDt} ~ {projectData?.dueDt}
+                </p>
+                <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#2E1A86', marginTop: '0px', display: "flex", alignItems: "center", justifyContent: "space-between", height: "40px" }}>
                     <div style={{ display: "flex", alignItems: "left" }}>
                     <span style={{ color: '#9377FF', fontSize: '18px', marginLeft: '20px', marginRight: '15px', marginTop: '10px' }}>{projectData?.teamName} </span> 
                         <span style={{ height: "40px", lineHeight: "40px" }}>{projectData?.projectTitle}</span>
@@ -677,7 +672,10 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
 
             <P.BoxContainer>
                 {/* 왼쪽 화살표 (첫 Sprint가 아닐 때만 표시) */}
-                {!(currentSprintIndex === 0 && hasPrev === false) && (
+                {(
+                !(currentSprintIndex === 0 && hasPrev === false) || 
+                (currentSprintIndex === 0 && showCreateSprintBox)
+            ) && (
                     <div
                         style={{ position: 'absolute', left: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }}
                         onClick={handlePrevSprint}
@@ -778,13 +776,16 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                         </P.ProfileContainer>
                         <span style={{ marginLeft: '10px' }}>{reduceMemberName(member.name)}</span>
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
+
                         {projectUser && member.id !== projectUser.projectParticipantId &&
                             member.name !== "알수없음" && 
                             <Link 
-                            href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                                href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
+                            {projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                             <P.FeedbackButton hidden={!isFeedbackDay}>
                                 동료 평가
                             </P.FeedbackButton>
+                            )}
                             </Link>
                         }
                         </P.ProjectMember>
@@ -923,7 +924,13 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
             
                 {/* 오른쪽 화살표 */}
                 {(currentSprintIndex < processedSprintData.length - 1 || 
-                    (sprintLast && canShowNextArrow)) && !showCreateSprintBox && (
+                    (
+                        sprintLast &&
+                        canShowNextArrow &&
+                        projectUser &&
+                        projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED"
+                    )
+                ) && !showCreateSprintBox && (
                     <div
                         style={{ position: 'absolute', right: '-100px', top: '300px', transform: 'translateY(-50%)', cursor: 'pointer' }}
                         onClick={handleNextSprint}
