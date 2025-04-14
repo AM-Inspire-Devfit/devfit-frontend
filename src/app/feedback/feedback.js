@@ -1,215 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as PR from './feedback_s';
 import { ContentContainer, Space } from '@/components/common_s';
+import axiosWithAuthorization from "@/context/axiosWithAuthorization";
+import { useAlert } from "@/context/AlertContext";
 
+export default function PeerReview({ projectId, sprintId }) {
+  const { showAlert } = useAlert();
 
-const feedbackData = {
-    1: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "feedbackId": 3,
-            "message": "현태님, 이번 프로젝트 동안 커뮤니케이션 부분에서 조금 아쉬운 점이 있었습니다. 중요한 회의에 참석하지 못한 경우가 있었고, 공유된 정보를 확인하는 데에 조금 더 주의를 기울인다면 작업이 더욱 원활하게 진행될 수 있을 것입니다. 맡은 역할을 좀 더 충실히 수행하면 전체 팀의 부담을 줄이는 데 큰 도움이 될 것입니다. 다음 프로젝트에서는 더욱 적극적으로 협업하며 소통을 강화해 주시면 좋겠습니다. 함께 일하는 데 아주 긍정적인 영향을 미칠 것이라 믿습니다!",
-            "receivedDt": "2025-03-17"
-            },
-            {
-            "feedbackId": 2,
-            "message": "이번 프로젝트에서 협업 방식이 좋았습니다!",
-            "receivedDt": "2025-03-17"
-            },
-            {
-            "feedbackId": 4,
-            "message": "현태님, 이번 프로젝트 동안 커뮤니케이션 부분에서 조금 아쉬운 점이 있었습니다. 중요한 회의에 참석하지 못한 경우가 있었고, 공유된 정보를 확인하는 데에 조금 더 주의를 기울인다면 작업이 더욱 원활하게 진행될 수 있을 것입니다. 맡은 역할을 좀 더 충실히 수행하면 전체 팀의 부담을 줄이는 데 큰 도움이 될 것입니다. 다음 프로젝트에서는 더욱 적극적으로 협업하며 소통을 강화해 주시면 좋겠습니다. 함께 일하는 데 아주 긍정적인 영향을 미칠 것이라 믿습니다!",
-            "receivedDt": "2025-03-17"
-            },
-            {
-            "feedbackId": 5,
-            "message": "이번 프로젝트에서 협업 방식이 좋았습니다!",
-            "receivedDt": "2025-03-17"
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 2,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
+  // 피드백 관련 상태
+  const [feedbackList, setFeedbackList] = useState([]);
+  const [lastFeedbackId, setLastFeedbackId] = useState(null);
+  const [hasMoreFeedback, setHasMoreFeedback] = useState(true);
+  const [isFetchingFeedback, setIsFetchingFeedback] = useState(false);
+
+  // 피드백 조회 함수 (페이지네이션 적용; 예: size=5)
+  const fetchFeedback = async () => {
+    if (isFetchingFeedback || !hasMoreFeedback) return; // 이미 요청 중이거나 더 불러올 데이터 없음
+    setIsFetchingFeedback(true);
+    try {
+      const res = await axiosWithAuthorization.get(`/feedbacks/${projectId}`, {
+        params: {
+          sprintId: sprintId,
+          lastFeedbackId: lastFeedbackId,  // 첫 페이지일 경우 null
+          size: 5,
         },
-        "first": true,
-        "last": false,
-        "size": 2,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 2,
-        "empty": false
-        },
-        "timestamp": "2025-03-17T21:32:43.731566"
-    },
-    2: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "feedbackId": 3,
-            "message": "현태님, 이번 프로젝트 동안 커뮤니케이션 부분에서 조금 아쉬운 점이 있었습니다. 중요한 회의에 참석하지 못한 경우가 있었고, 공유된 정보를 확인하는 데에 조금 더 주의를 기울인다면 작업이 더욱 원활하게 진행될 수 있을 것입니다. 맡은 역할을 좀 더 충실히 수행하면 전체 팀의 부담을 줄이는 데 큰 도움이 될 것입니다. 다음 프로젝트에서는 더욱 적극적으로 협업하며 소통을 강화해 주시면 좋겠습니다. 함께 일하는 데 아주 긍정적인 영향을 미칠 것이라 믿습니다!",
-            "receivedDt": "2025-03-17"
-            },
-            {
-            "feedbackId": 2,
-            "message": "이번 프로젝트에서 협업 방식이 좋았습니다!",
-            "receivedDt": "2025-03-17"
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 2,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": true,
-        "last": false,
-        "size": 2,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 2,
-        "empty": false
-        },
-        "timestamp": "2025-03-17T21:32:43.731566"
-    },
-    3: {
-        "success": true,
-        "status": 200,
-        "data": {
-        "content": [
-            {
-            "feedbackId": 3,
-            "message": "현태님, 이번 프로젝트 동안 커뮤니케이션 부분에서 조금 아쉬운 점이 있었습니다. 중요한 회의에 참석하지 못한 경우가 있었고, 공유된 정보를 확인하는 데에 조금 더 주의를 기울인다면 작업이 더욱 원활하게 진행될 수 있을 것입니다. 맡은 역할을 좀 더 충실히 수행하면 전체 팀의 부담을 줄이는 데 큰 도움이 될 것입니다. 다음 프로젝트에서는 더욱 적극적으로 협업하며 소통을 강화해 주시면 좋겠습니다. 함께 일하는 데 아주 긍정적인 영향을 미칠 것이라 믿습니다!",
-            "receivedDt": "2025-03-17"
-            },
-            {
-            "feedbackId": 2,
-            "message": "이번 프로젝트에서 협업 방식이 좋았습니다!",
-            "receivedDt": "2025-03-17"
-            }
-        ],
-        "pageable": {
-            "pageNumber": 0,
-            "pageSize": 2,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-        },
-        "first": false,
-        "last": true,
-        "size": 2,
-        "number": 0,
-        "sort": [],
-        "numberOfElements": 2,
-        "empty": false
-        },
-        "timestamp": "2025-03-17T21:32:43.731566"
-    },         
-}
+      });
+      console.log("피드백 응답:", res.data);
+      // 응답 구조: { data: { content: [...], last: true/false, ... }, ... }
+      const newFeedback = res.data.data.content || [];
+      const isLastPage = res.data.data.last;
 
-export default function PeerReview() {
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 아래부터 시작------------------------------------>
-    const [openFeedback, setOpenFeedback] = useState({});
+      if (newFeedback.length === 0) {
+        setHasMoreFeedback(false);
+      } else {
+        setFeedbackList((prev) => [...prev, ...newFeedback]);
+        const nextLastId = newFeedback[newFeedback.length - 1].feedbackId;
+        setLastFeedbackId(nextLastId);
+      }
+      if (isLastPage) {
+        setHasMoreFeedback(false);
+      }
+    } catch (error) {
+      showAlert("error", error.response?.data?.message || "피드백 조회 실패");
+      console.log(error.response?.data);
+    } finally {
+      setIsFetchingFeedback(false);
+    }
+  };
 
-    const toggleFeedback = (sprintNum) => {
-        setOpenFeedback(prev => ({
-            ...prev,
-            [sprintNum]: !prev[sprintNum]
-        }));
-    };
-     // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
+  // 스프린트가 변경되면 피드백 목록 상태 초기화 후 새로 조회
+  useEffect(() => {
+    setFeedbackList([]);
+    setLastFeedbackId(null);
+    setHasMoreFeedback(true);
+    fetchFeedback();
+  }, [sprintId]);
 
-    return (
-        <ContentContainer>
-            <PR.PageContainer>
-                <PR.Header>동료평가</PR.Header>
-
-                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                <--------------------------------------map 함수 부분--------------------------------------> */}
-                {Object.entries(feedbackData).map(([sprintNum, sprintData]) => {
-                    const feedbackList = sprintData.data.content;
-
-                    return (
-                        <div key={sprintNum}>
-                        <PR.SprintTitle onClick={() => toggleFeedback(sprintNum)}>
-                            <span>{openFeedback[sprintNum] ? "▼" : "▶"}</span>
-                            Sprint {sprintNum}
-                        </PR.SprintTitle>
-
-                        {openFeedback[sprintNum] && (
-                        <PR.Table>
-                            <PR.TableHead>
-                                <tr>
-                                    <PR.TableHeader
-                                        style= {{
-                                            width: "70px"
-                                        }}>
-                                        #
-                                    </PR.TableHeader>
-                                    <PR.TableHeader
-                                        style= {{
-                                            width: "120px",
-                                            paddingLeft: "30px"
-                                        }}>
-                                            날짜
-                                    </PR.TableHeader>
-                                    <PR.TableHeader
-                                    style= {{
-                                        paddingLeft: "30px"
-                                    }}>
-                                        내용
-                                    </PR.TableHeader>
-                                </tr>
-                            </PR.TableHead>
-                            <tbody>
-                                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                                <--------------------------------------map 함수 부분--------------------------------------> */}
-                                {feedbackList.map((feedback, index) => (
-                                    <PR.TableRow key={feedback.feedbackId}>
-                                        <PR.TableCell
-                                            style= {{
-                                                width: "20px"
-                                            }}>
-                                            {index + 1}
-                                        </PR.TableCell>
-                                        <PR.TableCell
-                                            style= {{
-                                                width: "120px",
-                                                paddingLeft: "15px"
-                                            }}>
-                                            {feedback.receivedDt}
-                                        </PR.TableCell>
-                                        <PR.TableCell
-                                            style= {{
-                                                paddingLeft: "20px"
-                                            }}>
-                                            {feedback.message}
-                                        </PR.TableCell>
-                                    </PR.TableRow>
-                                ))}
-                            </tbody>
-                        </PR.Table>
-                        )}
-                    </div>
-                    );
-                })}
-            </PR.PageContainer>
-            <Space />
-        </ContentContainer>
-    )
+  return (
+    <ContentContainer>
+      <PR.PageContainer>
+        <PR.Header>동료평가</PR.Header>
+        {/* 스프린트 제목 및 피드백 목록 */}
+        <PR.SprintTitle>
+          <span>▼</span> Sprint {sprintId}
+        </PR.SprintTitle>
+        <PR.Table>
+          <PR.TableHead>
+            <tr>
+              <PR.TableHeader style={{ width: "70px" }}>#</PR.TableHeader>
+              <PR.TableHeader style={{ width: "120px", paddingLeft: "30px" }}>
+                날짜
+              </PR.TableHeader>
+              <PR.TableHeader style={{ paddingLeft: "30px" }}>내용</PR.TableHeader>
+            </tr>
+          </PR.TableHead>
+          <tbody>
+            {feedbackList.map((feedback, index) => (
+              <PR.TableRow key={feedback.feedbackId}>
+                <PR.TableCell style={{ width: "20px" }}>
+                  {index + 1}
+                </PR.TableCell>
+                <PR.TableCell style={{ width: "120px", paddingLeft: "15px" }}>
+                  {feedback.receivedDt}
+                </PR.TableCell>
+                <PR.TableCell style={{ paddingLeft: "20px" }}>
+                  {feedback.message}
+                </PR.TableCell>
+              </PR.TableRow>
+            ))}
+          </tbody>
+        </PR.Table>
+        {/* 추가 피드백이 있으면 "더보기" 버튼 */}
+        {hasMoreFeedback && (
+          <button onClick={fetchFeedback} disabled={isFetchingFeedback}>
+            {isFetchingFeedback ? "로딩중..." : "더보기"}
+          </button>
+        )}
+      </PR.PageContainer>
+      <Space />
+    </ContentContainer>
+  );
 }
