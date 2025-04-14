@@ -234,9 +234,18 @@ export default function Team({ teamId }) {
             const newOtherProjects = [];
 
             content.forEach(project => {
-                if (project.isParticipant) newMyProjects.push(project);
-                else newOtherProjects.push(project);
-            });
+                //유저가 프로젝트에 참여 중
+                if (project.isParticipant) {
+                  //상태 INACTIVE -> others
+                  if (project.currentUserParticipation && project.currentUserParticipation.status === "INACTIVE") {
+                    newOtherProjects.push(project);
+                  } else {
+                    newMyProjects.push(project);
+                  }
+                } else {
+                  newOtherProjects.push(project);
+                }
+              });
 
             setMyProjects(prev => [...prev, ...newMyProjects]);
             setOtherProjects(prev => [...prev, ...newOtherProjects]);

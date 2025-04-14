@@ -1,9 +1,12 @@
-import styled from "styled-components";
-import * as m from '../../components/modal_s';
-import { IoClose } from 'react-icons/io5';
+"use client";
 
+import styled from "styled-components";
+import * as m from "../../components/modal_s";
+import { IoClose } from "react-icons/io5";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
+import axiosWithAuthorization from "@/context/axiosWithAuthorization";
+import { useAlert } from "@/context/AlertContext";
 
 const Header = styled.div`
     display: flex;
@@ -58,13 +61,6 @@ const MemberInfo = styled.div`
     flex-grow: 1; 
 `;
 
-const ProfileImage = styled(Image)`
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    object-fit: cover;
-`;
-
 const RadioButton = styled.input`
     transform: scale(1.2);
     cursor: pointer;
@@ -82,151 +78,99 @@ const ButtonGroup = styled.div`
     gap: 20px;
 `;
 
-const projectUserData = {
-    "success": true,
-    "status": 200,
-    "data": {
-        "projectParticipantId": 4,
-        "projectNickname": "최현태",
-        "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-        "role": "ADMIN" 
-    },
-    "timestamp": "2025-03-19T21:42:40.59254"
-}
-
-const projectMemberData = [
-    { 
-        "success": true,
-        "status": 200,
-        "data": {
-            "content": [
-            {
-                "projectParticipantId": 1,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-                "role": "ADMIN"
-            },
-            {
-                "projectParticipantId": 2,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 3,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 4,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
-                "role": "MEMBER"
-            }
-            ],
-            "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-            },
-            "first": true,
-            "last": true,
-            "size": 3,
-            "number": 0,
-            "sort": [],
-            "numberOfElements": 3,
-            "empty": false
-        },
-        "timestamp": "2025-03-19T21:49:27.631511"
-    },
-    { 
-        "success": true,
-        "status": 200,
-        "data": {
-            "content": [
-            {
-                "projectParticipantId": 5,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://k.kakaocdn.net/dn/ceTrU6/btsL0V0mhKO/DAXjn1URCKkIOTBGqAZKAK/img_110x110.jpg",
-                "role": "ADMIN"
-            },
-            {
-                "projectParticipantId": 6,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIby_kbsDmHckQur6UKlkn1a4Ul89JdAf82TvYSGwehu-oVRA=s96-c",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 7,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
-                "role": "MEMBER"
-            },
-            {
-                "projectParticipantId": 8,
-                "projectNickname": "최현태",
-                "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI6E5Q0hhiXNht5-76cyGpZNLbaO21GIgkmyF43ywYhSqTmZg=s96-c",
-                "role": "MEMBER"
-            }
-            ],
-            "pageable": {
-            "pageNumber": 0,
-            "pageSize": 3,
-            "sort": [],
-            "offset": 0,
-            "paged": true,
-            "unpaged": false
-            },
-            "first": true,
-            "last": true,
-            "size": 3,
-            "number": 0,
-            "sort": [],
-            "numberOfElements": 3,
-            "empty": false
-        },
-        "timestamp": "2025-03-19T21:49:27.631511"
-    }
-]
-export default function LeaderModal({ isOpen, onClose, }) { 
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 아래부터 시작------------------------------------>
+export default function LeaderModal({ isOpen, onClose, projectId, currentMemberId, onAdminChanged }) {
+    const { showAlert } = useAlert();
     const [selectedMember, setSelectedMember] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [members, setMembers] = useState([]);
+    // 무한스크롤 관련 상태
+    const [participants, setParticipants] = useState([]);
+    const [lastParticipantId, setLastParticipantId] = useState(null);
+    const [hasMoreParticipants, setHasMoreParticipants] = useState(true);
+    const [isFetchingParticipants, setIsFetchingParticipants] = useState(false);
+
+    // 리스트 스크롤 참조
     const listRef = useRef();
 
-    const currentUserId = projectUserData.data.projectParticipantId;
-
+    // 모달이 열릴 때 최초 참가자 목록 불러오기
     useEffect(() => {
-        const pageData = projectMemberData[currentPage];
-        if (pageData?.data?.content) {
-            const filtered = pageData.data.content.filter(
-                (member) => member.projectParticipantId !== currentUserId
-            );
-            setMembers((prev) => [...prev, ...filtered]);
+        if (isOpen) {
+            // 상태 초기화
+            setParticipants([]);
+            setLastParticipantId(null);
+            setHasMoreParticipants(true);
+            fetchParticipants();
         }
-    }, [currentPage]);
+    }, [isOpen, projectId]);
 
-    // 스크롤 핸들러
+    // 참가자 API 호출 함수 (무한스크롤)
+    const fetchParticipants = async () => {
+        if (isFetchingParticipants || !hasMoreParticipants) return;
+        setIsFetchingParticipants(true);
+        try {
+            console.log(projectId);
+            console.log(currentMemberId);
+            const res = await axiosWithAuthorization.get(
+                `/projects/${projectId}/participants`,
+                {
+                    params: {
+                        lastProjectParticipantId: lastParticipantId,
+                        size: 5,
+                    },
+                }
+            );
+            console.log("참가자 목록 응답:", res.data);
+            // 응답 구조: { data: { content: [...], last: true/false, ... } }
+            const newParticipants = res.data.data.content || [];
+            // 기존 목록에 합치기
+            setParticipants((prev) => [...prev, ...newParticipants]);
+            if (newParticipants.length > 0) {
+                const nextLastId = newParticipants[newParticipants.length - 1].projectParticipantId;
+                setLastParticipantId(nextLastId);
+            }
+            if (res.data.data.last) {
+                setHasMoreParticipants(false);
+            }
+        } catch (error) {
+            showAlert("error", error.response?.data?.message || "참가자 조회 실패");
+            console.log(error.response?.data);
+        } finally {
+            setIsFetchingParticipants(false);
+        }
+    };
+
+    // 스크롤 이벤트 핸들러: 리스트 하단에 도달하면 추가 데이터 요청
     const handleScroll = () => {
         const container = listRef.current;
         if (!container) return;
 
-        const isBottom =
-            container.scrollTop + container.clientHeight >=
-            container.scrollHeight - 10;
-
-        if (isBottom && currentPage + 1 < projectMemberData.length) {
-            setCurrentPage((prev) => prev + 1);
+        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+            fetchParticipants();
         }
     };
-    // <----------------------------------API 연결시 필요하면 수정 -------------------------------------->
-    // <--------------------------------------------여기 위까지 끝-------------------------------------->
+
+    // 팀장 권한 양도 API 호출 함수
+    const handleChangeAdmin = async () => {
+        if (!selectedMember) {
+            showAlert("error", "양도할 팀원을 선택해주세요.");
+            return;
+        }
+        try {
+            console.log(selectedMember)
+            await axiosWithAuthorization.post(`/projects/${projectId}/admin/change`, {
+                newAdminId: selectedMember,
+            });
+            showAlert("success", "팀장 양도 완료");
+            if (onAdminChanged){
+                onAdminChanged();
+            } 
+            else{
+                onClose();
+            } 
+            // 팀원 목록 새로고침 등 필요시 상위 컴포넌트 재조회 함수 호출 가능
+        } catch (error) {
+            console.log(error);
+            showAlert("error", error.response?.data?.message || "팀장 양도 실패");
+        }
+    };
 
     if (!isOpen) return null;
 
@@ -241,31 +185,31 @@ export default function LeaderModal({ isOpen, onClose, }) {
                 </Header>
 
                 <InstructionText>양도할 팀원을 선택해주세요.</InstructionText>
-                {/* <----------------------------------API 연결시 필요하면 수정 --------------------------------------> 
-                <--------------------------------------map 함수 부분--------------------------------------> */}
                 <MemberList ref={listRef} onScroll={handleScroll}>
-                    {members.map((member) => (
+                    {participants
+                    .filter((member) => member.projectParticipantId!=currentMemberId)
+                    .map((member) => (
                         <MemberItem key={member.projectParticipantId}>
                             <MemberInfo>
-                            <Image 
-                                src={member.profileImageUrl} 
-                                alt="프로필 이미지" 
-                                width={35} 
-                                height={35} 
-                                style={{
-                                    borderRadius: '50%',
-                                    objectFit: 'cover',
-                                    width: '35px',
-                                    height: '35px'
-                                }}
-                            />
-                            <span style = {{marginLeft: "20px"}}>{member.projectNickname}</span>
+                                <Image 
+                                    src={member.profileImageUrl} 
+                                    alt="프로필 이미지" 
+                                    width={35} 
+                                    height={35} 
+                                    style={{
+                                        borderRadius: "50%",
+                                        objectFit: "cover"
+                                    }}
+                                />
+                                <span style={{ marginLeft: "20px" }}>
+                                    {member.nickname || member.projectNickname}
+                                </span>
                             </MemberInfo>
                             <RadioButton 
                                 type="radio" 
                                 name="teamMember" 
                                 checked={selectedMember === member.projectParticipantId} 
-                                onChange={() => setSelectedMember(member.projectParticipantId)} 
+                                onChange={() => setSelectedMember(member.projectParticipantId)}
                             />
                         </MemberItem>
                     ))}
@@ -274,11 +218,10 @@ export default function LeaderModal({ isOpen, onClose, }) {
                 <ConfirmationText>팀장을 양도하시겠습니까?</ConfirmationText>
 
                 <ButtonGroup>
-                    <m.ModalButton onClick={onClose}>예</m.ModalButton>
+                    <m.ModalButton onClick={handleChangeAdmin}>예</m.ModalButton>
                     <m.ModalButton onClick={onClose}>아니오</m.ModalButton>
                 </ButtonGroup>
             </m.ModalContent>
         </m.ModalOverlay>
     );
-
 }

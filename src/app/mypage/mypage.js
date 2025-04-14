@@ -40,24 +40,23 @@ export default function My({ projectId }) {
 
     const [clickCountMap, setClickCountMap] = useState({});
 
+
+    const getProjectInfo = async () => {
+        try {
+          const project = await fetchProjectData(projectId);
+          setProjectData(project);
+        } catch (error) {
+          showAlert("error", "프로젝트 데이터 조회 실패");
+        }
+        try {
+          const userData = await fetchProjectUser(projectId);
+          setProjectUserData(userData);
+        } catch (error) {
+          showAlert("error", "프로젝트 유저 데이터 조회 실패");
+        }
+      };
+
     useEffect(() => {
-        const getProjectInfo = async () => {
-            try {
-                const userData = await fetchProjectUser(ProjectId);
-                setProjectUserData(userData);
-                console.log("프로필 이미지:", userData?.profileImageUrl);
-            } catch (err) {
-                console.error("프로젝트 유저 정보 에러:", err.message);
-            }
-
-            try {
-                const data = await fetchProjectData(ProjectId);
-                setProjectData(data);
-            } catch (err) {
-                console.error("프로젝트 데이터 에러:", err.message);
-            }
-        };
-
         getProjectInfo();
     }, []);
 
@@ -109,6 +108,7 @@ export default function My({ projectId }) {
             loadMySprints();
         }
     }, [ProjectId]);
+
 
     const handlePrevSprint = async () => {
         const currentBaseSprint = mySprints[currentSprintIndex];
@@ -187,6 +187,7 @@ export default function My({ projectId }) {
         }
     };
 
+
     useEffect(() => {
         const loadMyContribution = async () => {
             if (!ProjectId || !currentSprint?.id) return;
@@ -201,6 +202,12 @@ export default function My({ projectId }) {
     
         loadMyContribution();
     }, [ProjectId, currentSprint?.id]);
+
+    const handleAdminChanged = () => {
+        setIsLeaderModalOpen(false)
+        getProjectInfo(); // 프로젝트 데이터 재조회
+      };
+
 
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
@@ -357,6 +364,9 @@ export default function My({ projectId }) {
         <LeaderModal 
             isOpen={isLeaderModalOpen}
             onClose={() => setIsLeaderModalOpen(false)}
+            projectId={ProjectId}
+            currentMemberId={projectUserData.projectParticipantId}
+            onAdminChanged={handleAdminChanged}
         />;
         </>
     );

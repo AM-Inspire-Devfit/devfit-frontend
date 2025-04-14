@@ -49,7 +49,7 @@ export default function Message({}) {
     }
   };
 
-  // 개선된 메시지 전송(API: /feedbacks/sent) 요청 핸들러
+
   const handleSendFeedback = async () => {
     if (!gptMessage.trim()) {
       showAlert("error", "먼저 개선된 메시지를 작성해주세요.");
@@ -62,7 +62,7 @@ export default function Message({}) {
         message: gptMessage,
       });
       showAlert("success", "피드백 전송 완료");
-      // 전송 후 이전 페이지로 이동하거나 원하는 동작을 수행
+      
       router.back();
     } catch (error) {
       showAlert(
