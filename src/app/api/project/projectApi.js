@@ -97,3 +97,14 @@ export const deleteProject = async (projectId) => {
     }
 };
 
+// 스프린트별 기여도 랭킹 조회
+export const fetchSprintContributions = async (sprintId) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/contributions/${sprintId}`);
+        console.log("스프린트별 기여도 랭킹 조회:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "스프린트별 기여도 랭킹 조회를 조회할 수 없습니다.";
+        throw new Error(message);
+    }
+};
