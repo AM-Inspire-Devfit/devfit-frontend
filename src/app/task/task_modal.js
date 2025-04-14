@@ -115,7 +115,8 @@ export default function TaskModal({ isOpen, onClose, sprintTitle, sprintId, task
                     <m.Input 
                         value={titleInput}
                         onChange={(e) => setTitleInput(e.target.value)}
-                        placeholder="task를 입력하세요!"
+                        placeholder="task를 입력하세요! (15자 이내)"
+                        maxLength={15}
                     />
             </InputWrapper>
 

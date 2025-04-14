@@ -212,8 +212,8 @@ export default function Task({ projectId }) {
                     const isOnGoing = task.taskStatus === "ON_GOING";
                     const isNotStarted = task.taskStatus === "NOT_STARTED";
                     const isSOS = task.sosStatus === "SOS";
-                    const isMyTask = task.memberId === projectUser?.projectParticipantId && isOnGoing && !isSOS;
-                    const isMySOS = task.memberId === projectUser?.projectParticipantId && isOnGoing && isSOS;
+                    const isMyTask = task.projectParticipantId === projectUser?.projectParticipantId && isOnGoing && !isSOS;
+                    const isMySOS = task.projectParticipantId === projectUser?.projectParticipantId && isOnGoing && isSOS;
                     const isProjectAdmin = projectUser?.role === "ADMIN" && isOnGoing;
 
                     return (
@@ -249,10 +249,10 @@ export default function Task({ projectId }) {
                             </T.TaskLeft>
 
                             <T.TaskRight>
-                                {task.profileImageUrl && task.projectNickname && (
+                                {task.profileImageUrl && task.nickname && (
                                     <>
                                         <T.AssigneeProfile $profileImage={task.profileImageUrl}  />
-                                        <T.AssigneeName>{reduceMemberName(task.projectNickname)}</T.AssigneeName>
+                                        <T.AssigneeName>{reduceMemberName(task.nickname)}</T.AssigneeName>
                                     </>
                                 )}
                             </T.TaskRight>
