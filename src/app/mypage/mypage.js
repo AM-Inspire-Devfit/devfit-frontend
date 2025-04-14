@@ -14,6 +14,7 @@ import LeaderModal from "./leader_modal";
 import { fetchProjectData, fetchProjectUser } from "@/app/api/project/projectApi";
 import { fetchMySprintTaskData  } from "@/app/api/sprint/sprintApi";
 import { completeTask, sosTask } from  "@/app/api/task/taskApi";
+import { fetchUserContributionData } from "@/app/api/user/userApi"
 
 import { useAlert } from "@/context/AlertContext";
 
@@ -34,6 +35,8 @@ export default function My({ projectId }) {
     
     const [currentSprint, setCurrentSprint] = useState(null);
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
+
+    const [myContributionScore, setMyContributionScore] = useState(null);
 
     const [clickCountMap, setClickCountMap] = useState({});
 
@@ -184,6 +187,21 @@ export default function My({ projectId }) {
         }
     };
 
+    useEffect(() => {
+        const loadMyContribution = async () => {
+            if (!ProjectId || !currentSprint?.id) return;
+    
+            try {
+                const data = await fetchUserContributionData(ProjectId, currentSprint.id);
+                setMyContributionScore(data?.score ?? 0);
+            } catch (error) {
+                setMyContributionScore(0); // 실패 시 0으로 대체
+            }
+        };
+    
+        loadMyContribution();
+    }, [ProjectId, currentSprint?.id]);
+
     // 모달 상태에 따라 스크롤 제어
     useEffect(() => {
         const disableScroll = () => {
@@ -216,7 +234,7 @@ export default function My({ projectId }) {
                 <M.ProfileSection>
                     <M.ProfileImage $profileImage={projectUserData?.profileImageUrl} />
                     <M.ProfileInfo>
-                        <M.Username>{projectUserData?.projectNickname} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
+                        <M.Username>{projectUserData?.nickname} <span style={{ fontWeight: "normal" }}>님의 마이페이지</span></M.Username>
                         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
 
                         <Link href={`/project/${projectData?.projectId}/feedback`}>
@@ -268,7 +286,7 @@ export default function My({ projectId }) {
                         <M.ContributionWrapper>
                             <M.ContributionTitle>기여도</M.ContributionTitle>
                             {typeof currentSprint?.progress === "number" && !isNaN(currentSprint.progress) && (
-                                <ContributionCircle percentage={currentSprint.progress} />
+                                <ContributionCircle percentage={myContributionScore} />
                             )}
                         </M.ContributionWrapper>
 
@@ -277,7 +295,7 @@ export default function My({ projectId }) {
                         <M.RoleWrapper>
                             <M.RoleTitle>역할</M.RoleTitle>
                             <M.RoleText>
-                            {projectUserData?.data?.role === "ADMIN" ? "팀장" : "팀원"}
+                            {projectUserData?.role === "ADMIN" ? "팀장" : "팀원"}
                             </M.RoleText>
                         </M.RoleWrapper>
 

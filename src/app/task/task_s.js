@@ -110,7 +110,8 @@ export const TaskDate = styled.span`
 export const TaskRight = styled.div`
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 25px;
+    width: 180px;
 `;
 
 export const AssigneeProfile = styled.div`

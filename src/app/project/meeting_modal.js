@@ -29,7 +29,8 @@ export default function MeetingModal({
   setStartTime,
   endTime,
   setEndTime,
-  sprintId,            
+  sprintId,
+  sprintTitle,            
   isEditing,
   onMeetingSaved,      
   onMeetingDeleted     
@@ -116,7 +117,7 @@ export default function MeetingModal({
   return (
     <m.ModalOverlay>
       <ModalContent onClick={(e) => e.stopPropagation()}>
-        <m.Title>Sprint {sprintId} 팀 미팅</m.Title>
+        <m.Title>Sprint {sprintTitle} 팀 미팅</m.Title>
         <m.CloseButton onClick={onClose}>
           <IoClose size={24} />
         </m.CloseButton>
@@ -130,6 +131,8 @@ export default function MeetingModal({
               setMeetingTitle(e.target.value);
               setIsTitleChanged(true);
             }}
+            maxLength={15}
+            placeholder="회의 명을 입력하세요 (15자 이내)"
           />
         </m.InputWrapper>
         {/* 날짜 입력 */}

@@ -112,6 +112,11 @@ const SprintCalendar = ({sprintStart, sprintEnd, meetingData = [], onMeetingClic
     return includeYear ? `${year}.${month}.${day}` : `${month}.${day}`;
   };
 
+  // 팀 미팅명 4글자 이상이면 축약 표시
+  const reduceMeetingName = (name) => {
+    return name.length > 4 ? name.slice(0, 4) + ".." : name;
+};
+
   return (
     <CalendarContainer>
       <div className="calendar-header">
@@ -184,7 +189,7 @@ const SprintCalendar = ({sprintStart, sprintEnd, meetingData = [], onMeetingClic
                         }}
                         onClick={() => handleMeetingClick(meet)}
                       >
-                        {meet.title}
+                        {reduceMeetingName(meet.title)}
                       </div>
                     );
                   })}

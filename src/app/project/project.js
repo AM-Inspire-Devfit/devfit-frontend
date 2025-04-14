@@ -16,7 +16,7 @@ import SprintModal from "./sprint_modal";
 import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
-import { fetchProjectData, fetchProjectUser, fetchProjectMemberList } from "@/app/api/project/projectApi";
+import { fetchProjectData, fetchProjectUser, fetchProjectMemberList, fetchSprintContributions } from "@/app/api/project/projectApi";
 import { fetchSprintTaskData } from "@/app/api/sprint/sprintApi";
 
 import Image from "next/image";
@@ -29,80 +29,6 @@ import { useAlert } from "@/context/AlertContext";
         "#9966FF", "#FF9F40", "#C9CBCF", "#8D44AD",
         "#27AE60", "#D35400"
     ];
-
-const sprintContributionData = [
-    {
-        "success": true,
-        "status": 200,
-        "data": [
-        {
-            "contributionId": 3,
-            "sprintId": 1,
-            "memberId": 4,
-            "nickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            "score": 54
-        },
-        {
-            "contributionId": 1,
-            "sprintId": 1,
-            "memberId": 2,
-            "nickname": "조수빈",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            "score": 47
-        },
-        {
-            "contributionId": 2,
-            "sprintId": 1,
-            "memberId": 3,
-            "nickname": null,
-            "profileImageUrl": null,
-            "score": 19
-        }
-        ],
-        "timestamp": "2025-03-20T21:45:31.228694"
-    },
-    {
-        "success": true,
-        "status": 200,
-        "data": [
-        {
-            "contributionId": 3,
-            "sprintId": 2,
-            "memberId": 4,
-            "nickname": "최현태",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            "score": 54
-        },
-        {
-            "contributionId": 1,
-            "sprintId": 2,
-            "memberId": 2,
-            "nickname": "조수빈",
-            "profileImageUrl": "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Faccount_images%2Fdefault_profile.jpeg",
-            "score": 47
-        },
-        {
-            "contributionId": 2,
-            "sprintId": 2,
-            "memberId": 3,
-            "nickname": "채민주",
-            "profileImageUrl": 10,
-            "score": 19
-        },
-        {
-            "contributionId": 2,
-            "sprintId": 2,
-            "memberId": 1,
-            "nickname": "정선우",
-            "profileImageUrl": 30,
-            "score": 19
-        },
-        ],
-        "timestamp": "2025-03-20T21:45:31.228694"
-    }
-]
-
 
 export default function Project({projectId}) {
     const { showAlert } = useAlert();
@@ -130,6 +56,9 @@ export default function Project({projectId}) {
 
     const [hasPrev, setHasPrev] = useState(false); // 이전 스프린트 존재 여부
     const [hasNext, setHasNext] = useState(false); // 다음 스프린트 존재 여부
+
+    // 스프린트별 기여도 랭킹 조회
+    const [sprintContributions, setSprintContributions] = useState({});
 
     //meeting
     const [hasMoreMeetings, setHasMoreMeetings] = useState(false);
@@ -324,22 +253,20 @@ export default function Project({projectId}) {
         return enableScroll;
     }, [isSprintModalOpen, isCreateSprintModalOpen, isMeetingModalOpen, isProjectEditModalOpen]);
 
-    // <----------------프로젝트 멤버별 기여도 --------------------->
-
     const mergeProjectMembersWithContributions = (projectMembers, contributionData) => {
         return projectMembers.map((member, index) => {
             const contribution = contributionData.find(
-                c => c.memberId === member.projectParticipantId
+                c => c.projectParticipantId === member.projectParticipantId
             );
     
             const score = contribution?.score ?? 0;
-            const nickname = (!member.nickname || member.nickname === "UNKNOWN_PROJECT_NICKNAME" || member.status === "INACTIVE" ) 
+            const nickname = (!member.nickname || member.nickname === "UNKNOWN_PROJECT_NICKNAME" || member.status === "INACTIVE") 
                 ? "알수없음" 
                 : member.nickname;
             const profileImage = (!member.profileImageUrl || member.profileImageUrl === "UNKNOWN_PROJECT_PROFILE_URL" || member.status === "INACTIVE") 
                 ? "/img/default_profile.png" 
                 : member.profileImageUrl;
-                
+    
             return {
                 id: member.projectParticipantId,
                 name: nickname,
@@ -355,37 +282,29 @@ export default function Project({projectId}) {
 
     const processedSprintData = useMemo(() => {
         if (!Array.isArray(sprintData)) return [];
-    
-        const result = sprintData.map((sprintContent, idx) => {
-            if (!sprintContent) return null;
-    
-                const sprintContributionsForSprint = sprintContributionData.find(item =>
-                    item.data?.[0]?.sprintId === sprintContent.id
-                )?.data ?? [];
         
-                const isLast = idx === sprintData.length - 1;
-    
-                return {
-                    sprint_id: sprintContent.id,
-                    sprint_title: sprintContent.title,
-                    goal: sprintContent.goal,
-                    sprint_start: sprintContent.startDt,
-                    sprint_end: sprintContent.dueDt,
-                    progress: sprintContent.progress ?? 0,
-                    last: isLast,
-                    title: sprintContent.title,
-                    startDt: sprintContent.startDt,
-                    dueDt: sprintContent.dueDt,
-                    member: mergeProjectMembersWithContributions(
-                        projectMembers,
-                        sprintContributionsForSprint
-                    ),
-                };
-            })
-            .filter(Boolean);
-    
-        return result;
-    }, [sprintData, projectMembers]);
+        return sprintData.map((sprintContent, idx) => {
+            if (!sprintContent) return null;
+        
+            const contributions = sprintContributions[sprintContent.id] ?? [];
+        
+            const isLast = idx === sprintData.length - 1;
+        
+            return {
+            sprint_id: sprintContent.id,
+            sprint_title: sprintContent.title,
+            goal: sprintContent.goal,
+            sprint_start: sprintContent.startDt,
+            sprint_end: sprintContent.dueDt,
+            progress: sprintContent.progress ?? 0,
+            last: isLast,
+            title: sprintContent.title,
+            startDt: sprintContent.startDt,
+            dueDt: sprintContent.dueDt,
+            member: mergeProjectMembersWithContributions(projectMembers, contributions),
+            };
+        }).filter(Boolean);
+    }, [sprintData, projectMembers, sprintContributions]);
 
     const [currentSprintIndex, setCurrentSprintIndex] = useState(0);
     const currentSprint = processedSprintData[currentSprintIndex]; 
@@ -396,6 +315,29 @@ export default function Project({projectId}) {
     const [showCreateSprintBox, setShowCreateSprintBox] = useState(null);; // Sprint 생성 박스 표시 여부
     
     const [canShowNextArrow, setCanShowNextArrow] = useState(false);
+
+    // <----------------프로젝트 멤버별 기여도 --------------------->
+
+    useEffect(() => {
+        const loadContributions = async () => {
+            if (!currentSprint?.sprint_id) return;
+        
+            try {
+            const contributions = await fetchSprintContributions(currentSprint.sprint_id);
+
+            console.log("기여도 전체 응답:", contributions);
+
+            setSprintContributions(prev => ({
+                ...prev,
+                [currentSprint.sprint_id]: contributions
+            }));
+            } catch (error) {
+            showAlert("error", error.message);
+            }
+        };
+        
+        loadContributions();
+    }, [currentSprint?.sprint_id]);
 
     const getTaskDataBySprintId = (sprintId) => {
         const sprint = sprintData.find(s => s.id === sprintId);
@@ -613,9 +555,9 @@ export default function Project({projectId}) {
         }
       };
 
-    // 멤버 이름 3글자 이상이면 축약 표시
+    // 멤버 이름 4글자 이상이면 축약 표시
     const reduceMemberName = (name) => {
-        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+        return name.length > 4 ? name.slice(0, 4) + ".." : name;
     };
         
 
@@ -789,17 +731,23 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                         <span style={{ marginLeft: '10px' }}>{reduceMemberName(member.name)}</span>
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
 
-                        {projectUser && member.id !== projectUser.projectParticipantId &&
-                            member.name !== "알수없음" && 
-                            <Link 
-                                href={`/project/${ProjectId}/message?name=${encodeURIComponent(member.name)}&profileImage=${encodeURIComponent(member.profileImage)}`}>
-                            {projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
-                            <P.FeedbackButton hidden={!isFeedbackDay}>
-                                동료 평가
-                            </P.FeedbackButton>
-                            )}
-                            </Link>
-                        }
+                        {projectUser &&
+                            member.id !== projectUser.projectParticipantId &&
+                            member.name !== "알수없음" && (
+                            <div style={{ marginLeft: 'auto' }}>
+                                <Link
+                                href={`/project/${ProjectId}/message?name=${encodeURIComponent(
+                                    member.name
+                                )}&profileImage=${encodeURIComponent(member.profileImage)}`}
+                                >
+                                {projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
+                                    <P.FeedbackButton hidden={!isFeedbackDay}>
+                                    동료 평가
+                                    </P.FeedbackButton>
+                                )}
+                                </Link>
+                            </div>
+                        )}
                         </P.ProjectMember>
                     ))}
                     </P.ScrollableMemberList>
@@ -809,7 +757,11 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                         {isClient && (
                         <PieChart width={300} height={300}>
                             <Pie
-                                data={currentSprint?.member}
+                                data={
+                                    currentSprint?.member?.some(m => m.value > 0)
+                                        ? currentSprint.member
+                                        : [{ name: "기여도 없음", value: 1, color: "#e0e0e0" }]
+                                }
                                 dataKey="value"
                                 cx="50%"
                                 cy="50%"
@@ -819,8 +771,11 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                                 endAngle={450}
                                 stroke="none"
                             >
-                                {currentSprint?.member.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                {(currentSprint?.member?.some(m => m.value > 0)
+                                    ? currentSprint.member
+                                    : [{ color: "#e0e0e0" }]
+                                ).map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color || "#e0e0e0"} />
                                 ))}
                             </Pie>
                         </PieChart>

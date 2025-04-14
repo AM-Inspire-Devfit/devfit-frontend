@@ -23,7 +23,7 @@ const SprintTitle = styled.h2`
     color: #6A4BBF;
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 `;
 
 const GoalInputWrapper = styled.div`
@@ -158,24 +158,36 @@ export default function SprintModal({
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <SprintTitle>Sprint {title}</SprintTitle>
 
+                <p style={{ 
+                    position: "absolute", 
+                    top: "65px", 
+                    left: "30px", 
+                    fontSize: "13px", 
+                    color: "#706767", 
+                    margin: 0 
+                }}>
+                        * 표시 항목은 필수 항목입니다.
+                </p>
+
                 <m.CloseButton onClick={onClose}>
                     <IoClose size={24} />
                 </m.CloseButton>
                 
                 {/* 중간목표 입력 */}
                 <GoalInputWrapper>
-                    <m.Label>중간목표</m.Label>
+                    <m.Label>중간목표 *</m.Label>
                     <Textarea 
                         value={sprintGoal} 
                         onChange={(e) => setSprintGoal(e.target.value)}
-                        placeholder="Sprint의 중간 목표를 설정하세요!"
+                        placeholder="Sprint의 중간 목표를 설정하세요! (100자 이내)"
+                        maxLength={100}
                     />
 
                 </GoalInputWrapper>
                 
                 {/* 기한 입력 */}
                 <DateInputWrapper>
-                    <m.Label>기한</m.Label>
+                    <m.Label>기한 *</m.Label>
                     <m.DateInputContainer>
                         <m.DateInput 
                             type="date" 
