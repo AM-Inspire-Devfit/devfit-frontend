@@ -210,15 +210,14 @@ export default function Project({projectId}) {
 
     const checkSprintDue = (dueDate, includeNextDay = false) => {
         if (!dueDate) return false;
-    
-        const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-        nowKST.setHours(0, 0, 0, 0);
-    
-        const sprintEndKST = new Date(new Date(dueDate).getTime() + 9 * 60 * 60 * 1000);
-        if (includeNextDay) sprintEndKST.setDate(sprintEndKST.getDate() + 1);
-        sprintEndKST.setHours(0, 0, 0, 0);
-    
-        return nowKST >= sprintEndKST;
+
+        const endDate = new Date(dueDate);
+        if (includeNextDay) {
+            endDate.setDate(endDate.getDate() + 1);
+        }
+        const sprintEndDate = new Date(endDate.getTime() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
+
+        return today >= sprintEndDate;
     };
 
     const ProjectId = Number(projectId);
@@ -542,9 +541,13 @@ export default function Project({projectId}) {
 
     useEffect(() => {
         if (currentSprint?.sprint_end) {
-            setCanShowNextArrow(checkSprintDue(currentSprint.sprint_end));
+            setCanShowNextArrow(checkSprintDue(currentSprint.sprint_end, true));
         }
     }, [currentSprint]);
+
+    useEffect(() => {
+        console.log("canShowNextArrow:", canShowNextArrow);
+    }, [canShowNextArrow]);
 
     const isFeedbackDay = currentSprint && currentSprint.sprint_end === today;
     const sprintsWithFeedback = Array.isArray(processedSprintData)
