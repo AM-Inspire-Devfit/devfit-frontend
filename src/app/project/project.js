@@ -325,7 +325,7 @@ export default function Project({projectId}) {
             try {
             const contributions = await fetchSprintContributions(currentSprint.sprint_id);
 
-            console.log("✅ 기여도 전체 응답:", contributions);
+            console.log("기여도 전체 응답:", contributions);
 
             setSprintContributions(prev => ({
                 ...prev,
