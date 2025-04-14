@@ -461,6 +461,7 @@ export default function Team({ teamId }) {
     // 멤버 이름 3글자 이상이면 축약 표시
     const reduceMemberName = (name) => {
         return name.length > 3 ? name.slice(0, 3) + ".." : name;
+
     };
 
     // 프로젝트 이름 7글자 이상이면 축약 표시
