@@ -96,9 +96,10 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
               상세 설명 
             </S.Label>
             <S.TextArea
-              placeholder="팀에 대한 설명을 입력하세요"
+              placeholder="팀에 대한 설명을 입력하세요 (100자 이내)"
               value={teamDescription}
               onChange={(e) => setTeamDescription(e.target.value)}
+              maxLength={100}
             />
           </S.FormGroup>
 
