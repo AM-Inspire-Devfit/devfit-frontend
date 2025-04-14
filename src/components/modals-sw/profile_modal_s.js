@@ -47,7 +47,7 @@ export const SidebarItem = styled.button`
   &:before {
     content: "";
     position: absolute;
-    left: 0;  
+    left: -20px;  
     top: 0;
     bottom: 0;
     width: 10px;
@@ -142,6 +142,11 @@ export const SaveButton = styled.button`
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 `;
 
 export const WarningMessage = styled.div`
@@ -154,6 +159,7 @@ export const WarningMessage = styled.div`
   padding: 10px;
   margin-top: 50px;
   margin-bottom: 20px;
+  margin-left: 40px;
   box-sizing: border-box;
   font-size: 20px;
   font-weight: bold;

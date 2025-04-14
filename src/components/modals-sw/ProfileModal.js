@@ -182,8 +182,9 @@ const ProfileModal = ({ isOpen, onClose, profile, onProfileUpdated }) => {
                   <S.Input
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
+                    maxLength={10}
                   />
-                  <S.SaveButton onClick={handleSubmit}>수정 완료</S.SaveButton>
+                  <S.SaveButton onClick={handleSubmit} disabled={!nickname.trim()}>수정 완료</S.SaveButton>
                 </S.ProfileForm>
               </S.ProfileContainer>
             </>
