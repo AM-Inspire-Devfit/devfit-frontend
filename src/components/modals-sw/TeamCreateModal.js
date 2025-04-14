@@ -85,9 +85,10 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
             </S.Label>
             <S.Input
               type="text"
-              placeholder="팀 이름을 입력하세요"
+              placeholder="팀 이름을 입력하세요 (15자 이내)"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
+              maxLength={15}
             />
           </S.FormGroup>
 

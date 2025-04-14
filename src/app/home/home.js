@@ -197,7 +197,12 @@ export default function Home() {
   }, [selectedId]);
 
 
-  // 팀 설명 15글자 이상이면 축약 표시
+  // 팀 이름 4글자 이상이면 축약 표시
+  const reduceName = (name) => {
+    return name.length > 4 ? name.slice(0, 4) + ".." : name;
+};
+
+  // 팀 설명 10글자 이상이면 축약 표시
   const reduceDescription = (name) => {
     return name.length > 10 ? name.slice(0, 10) + ".." : name;
 };
@@ -276,7 +281,7 @@ export default function Home() {
                   window.location.href = `/team/${team.teamId}`;
                 }}>
                   <S.TitleContainer>
-                    <S.Title>{team.teamName}</S.Title>
+                    <S.Title>{reduceName(team.teamName)}</S.Title>
                     <S.MoreButton
                       onClick={(e) => {
                         e.stopPropagation();
