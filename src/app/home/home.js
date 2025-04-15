@@ -40,6 +40,7 @@ export default function Home() {
 
   const fetchProfile = async () => {
     try {
+      console.log(localStorage.getItem("accessToken"))
       const res = await axiosWithAuthorization.get("/members/me");
  console.log(res)
       setProfile({
