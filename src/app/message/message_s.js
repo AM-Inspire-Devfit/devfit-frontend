@@ -158,7 +158,7 @@ export const EditButton = styled.button`
     }
 `;
 
-export const GSendButton = styled(EditButton)`
+export const GSendButton = styled(SendButton)`
     background-color: #5D4DC7;
 
     &:hover {

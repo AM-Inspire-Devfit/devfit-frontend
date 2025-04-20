@@ -18,8 +18,13 @@ export default function Message({}) {
   const searchParams = useSearchParams();
   const memberName = searchParams.get("name");
   const profileImage = searchParams.get("profileImage");
-  const sprintId = searchParams.get("sprintId");
-  const receiverId = searchParams.get("receiverId");
+  const sprintIdParam = searchParams.get("sprintId");
+  const receiverIdParam = searchParams.get("receiverId");
+
+  const sprintId = sprintIdParam ? Number(sprintIdParam) : null;
+  const receiverId = receiverIdParam ? Number(receiverIdParam) : null;
+
+    console.log("sprintId:", sprintId, "receiverId:", receiverId);
 
   const handleRefinement = async () => {
     if (!message.trim()) {
@@ -106,12 +111,9 @@ export default function Message({}) {
               onChange={(e) => setGptMessage(e.target.value)}
               maxLength={600}
             />
-            <MS.ButtonWrapper>
-              <MS.EditButton>수정하기</MS.EditButton>
               <MS.GSendButton onClick={handleSendFeedback}>
                 전송하기
               </MS.GSendButton>
-            </MS.ButtonWrapper>
           </MS.GPTMessageBox>
         )}
       </MS.Container>

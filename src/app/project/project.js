@@ -736,9 +736,15 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                             member.name !== "알수없음" && (
                             <div style={{ marginLeft: 'auto' }}>
                                 <Link
-                                href={`/project/${ProjectId}/message?name=${encodeURIComponent(
-                                    member.name
-                                )}&profileImage=${encodeURIComponent(member.profileImage)}`}
+                                    href={{
+                                        pathname: `/project/${ProjectId}/message`,
+                                        query: {
+                                        name: member.name,
+                                        profileImage: member.profileImage,
+                                        sprintId: currentSprint?.sprint_id,
+                                        receiverId: member.id,             
+                                        }
+                                    }}
                                 >
                                 {projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
                                     <P.FeedbackButton hidden={!isFeedbackDay}>
