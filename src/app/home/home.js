@@ -56,9 +56,9 @@ export default function Home() {
   
 
   const fetchTeams = async () => {
-    if (isFetching || !hasMore ) { // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
-    console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore =", hasMore);
-    return;
+    if (isFetching || !hasMoreRef.current) {
+      console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore(ref) =", hasMoreRef.current);
+      return;
     }
 
     console.log("fetchTeams 호출됨 - lastTeamId:", lastTeamId);
@@ -140,12 +140,6 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    if (hasMore && cards.length === 0) {
-      fetchTeams();
-    }
-  }, [hasMore]);
-  
   const handleMenuToggle = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
@@ -154,6 +148,7 @@ export default function Home() {
     setLastTeamId(null);
     setCards([]);
     setHasMore(true);
+    hasMoreRef.current = true;
     setTimeout(() => {
       fetchTeams(); // 상태가 반영된 후 실행
     }, 0);
@@ -215,6 +210,10 @@ export default function Home() {
     };
   }, [selectedId]);
 
+  const hasMoreRef = useRef(hasMore);
+  useEffect(() => {
+    hasMoreRef.current = hasMore;
+  }, [hasMore]);
 
   // 팀 이름 4글자 이상이면 축약 표시
   const reduceName = (name) => {
