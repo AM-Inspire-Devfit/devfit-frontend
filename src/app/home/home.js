@@ -61,12 +61,16 @@ export default function Home() {
   
 
   const fetchTeams = async (force = false) => {
-    if (!force && (isFetching || !hasMoreRef.current)) {
-      console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore(ref) =", hasMoreRef.current);
+    if (isFetching) {
+      console.log("fetchTeams 중단: isFetching =", isFetching);
+      return;
+    }
+    if (!force && !hasMoreRef.current) {
+      console.log("fetchTeams 중단: hasMore(ref) =", hasMoreRef.current);
       return;
     }
 
-    console.log("fetchTeams 호출됨 - lastTeamId:", lastTeamId);
+    console.log("fetchTeams 호출됨 - lastTeamId:", lastTeamId, ", force:", force);
     setIsFetching(true);
     try {
       const res = await axiosWithAuthorization.get(
