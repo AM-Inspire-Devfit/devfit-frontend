@@ -36,7 +36,7 @@ export default function Home() {
   const [teamAdmins, setTeamAdmins] = useState({});
   const [teamMembers, setTeamMembers] = useState({});
 
-  const teamsFetchedRef = useRef(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -58,7 +58,10 @@ export default function Home() {
   const fetchTeams = async () => {
     try {
       const res = await axiosWithAuthorization.get("/teams/list/all");
-      const newContent = res.data.data.content || [];
+  
+      console.log("전체 response body:", res.data); // 확인용
+  
+      const newContent = res.data.data || [];
   
       const uniqueTeams = newContent.filter(
         (team, index, self) =>
@@ -71,7 +74,6 @@ export default function Home() {
       console.log(error.response?.data);
     }
   };
-
   const fetchTeamAdmin = async (teamId) => {
     try {
       const res = await axiosWithAuthorization.get(`/teams/${teamId}/admin`);
