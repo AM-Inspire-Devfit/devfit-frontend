@@ -139,6 +139,13 @@ export default function Home() {
       fetchTeams();
     }
   };
+
+  useEffect(() => {
+    if (hasMore && cards.length === 0) {
+      fetchTeams();
+    }
+  }, [hasMore]);
+  
   const handleMenuToggle = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
