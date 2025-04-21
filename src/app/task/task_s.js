@@ -294,7 +294,7 @@ export const CompletedDate = styled.p`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 4px 0
+    margin-left: 25px;
 `;
 
 
