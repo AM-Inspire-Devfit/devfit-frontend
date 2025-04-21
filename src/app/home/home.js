@@ -48,10 +48,6 @@ export default function Home() {
     try {
       console.log(localStorage.getItem("accessToken"))
       const res = await axiosWithAuthorization.get("/members/me");
-<<<<<<< HEAD
-      console.log(res)
-=======
->>>>>>> 4b5d0c5 (refactor: with credentials 추가)
       setProfile({
         nickname: res.data.data.nickname || "",
         profileImageUrl: res.data.data.profileImageUrl || "",
