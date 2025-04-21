@@ -48,7 +48,10 @@ export default function Home() {
     try {
       console.log(localStorage.getItem("accessToken"))
       const res = await axiosWithAuthorization.get("/members/me");
+<<<<<<< HEAD
       console.log(res)
+=======
+>>>>>>> 4b5d0c5 (refactor: with credentials 추가)
       setProfile({
         nickname: res.data.data.nickname || "",
         profileImageUrl: res.data.data.profileImageUrl || "",
@@ -166,7 +169,6 @@ export default function Home() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(`팀(${teamId}) 삭제 성공`);
   
       //성공 시 로컬 상태에서 해당 팀 제거
       setCards((prevCards) => prevCards.filter((team) => team.teamId !== teamId));
