@@ -56,7 +56,7 @@ export default function Home() {
   
 
   const fetchTeams = async () => {
-    if (isFetching || !hasMore) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
+    if (isFetching || !hasMore || (cards.length === 0 && lastTeamId !== null)) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
 
     setIsFetching(true);
     try {
@@ -277,11 +277,11 @@ export default function Home() {
           ) : (
             <S.CardContainer>
               {isFetching ? (
-    //로딩 중이면 카드 대신 스피너만 보여주기
-    <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "40px" }}>
-      <ClipLoader size={50} color="#7b4fc3" />
-    </div>
-  ) : (<>
+              //로딩 중이면 카드 대신 스피너만 보여주기
+              <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "40px" }}>
+                <ClipLoader size={50} color="#7b4fc3" />
+              </div>
+            ) : (<>
               {cards.map((team) => (
                 <S.TeamCard key={team.teamId} role="button"  onClick={() => {
                   window.location.href = `/team/${team.teamId}`;
