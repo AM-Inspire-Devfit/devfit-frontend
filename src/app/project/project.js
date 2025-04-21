@@ -754,6 +754,7 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                         <P.TopBadge style={{ visibility: member.isTop ? 'visible' : 'hidden' }}>🥇</P.TopBadge>
 
                         {projectUser &&
+                            projectUser.status === "ACTIVE" && 
                             member.id !== projectUser.projectParticipantId &&
                             member.name !== "알수없음" && (
                             <div style={{ marginLeft: 'auto' }}>
