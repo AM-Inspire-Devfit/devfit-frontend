@@ -287,11 +287,14 @@ export const SButton = styled.button`
 `;
 
 export const CompletedDate = styled.p`
-    font-size: 13px;
-    color: #666;
-    text-align: right;
+    font-size: 15px;
+    color: #5a46c6; 
     margin-right: 10px;
     margin-top: 4px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 `;
 
 
