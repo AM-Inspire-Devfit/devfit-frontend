@@ -24,7 +24,7 @@ export default function Message({}) {
   const sprintId = sprintIdParam ? Number(sprintIdParam) : null;
   const receiverId = receiverIdParam ? Number(receiverIdParam) : null;
 
-    console.log("sprintId:", sprintId, "receiverId:", receiverId);
+  //console.log("sprintId:", sprintId, "receiverId:", receiverId);
 
   const handleRefinement = async () => {
     if (!message.trim()) {
@@ -111,6 +111,7 @@ export default function Message({}) {
               onChange={(e) => setGptMessage(e.target.value)}
               maxLength={600}
             />
+              <MS.GuideMessage>* 수정이 필요한 경우, 내용을 편집한 후 전송해 주세요.</MS.GuideMessage>
               <MS.GSendButton onClick={handleSendFeedback}>
                 전송하기
               </MS.GSendButton>

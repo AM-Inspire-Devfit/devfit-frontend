@@ -67,3 +67,10 @@ export const HighlightedText = styled.span`
     background-color: #A9B5F5;
     font-weight: bold;
 `;
+
+export const EmptyMessage = styled.div`
+    padding: 20px;
+    font-size: 16px;
+    color: gray;
+    text-align: center;
+`;

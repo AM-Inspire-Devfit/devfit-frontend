@@ -86,3 +86,15 @@ export const deleteSprintData = async (sprintId) => {
         throw new Error(message);
     }
 }
+
+// 프로젝트별 스프린트 id & title 목록 조회
+export const fetchSprintIdTitle = async (projectId) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/sprints/${projectId}/list`);
+        console.log("프로젝트별 스프린트 id & title 목록 조회:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "프로젝트별 스프린트 id & title 목록을 조회할 수 없습니다.";
+        throw new Error(message);
+    }
+};

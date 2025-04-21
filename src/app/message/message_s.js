@@ -169,3 +169,12 @@ export const GSendButton = styled(SendButton)`
         background-color: #382D92;
     }
 `;
+
+export const GuideMessage = styled.p`
+    font-size: 13px;
+    color: #6b6b6b;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    align-self: flex-start;
+`;
