@@ -17,7 +17,7 @@ import MeetingModal from "./meeting_modal";
 import ProjectModal from "../team/project_modal";
 
 import { fetchProjectData, fetchProjectUser, fetchProjectMemberList, fetchSprintContributions } from "@/app/api/project/projectApi";
-import { fetchSprintTaskData } from "@/app/api/sprint/sprintApi";
+import { fetchSprintTaskData, fetchSprintParticipantsFeedback } from "@/app/api/sprint/sprintApi";
 
 import Image from "next/image";
 
@@ -59,6 +59,9 @@ export default function Project({projectId}) {
 
     // 스프린트별 기여도 랭킹 조회
     const [sprintContributions, setSprintContributions] = useState({});
+
+    // 동료평가 상태
+    const [feedbackStatusMap, setFeedbackStatusMap] = useState({});
 
     //meeting
     const [hasMoreMeetings, setHasMoreMeetings] = useState(false);
@@ -463,6 +466,27 @@ export default function Project({projectId}) {
         return null; // 또는 로딩 UI를 보여줄 수도 있음
     }
 
+    useEffect(() => {
+        const fetchFeedbackStatuses = async () => {
+            if (!currentSprint?.sprint_id) return;
+            try {
+            const feedbackData = await fetchSprintParticipantsFeedback(ProjectId, currentSprint.sprint_id);
+        
+            const map = {};
+            feedbackData.content.forEach((participant) => {
+                map[participant.projectParticipantId] = participant.feedbackStatus;
+            });
+        
+            setFeedbackStatusMap(map);
+            } catch (err) {
+            showAlert("error", err.message);
+            console.log(err.message);
+            }
+        };
+        
+        fetchFeedbackStatuses();
+    }, [currentSprint?.sprint_id]);
+
 
     const fetchMeetingList = async (sprintId, lastId = null) => {
         try {
@@ -559,7 +583,6 @@ export default function Project({projectId}) {
     const reduceMemberName = (name) => {
         return name.length > 4 ? name.slice(0, 4) + ".." : name;
     };
-        
 
     return (
         <>
@@ -747,7 +770,10 @@ currentSprint?.sprint_end === today && isExternalUser === true && (
                                     }}
                                 >
                                 {projectUser.errorClassName !== "PROJECT_PARTICIPATION_REQUIRED" && (
-                                    <P.FeedbackButton hidden={!isFeedbackDay}>
+                                    <P.FeedbackButton 
+                                        hidden={!isFeedbackDay}
+                                        disabled={feedbackStatusMap[member.id] === "COMPLETED"}
+                                    >
                                     동료 평가
                                     </P.FeedbackButton>
                                 )}
