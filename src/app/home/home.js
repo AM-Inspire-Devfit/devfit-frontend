@@ -223,7 +223,7 @@ useEffect(() => {
     teamsFetchedRef.current = true;
     fetchTeams();
   }
-}, [accessToken]);
+}, [accessToken, cards]);
 
   return (
     <>
