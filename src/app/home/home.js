@@ -38,6 +38,8 @@ export default function Home() {
   const [teamAdmins, setTeamAdmins] = useState({});
   const [teamMembers, setTeamMembers] = useState({});
 
+  const teamsFetchedRef = useRef(false);
+
   const fetchProfile = async () => {
     try {
       console.log(localStorage.getItem("accessToken"))
@@ -140,6 +142,7 @@ export default function Home() {
   };
   const handleTeamAdded = () => {
     //목록 상태를 초기화하거나, 페이지를 1로 되돌린 후 재요청
+    teamsFetchedRef.current = false;
     setLastTeamId(null);
     setCards([]);
     setHasMore(true);
@@ -167,7 +170,12 @@ export default function Home() {
 
   // 첫 마운트 시 첫 페이지 로드
   useEffect(() => {fetchProfile()}, [accessToken]);
-  useEffect(() => {fetchTeams();}, [accessToken]);
+  useEffect(() => {
+    if (accessToken && !teamsFetchedRef.current) {
+      teamsFetchedRef.current = true;
+      fetchTeams();
+    }
+  }, [accessToken]);
   useEffect(() => {
     cards.forEach((team) => {
       if (!teamMembers[team.teamId]) {
