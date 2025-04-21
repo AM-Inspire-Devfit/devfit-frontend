@@ -288,14 +288,13 @@ export const SButton = styled.button`
 
 export const CompletedDate = styled.p`
     font-size: 15px;
+    font-weight: bold;
     color: #5a46c6; 
-    margin-right: 10px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    margin-left: 25px;
+    justify-content: center;
+    margin: 4px 0
 `;
 
 
