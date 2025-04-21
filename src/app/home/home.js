@@ -50,7 +50,6 @@ export default function Home() {
     try {
       console.log(localStorage.getItem("accessToken"))
       const res = await axiosWithAuthorization.get("/members/me");
-      console.log(res)
       setProfile({
         nickname: res.data.data.nickname || "",
         profileImageUrl: res.data.data.profileImageUrl || "",
