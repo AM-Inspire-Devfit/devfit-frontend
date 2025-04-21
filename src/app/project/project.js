@@ -510,7 +510,6 @@ export default function Project({projectId}) {
           return data.content;
         } catch (error) {
             console.log(error);
-          showAlert("error", error.response?.data?.message || "미팅 목록 조회 오류");
           return [];
         }
       };
