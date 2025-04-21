@@ -100,6 +100,8 @@ export default function Home() {
       }
     } catch (error) {
       showAlert("error", error.response?.data?.data?.message || "팀 목록 조회 실패");
+      console.error("fetchTeams 에러 발생:", error);
+      setHasMore(false);
     } finally {
       setIsFetching(false);
     }
