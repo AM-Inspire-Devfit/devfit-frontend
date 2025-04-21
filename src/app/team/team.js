@@ -148,6 +148,7 @@ export default function Team({ teamId }) {
             return res.data;
         } catch (error) {
             throw error.response?.data || error; // 명시적으로 throw
+            
         }
     };
 
@@ -528,7 +529,7 @@ export default function Team({ teamId }) {
                 })
             );
         } catch (error) {
-            showAlert("error", error.message || "오류가 발생했습니다.");
+            showAlert("error", error.message || "나간 프로젝트에 다시 참여할 수 없습니다.");
         } finally {
             setPendingProjects((prev) => ({
                 ...prev,

@@ -192,6 +192,7 @@ export default function LeaderModal({ isOpen, onClose, projectId, currentMemberI
                 <MemberList ref={listRef} onScroll={handleScroll}>
                     {participants
                     .filter((member) => member.projectParticipantId!=currentMemberId)
+                    .filter((member) => member.status!="ACTIVE")
                     .map((member) => (
                         <MemberItem key={member.projectParticipantId}>
                             <MemberInfo>
