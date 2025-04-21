@@ -263,6 +263,11 @@ export default function Task({ projectId }) {
                                 )}
                             </T.TaskRight>
                         </T.TaskBox>
+                        {isCompleted && (
+                            <T.CompletedDate>
+                                {task.dueDt}
+                            </T.CompletedDate>
+                        )}
                         {isNotStarted  && (
                             <T.TaskStatusButton
                                 onClick={() => {
