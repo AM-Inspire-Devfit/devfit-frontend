@@ -169,6 +169,8 @@ export default function Home() {
   useEffect(() => {fetchProfile()}, [accessToken]);
   useEffect(() => {fetchTeams();}, [accessToken]);
   useEffect(() => {
+    if (cards.length === 0) return; 
+    
     cards.forEach((team) => {
       if (!teamMembers[team.teamId]) {
         fetchTeamMembers(team.teamId);
