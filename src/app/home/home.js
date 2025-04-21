@@ -58,11 +58,11 @@ export default function Home() {
       console.log(error.response?.data);
     }
   };
- 
+
   
 
   const fetchTeams = async () => {
-    if (isFetching || !hasMoreRef.current) {
+    if (!force && (isFetching || !hasMoreRef.current)) {
       console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore(ref) =", hasMoreRef.current);
       return;
     }
