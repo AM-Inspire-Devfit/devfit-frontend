@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as S from "./team_create_modal_styles";
+import { useAlert } from "@/context/AlertContext";
 
 const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
   const [teamName, setTeamName] = useState("");
@@ -61,10 +62,11 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
       onClose();
       onTeamCreated();
     } catch (error) {
-      console.error(
+      console.log(
         "팀 생성 실패:",
         error.response ? error.response.data : error.message
       );
+      showAlert("error", "팀 생성에 실패했습니다.");
     }
   };
 

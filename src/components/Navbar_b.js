@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { useRouter } from "next/navigation"; 
 import { logout } from "@/app/api/logout/logout";
+import { useAlert } from "@/context/AlertContext";
 
 const Navbar_ = () => {
 
@@ -21,8 +22,8 @@ const Navbar_ = () => {
             localStorage.removeItem("storedUser"); 
             router.push("/login");
         } catch (error) {
-            console.error("로그아웃 실패:", error);
-            alert("로그아웃에 실패했습니다.");
+            console.log("로그아웃 실패:", error);
+            showAlert("error", "로그아웃에 실패했습니다.");
         }
     };
 

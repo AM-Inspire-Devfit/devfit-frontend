@@ -20,7 +20,7 @@ export default function Login() {
       window.location.href = res.data.url; // OAuth 인증 페이지 redirect
       console.log(res.data)
     } catch (error) {
-      console.error("로그인 요청 실패:", error.response ? error.response.data : error.message);
+      console.log("로그인 요청 실패:", error.response ? error.response.data : error.message);
     }
   };
 
