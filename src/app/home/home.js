@@ -26,9 +26,7 @@ export default function Home() {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   //카드
   const [cards, setCards] = useState([]);
-  const [lastTeamId, setLastTeamId] = useState(null); // 첫 페이지: null
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetching, setIsFetching] = useState(false); // 중복 요청 방지용
+  
   // 프로필 정보
   const [profile, setProfile] = useState({
     nickname: "",
@@ -58,50 +56,19 @@ export default function Home() {
   
 
   const fetchTeams = async () => {
-    if (isFetching || !hasMore) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
-
-    setIsFetching(true);
     try {
-      const res = await axiosWithAuthorization.get(
-        "/teams/list",
-        {
-          params: {
-            // 첫 페이지는 lastTeamId=null
-            lastTeamId: lastTeamId,
-            size: 5,
-          },
-        }
-      );
-      console.log("팀 목록 응답:", res.data);
-
-      // 구조 예시: { data: { content: [...], last: true/false }, ... }
+      const res = await axiosWithAuthorization.get("/teams/list/all");
       const newContent = res.data.data.content || [];
-      const isLastPage = res.data.data.last; // 마지막 페이지 여부
-
-      if (newContent.length === 0) {
-        // 데이터가 비어 있으면 더 이상 불러올 게 없음
-        setHasMore(false);
-      } else {
-        // 기존 목록 + 새로 가져온 목록
-        setCards((prev) => {
-          const existingIds = new Set(prev.map((team) => team.teamId));
-          const uniqueNewContent = newContent.filter((team) => !existingIds.has(team.teamId));
-          return [...prev, ...uniqueNewContent];
-        });
-        // 마지막 아이템의 teamId를 nextLastId로
-        const nextLastId = newContent[newContent.length - 1].teamId;
-        setLastTeamId(nextLastId);
-      }
-
-      // last === true 이면 더 이상 페이지 없음
-      if (isLastPage) {
-        setHasMore(false);
-      }
+  
+      const uniqueTeams = newContent.filter(
+        (team, index, self) =>
+          index === self.findIndex((t) => t.teamId === team.teamId)
+      );
+  
+      setCards(uniqueTeams);
     } catch (error) {
       showAlert("error", error.response?.data?.data?.message || "팀 목록 조회 실패");
       console.log(error.response?.data);
-    } finally {
-      setIsFetching(false);
     }
   };
 
@@ -128,26 +95,24 @@ export default function Home() {
       console.log(error.response.data);
     }
   };
-  const handleScroll = () => {
-    if (!hasMore || isFetching) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
+  // const handleScroll = () => {
+  //   if (!hasMore || isFetching) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
 
-    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-    // 스크롤이 거의 바닥이면 다음 데이터 요청
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
-      fetchTeams();
-    }
-  };
+  //   const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+  //   // 스크롤이 거의 바닥이면 다음 데이터 요청
+  //   if (scrollTop + clientHeight >= scrollHeight - 10) {
+  //     fetchTeams();
+  //   }
+  // };
+
   const handleMenuToggle = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
+
   const handleTeamAdded = () => {
-    //목록 상태를 초기화하거나, 페이지를 1로 되돌린 후 재요청
-    teamsFetchedRef.current = false;
-    setLastTeamId(null);
-    setCards([]);
-    setHasMore(true);
     fetchTeams();
   };
+
   const handleTeamDelete = async (teamId) => {
     if (!accessToken) return;
     try {
@@ -171,11 +136,9 @@ export default function Home() {
   // 첫 마운트 시 첫 페이지 로드
   useEffect(() => {fetchProfile()}, [accessToken]);
   useEffect(() => {
-    if (accessToken && !teamsFetchedRef.current) {
-      teamsFetchedRef.current = true;
-      fetchTeams();
-    }
+    if (accessToken) fetchTeams();
   }, [accessToken]);
+
   useEffect(() => {
     cards.forEach((team) => {
       if (!teamMembers[team.teamId]) {
@@ -187,26 +150,26 @@ export default function Home() {
     });
   }, [cards]);
 
-  // 스크롤 이벤트 등록/해제
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, isFetching]);
+  // // 스크롤 이벤트 등록/해제
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [hasMore, isFetching]);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (selectedId !== null) {
-        const selectedMenu = menuRefs.current[selectedId];
-        if (selectedMenu && !selectedMenu.contains(event.target)) {
-          setSelectedId(null);
-        }
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [selectedId]);
+  // useEffect(() => {
+  //   function handleClickOutside(event) {
+  //     if (selectedId !== null) {
+  //       const selectedMenu = menuRefs.current[selectedId];
+  //       if (selectedMenu && !selectedMenu.contains(event.target)) {
+  //         setSelectedId(null);
+  //       }
+  //     }
+  //   }
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [selectedId]);
 
 
   // 팀 이름 4글자 이상이면 축약 표시
