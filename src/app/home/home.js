@@ -38,18 +38,11 @@ export default function Home() {
   const [teamAdmins, setTeamAdmins] = useState({});
   const [teamMembers, setTeamMembers] = useState({});
 
-  const hasMoreRef = useRef(true);
-
-  const [resetRequested, setResetRequested] = useState(false);
-
-  useEffect(() => {
-    hasMoreRef.current = hasMore;
-  }, [hasMore]);
-
   const fetchProfile = async () => {
     try {
       console.log(localStorage.getItem("accessToken"))
       const res = await axiosWithAuthorization.get("/members/me");
+ console.log(res)
       setProfile({
         nickname: res.data.data.nickname || "",
         profileImageUrl: res.data.data.profileImageUrl || "",
@@ -59,16 +52,12 @@ export default function Home() {
       console.log(error.response?.data);
     }
   };
-
+ 
   
 
-  const fetchTeams = async (force = false) => {
-    if (!force && (isFetching || !hasMoreRef.current)) {
-      console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore(ref) =", hasMoreRef.current);
-      return;
-    }  
+  const fetchTeams = async () => {
+    if (isFetching || !hasMore) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
 
-    console.log("fetchTeams 호출됨 - lastTeamId:", lastTeamId, ", force:", force);
     setIsFetching(true);
     try {
       const res = await axiosWithAuthorization.get(
@@ -89,26 +78,26 @@ export default function Home() {
 
       if (newContent.length === 0) {
         // 데이터가 비어 있으면 더 이상 불러올 게 없음
-        console.log("팀 없음!!!!");
         setHasMore(false);
-        return;
-      }
+      } else {
+        // 기존 목록 + 새로 가져온 목록
         setCards((prev) => {
           const existingIds = new Set(prev.map((team) => team.teamId));
           const uniqueNewContent = newContent.filter((team) => !existingIds.has(team.teamId));
           return [...prev, ...uniqueNewContent];
-      });
+        });
         // 마지막 아이템의 teamId를 nextLastId로
         const nextLastId = newContent[newContent.length - 1].teamId;
-      setLastTeamId(nextLastId);
+        setLastTeamId(nextLastId);
+      }
 
+      // last === true 이면 더 이상 페이지 없음
       if (isLastPage) {
         setHasMore(false);
       }
     } catch (error) {
       showAlert("error", error.response?.data?.data?.message || "팀 목록 조회 실패");
-      console.error("fetchTeams 에러 발생:", error);
-      setHasMore(false);
+      console.log(error.response?.data);
     } finally {
       setIsFetching(false);
     }
@@ -138,7 +127,7 @@ export default function Home() {
     }
   };
   const handleScroll = () => {
-    if (!hasMore || isFetching || cards.length === 0) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
+    if (!hasMore || isFetching) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
 
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
     // 스크롤이 거의 바닥이면 다음 데이터 요청
@@ -146,7 +135,6 @@ export default function Home() {
       fetchTeams();
     }
   };
-
   const handleMenuToggle = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
@@ -155,17 +143,8 @@ export default function Home() {
     setLastTeamId(null);
     setCards([]);
     setHasMore(true);
-    hasMoreRef.current = true;
-    setResetRequested(true);
+    fetchTeams();
   };
-
-  useEffect(() => {
-    if (resetRequested) {
-      fetchTeams(true);
-      setResetRequested(false);
-    }
-  }, [resetRequested]);
-
   const handleTeamDelete = async (teamId) => {
     if (!accessToken) return;
     try {
@@ -175,6 +154,7 @@ export default function Home() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log(`팀(${teamId}) 삭제 성공`);
   
       //성공 시 로컬 상태에서 해당 팀 제거
       setCards((prevCards) => prevCards.filter((team) => team.teamId !== teamId));
@@ -187,10 +167,12 @@ export default function Home() {
 
   // 첫 마운트 시 첫 페이지 로드
   useEffect(() => {fetchProfile()}, [accessToken]);
-  useEffect(() => {fetchTeams();}, [accessToken]);
   useEffect(() => {
-    if (cards.length === 0) return; 
-    
+    if (accessToken && cards.length === 0) {
+      fetchTeams();
+    }
+  }, [accessToken]);
+  useEffect(() => {
     cards.forEach((team) => {
       if (!teamMembers[team.teamId]) {
         fetchTeamMembers(team.teamId);
@@ -221,6 +203,7 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [selectedId]);
+
 
   // 팀 이름 4글자 이상이면 축약 표시
   const reduceName = (name) => {
@@ -296,11 +279,11 @@ export default function Home() {
           ) : (
             <S.CardContainer>
               {isFetching ? (
-              //로딩 중이면 카드 대신 스피너만 보여주기
-              <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "40px" }}>
-                <ClipLoader size={50} color="#7b4fc3" />
-              </div>
-            ) : (<>
+    //로딩 중이면 카드 대신 스피너만 보여주기
+    <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "40px" }}>
+      <ClipLoader size={50} color="#7b4fc3" />
+    </div>
+  ) : (<>
               {cards.map((team) => (
                 <S.TeamCard key={team.teamId} role="button"  onClick={() => {
                   window.location.href = `/team/${team.teamId}`;
