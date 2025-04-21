@@ -50,7 +50,7 @@ export default function PeerReview({ projectId }) {
         params: {
           sprintId: sprintId,
           lastFeedbackId: lastFeedbackIdMap[sprintId] || null,
-          size: 5,
+          size: 10,
         },
       });
   
