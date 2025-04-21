@@ -74,7 +74,7 @@ export default function ProjectModal({
             onClose(); // 모달 닫기
         } catch (error) {
             console.log(`${isEditing ? "프로젝트 수정 실패" : "프로젝트 생성 실패"}:`, error.message);
-            showAlert("success", `${isEditing ? "프로젝트 수정 실패" : "프로젝트 생성 실패"}:`);
+            showAlert("error", `${isEditing ? "프로젝트 수정 실패" : "프로젝트 생성 실패"}:`);
         }
     };
 

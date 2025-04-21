@@ -93,7 +93,7 @@ export default function MeetingModal({
       if (onMeetingSaved) onMeetingSaved();
       onClose();
     } catch (error) {
-      showAlert("error", error.response?.data?.message || "오류 발생");
+      showAlert("error", error.response?.data?.data?.message || "지금 미팅을 수정할 수 없습니다");
     }
   };
 
@@ -110,7 +110,7 @@ export default function MeetingModal({
       if (onMeetingDeleted) onMeetingDeleted();
       onClose();
     } catch (error) {
-      showAlert("error", error.response?.data?.message || "삭제 오류");
+      showAlert("error", error.response?.data?.message || "지금은 삭제할 수 없습니다. 잠시 후 다시 시도해주세요.");
     }
   };
 
