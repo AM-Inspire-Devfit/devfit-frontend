@@ -58,7 +58,7 @@ export const fetchTeamMembers = async (teamId, lastMemberId = null) => {
     try {
         const res = await axiosWithAuthorization.get(`/members/${teamId}/list`, {
         params: {
-            size: 3, 
+            size: 10, 
             lastMemberId: lastMemberId,
         },
         });
