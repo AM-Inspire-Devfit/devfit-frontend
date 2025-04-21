@@ -40,6 +40,8 @@ export default function Home() {
 
   const hasMoreRef = useRef(true);
 
+  const [resetRequested, setResetRequested] = useState(false);
+
   useEffect(() => {
     hasMoreRef.current = hasMore;
   }, [hasMore]);
@@ -154,8 +156,16 @@ export default function Home() {
     setCards([]);
     setHasMore(true);
     hasMoreRef.current = true;
-    fetchTeams(true);
+    setResetRequested(true);
   };
+
+  useEffect(() => {
+    if (resetRequested) {
+      fetchTeams(true);
+      setResetRequested(false);
+    }
+  }, [resetRequested]);
+
   const handleTeamDelete = async (teamId) => {
     if (!accessToken) return;
     try {
