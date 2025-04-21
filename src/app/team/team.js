@@ -30,6 +30,8 @@ import { useAlert } from "@/context/AlertContext";
 
 import axiosWithAuthorization from "@/context/axiosWithAuthorization";
 
+
+
 export default function Team({ teamId }) {
     const { showAlert } = useAlert();
 
@@ -76,6 +78,7 @@ export default function Team({ teamId }) {
     const [isMembersFetching, setIsMembersFetching] = useState(false);
     
     const TeamId = Number(teamId);
+    const normalizeJoinStatus = (status) => status ?? "NONE";
 
     useEffect(() => {
         const getUserInfo = async () => {
@@ -141,11 +144,21 @@ export default function Team({ teamId }) {
     //project 가입 신청
     const requestProjectJoin = async (projectId) => {
         try {
-          const res = await axiosWithAuthorization.post(`/projects/${projectId}/registration`);
-          return res.data.data.teamName;
+            const res = await axiosWithAuthorization.post(`/projects/${projectId}/registration`);
+            return res.data;
         } catch (error) {
-            showAlert("error", error.response.data.data.message);
-            console.log(error.response.data);
+            throw error.response?.data || error; // 명시적으로 throw
+        }
+    };
+
+      const cancelProjectJoin = async (projectId) => {
+        try {
+          const res = await axiosWithAuthorization.delete(
+            `/projects/${projectId}/registration/cancel`
+          );
+          return res.data;
+        } catch (error) {
+            showAlert("error", error.response.data.data.message||"잠시 뒤 다시 시도해주세요");
         }
       };
 
@@ -234,19 +247,23 @@ export default function Team({ teamId }) {
             const newOtherProjects = [];
 
             content.forEach(project => {
-                //유저가 프로젝트에 참여 중
-                if (project.isParticipant) {
-                  //상태 INACTIVE -> others
-                  if (project.currentUserParticipation && project.currentUserParticipation.status === "INACTIVE") {
-                    newOtherProjects.push(project);
-                  } else {
-                    newMyProjects.push(project);
-                  }
-                } else {
-                  newOtherProjects.push(project);
-                }
-              });
+                const status = project.currentUserParticipation?.status ?? "NONE";
+                const newProject = {
+                    ...project,
 
+                };
+            
+                if (project.isParticipant) {
+                    if (status === "INACTIVE") {
+                        newOtherProjects.push(newProject);
+                    } else {
+                        newMyProjects.push(newProject);
+                    }
+                } else {
+                    newOtherProjects.push(newProject);
+                }
+            });
+            
             setMyProjects(prev => [...prev, ...newMyProjects]);
             setOtherProjects(prev => [...prev, ...newOtherProjects]);
 
@@ -450,22 +467,61 @@ export default function Team({ teamId }) {
     };
 
     // 타 프로젝트 가입 신청 <-> 승인 대기
-    const handleClick = (projectId) => {
+    const handleClick = async (project) => {
+        const projectId = project.projectInfo.projectId;
+        const status = normalizeJoinStatus(project.joinStatus);
+    
+        if (pendingProjects[projectId]) return;
+    
         setPendingProjects((prev) => ({
             ...prev,
-            [projectId]: !prev[projectId]
+            [projectId]: true,
         }));
-
+    
         try {
-            requestProjectJoin(projectId);
+            let updatedJoinStatus;
+    
+            if (status === "PENDING") {
+                await cancelProjectJoin(projectId);
+                updatedJoinStatus = "NONE";
+                showAlert("success", "가입 신청이 취소되었습니다.");
+            } else {
+                await requestProjectJoin(projectId);
+                updatedJoinStatus = "PENDING";
+                showAlert("success", "가입 신청이 완료되었습니다.");
+            }
+    
+            console.log(`프로젝트 ${projectId}의 새로운 상태:`, updatedJoinStatus);
+    
+            // 상태 업데이트
+            setOtherProjects((prev) =>
+                prev.map((p) => {
+                    if (p.projectInfo.projectId === projectId) {
+                        return {
+                            ...p,
+                            joinStatus: updatedJoinStatus,
+                            currentUserParticipation: {
+                                ...(p.currentUserParticipation || {}),
+                                status: updatedJoinStatus, 
+                            },
+                        };
+                    }
+                    return p;
+                })
+            );
         } catch (error) {
-            // 실패 시 상태를 다시 되돌림 (rollback)
+            showAlert("error", error.message || "오류가 발생했습니다.");
+        } finally {
             setPendingProjects((prev) => ({
                 ...prev,
-                [projectId]: !prev[projectId]
+                [projectId]: false,
             }));
         }
     };
+    
+    
+    
+    
 
     // 멤버 이름 3글자 이상이면 축약 표시
     const reduceMemberName = (name) => {
@@ -805,9 +861,11 @@ export default function Team({ teamId }) {
                         <S.ProjectHButton>프로젝트 홈</S.ProjectHButton>
                     </Link>
                     <JoinProjectButton 
-                        onClick={() => handleClick(project.projectInfo.projectId)} 
+                        onClick={() => handleClick(project)} 
                         isPending={pendingProjects[project.projectInfo.projectId]}
+                        joinStatus={normalizeJoinStatus(project.joinStatus ?? project.currentUserParticipation?.status)}
                     />
+
                     </div>
                 </S.ProjectBox>
             ))

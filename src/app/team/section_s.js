@@ -225,25 +225,28 @@ export const ProjectHButton = styled.button`
 `;
 
 const StyledButton = styled.button`
-    font-size: 12px;
-    font-weight: bold;
-    color: white;
-    background: ${({ $disabled }) =>
-        $disabled ? "#B3B3B3" : "#796AD9"};
-    border: 2px solid ${({ $disabled }) =>
-        $disabled ? "#B3B3B3" : "#796AD9"};
-    border-radius: 12px;
-    padding: 6px 12px;
-    cursor: pointer;
-    min-width: 85px;
-    transition: 0.2s ease-in-out;
-    
-    &:hover {
-        background: ${({ $disabled }) =>
-            $disabled ? "#B3B3B3" : "#5a46c6"};
-        border: 2px solid ${({ $disabled }) =>
-        $disabled ? "#B3B3B3" : "#5a46c6"};
-    }
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+
+  background: ${({ $disabled, $joinStatus }) =>
+    $disabled || $joinStatus === "PENDING" ? "#B3B3B3" : "#796AD9"};
+
+  border: 2px solid ${({ $disabled, $joinStatus }) =>
+    $disabled || $joinStatus === "PENDING" ? "#B3B3B3" : "#796AD9"};
+
+  border-radius: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  min-width: 85px;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ $disabled, $joinStatus }) =>
+      $disabled || $joinStatus === "PENDING" ? "#B3B3B3" : "#5a46c6"};
+    border: 2px solid ${({ $disabled, $joinStatus }) =>
+      $disabled || $joinStatus === "PENDING" ? "#B3B3B3" : "#5a46c6"};
+  }
 `;
 
 export const DeleteProjectButton = styled(StyledButton)`
@@ -264,10 +267,14 @@ export function LeaveProjectButton({ onClick }) {
     );
 }
 
-export function JoinProjectButton({ onClick, isPending }) {
-    return (
-        <StyledButton onClick={onClick} $disabled={isPending}>
-            {isPending ? "승인대기" : "가입신청"}
-        </StyledButton>
-    );
+export function JoinProjectButton({ onClick, isPending, joinStatus }) {
+  return (
+    <StyledButton
+      onClick={onClick}
+      $disabled={isPending}
+      $joinStatus={joinStatus}
+    >
+      {joinStatus === "PENDING" ? "승인대기" : "가입 신청"}
+    </StyledButton>
+  );
 }
