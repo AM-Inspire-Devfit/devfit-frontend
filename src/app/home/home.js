@@ -147,7 +147,9 @@ export default function Home() {
     setLastTeamId(null);
     setCards([]);
     setHasMore(true);
-    fetchTeams();
+    setTimeout(() => {
+      fetchTeams(); // 상태가 반영된 후 실행
+    }, 0);
   };
   const handleTeamDelete = async (teamId) => {
     if (!accessToken) return;
