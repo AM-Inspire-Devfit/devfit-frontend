@@ -9,6 +9,8 @@ const TeamCreateModal = ({ isOpen, onClose,  onTeamCreated }) => {
 
   useEffect(() => {
     if (isOpen) {
+      setTeamName("");
+      setTeamDescription("");
       document.body.style.overflow = "hidden"; //스크롤 막기
     } else {
       document.body.style.overflow = "auto"; //스크롤 원래대로

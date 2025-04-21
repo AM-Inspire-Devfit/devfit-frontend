@@ -150,7 +150,7 @@ export default function Task({ projectId }) {
 
     // 멤버 이름 3글자 이상이면 축약 표시
     const reduceMemberName = (name) => {
-        return name.length > 3 ? name.slice(0, 3) + ".." : name;
+        return name.length > 4 ? name.slice(0, 4) + ".." : name;
     };
     
 
