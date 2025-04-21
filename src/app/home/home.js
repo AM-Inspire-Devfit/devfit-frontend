@@ -61,7 +61,7 @@ export default function Home() {
 
   
 
-  const fetchTeams = async () => {
+  const fetchTeams = async (force = false) => {
     if (!force && (isFetching || !hasMoreRef.current)) {
       console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore(ref) =", hasMoreRef.current);
       return;
@@ -155,9 +155,7 @@ export default function Home() {
     setCards([]);
     setHasMore(true);
     hasMoreRef.current = true;
-    setTimeout(() => {
-      fetchTeams(); // 상태가 반영된 후 실행
-    }, 0);
+    fetchTeams(true);
   };
   const handleTeamDelete = async (teamId) => {
     if (!accessToken) return;
