@@ -61,8 +61,13 @@ export default function Home() {
   
 
   const fetchTeams = async (force = false) => {
-    if (!force && (isFetching || !hasMoreRef.current)) {
-      console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore(ref) =", hasMoreRef.current);
+    if (isFetching) {
+      console.log("fetchTeams 중복 호출 방지 - 현재 isFetching 중");
+      return;
+    }
+    
+    if (!force && !hasMoreRef.current) {
+      console.log("fetchTeams 호출 중단됨: 더 이상 불러올 팀 없음 (hasMore = false)");
       return;
     }
 
