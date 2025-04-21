@@ -38,11 +38,17 @@ export default function Home() {
   const [teamAdmins, setTeamAdmins] = useState({});
   const [teamMembers, setTeamMembers] = useState({});
 
+  const hasMoreRef = useRef(true);
+
+  useEffect(() => {
+    hasMoreRef.current = hasMore;
+  }, [hasMore]);
+
   const fetchProfile = async () => {
     try {
       console.log(localStorage.getItem("accessToken"))
       const res = await axiosWithAuthorization.get("/members/me");
- console.log(res)
+      console.log(res)
       setProfile({
         nickname: res.data.data.nickname || "",
         profileImageUrl: res.data.data.profileImageUrl || "",
@@ -209,11 +215,6 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [selectedId]);
-
-  const hasMoreRef = useRef(hasMore);
-  useEffect(() => {
-    hasMoreRef.current = hasMore;
-  }, [hasMore]);
 
   // 팀 이름 4글자 이상이면 축약 표시
   const reduceName = (name) => {
