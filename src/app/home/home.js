@@ -56,8 +56,12 @@ export default function Home() {
   
 
   const fetchTeams = async () => {
-    if (isFetching || !hasMore ) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
+    if (isFetching || !hasMore ) { // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
+    console.log("fetchTeams 호출 중단됨: isFetching =", isFetching, ", hasMore =", hasMore);
+    return;
+    }
 
+    console.log("fetchTeams 호출됨 - lastTeamId:", lastTeamId);
     setIsFetching(true);
     try {
       const res = await axiosWithAuthorization.get(
@@ -78,6 +82,7 @@ export default function Home() {
 
       if (newContent.length === 0) {
         // 데이터가 비어 있으면 더 이상 불러올 게 없음
+        console.log("팀 없음!!!!");
         setHasMore(false);
         return;
       }
