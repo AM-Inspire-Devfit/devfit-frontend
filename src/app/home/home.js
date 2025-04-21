@@ -56,7 +56,7 @@ export default function Home() {
   
 
   const fetchTeams = async () => {
-    if (isFetching || !hasMore || (cards.length === 0 && lastTeamId !== null)) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
+    if (isFetching || !hasMore ) return; // 이미 요청 중이거나 더 이상 불러올 데이터 없으면 중단
 
     setIsFetching(true);
     try {
@@ -79,25 +79,22 @@ export default function Home() {
       if (newContent.length === 0) {
         // 데이터가 비어 있으면 더 이상 불러올 게 없음
         setHasMore(false);
-      } else {
-        // 기존 목록 + 새로 가져온 목록
+        return;
+      }
         setCards((prev) => {
           const existingIds = new Set(prev.map((team) => team.teamId));
           const uniqueNewContent = newContent.filter((team) => !existingIds.has(team.teamId));
           return [...prev, ...uniqueNewContent];
-        });
+      });
         // 마지막 아이템의 teamId를 nextLastId로
         const nextLastId = newContent[newContent.length - 1].teamId;
-        setLastTeamId(nextLastId);
-      }
+      setLastTeamId(nextLastId);
 
-      // last === true 이면 더 이상 페이지 없음
       if (isLastPage) {
         setHasMore(false);
       }
     } catch (error) {
       showAlert("error", error.response?.data?.data?.message || "팀 목록 조회 실패");
-      console.log(error.response?.data);
     } finally {
       setIsFetching(false);
     }
@@ -127,7 +124,7 @@ export default function Home() {
     }
   };
   const handleScroll = () => {
-    if (!hasMore || isFetching) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
+    if (!hasMore || isFetching || cards.length === 0) return; // 더 이상 데이터 없거나 이미 요청 중이면 중단
 
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
     // 스크롤이 거의 바닥이면 다음 데이터 요청
