@@ -75,12 +75,6 @@ const RejectButton = styled.button`
     cursor: pointer;
 `;
 
-
-// <--------------------여기부터 더미데이터 ------------------------>
-    
-
-
-// <--------------------여기까지 더미데이터 ------------------------>
 export default function ApproveModal({ isOpen, onClose, projectId }) {
     const [projectInfo, setProjectInfo] = useState(null);
     const [requestList, setRequestList] = useState([]);
@@ -166,7 +160,11 @@ export default function ApproveModal({ isOpen, onClose, projectId }) {
                 setHasMore(false);
               } else {
                 //기존 목록 + 새로 가져온 목록
-                setRequestList((prev) => [...prev, ...newContent]);
+                setRequestList((prev) => {
+                    const existingIds = new Set(prev.map((r) => r.registrationId));
+                    const uniqueNew = newContent.filter((r) => !existingIds.has(r.registrationId));
+                    return [...prev, ...uniqueNew];
+                });
         
                 const nextLastId = newContent[newContent.length - 1].registrationId;
                 setLastTeamId(nextLastId);

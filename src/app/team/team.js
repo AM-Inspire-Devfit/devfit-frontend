@@ -183,8 +183,17 @@ export default function Team({ teamId }) {
                 role: "member",
             }));
     
-            setTeamMembers((prev) => [...prev, ...formattedMembers]);
-            setDisplayedMembers((prev) => [...prev, ...formattedMembers]);
+            setTeamMembers((prev) => {
+                const existingIds = new Set(prev.map((m) => m.id));
+                const uniqueNew = formattedMembers.filter((m) => !existingIds.has(m.id));
+                return [...prev, ...uniqueNew];
+            });
+          
+            setDisplayedMembers((prev) => {
+                const existingIds = new Set(prev.map((m) => m.id));
+                const uniqueNew = formattedMembers.filter((m) => !existingIds.has(m.id));
+                return [...prev, ...uniqueNew];
+            });
     
             if (formattedMembers.length > 0) {
                 const nextLastId = formattedMembers[formattedMembers.length - 1].id;
@@ -264,8 +273,17 @@ export default function Team({ teamId }) {
                 }
             });
             
-            setMyProjects(prev => [...prev, ...newMyProjects]);
-            setOtherProjects(prev => [...prev, ...newOtherProjects]);
+            setMyProjects((prev) => {
+                const existingIds = new Set(prev.map(p => p.projectInfo.projectId));
+                const uniqueNew = newMyProjects.filter(p => !existingIds.has(p.projectInfo.projectId));
+                return [...prev, ...uniqueNew];
+            });
+            
+            setOtherProjects((prev) => {
+                const existingIds = new Set(prev.map(p => p.projectInfo.projectId));
+                const uniqueNew = newOtherProjects.filter(p => !existingIds.has(p.projectInfo.projectId));
+                return [...prev, ...uniqueNew];
+            });
 
             const last = content[content.length - 1];
             setLastProjectId(last.projectInfo.projectId);
