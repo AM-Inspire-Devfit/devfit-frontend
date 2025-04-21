@@ -81,8 +81,11 @@ export default function Home() {
         setHasMore(false);
       } else {
         // 기존 목록 + 새로 가져온 목록
-        setCards((prev) => [...prev, ...newContent]);
-
+        setCards((prev) => {
+          const existingIds = new Set(prev.map((team) => team.teamId));
+          const uniqueNewContent = newContent.filter((team) => !existingIds.has(team.teamId));
+          return [...prev, ...uniqueNewContent];
+        });
         // 마지막 아이템의 teamId를 nextLastId로
         const nextLastId = newContent[newContent.length - 1].teamId;
         setLastTeamId(nextLastId);

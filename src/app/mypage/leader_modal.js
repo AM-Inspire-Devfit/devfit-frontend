@@ -121,7 +121,11 @@ export default function LeaderModal({ isOpen, onClose, projectId, currentMemberI
             // 응답 구조: { data: { content: [...], last: true/false, ... } }
             const newParticipants = res.data.data.content || [];
             // 기존 목록에 합치기
-            setParticipants((prev) => [...prev, ...newParticipants]);
+            setParticipants((prev) => {
+                const existingIds = new Set(prev.map((p) => p.projectParticipantId));
+                const uniqueNew = newParticipants.filter((p) => !existingIds.has(p.projectParticipantId));
+                return [...prev, ...uniqueNew];
+            });
             if (newParticipants.length > 0) {
                 const nextLastId = newParticipants[newParticipants.length - 1].projectParticipantId;
                 setLastParticipantId(nextLastId);

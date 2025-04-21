@@ -59,8 +59,13 @@ export default function Task({ projectId }) {
             if (content.length === 0) {
             setHasMore(false);
             } else {
-            setTasks((prev) => [...prev, ...content]);
-            setLastTaskId(content[content.length - 1].taskId);
+                setTasks((prev) => {
+                    const existingIds = new Set(prev.map((t) => t.taskId));
+                    const uniqueNew = content.filter((t) => !existingIds.has(t.taskId));
+                    return [...prev, ...uniqueNew];
+                });
+            
+                setLastTaskId(content[content.length - 1].taskId);
             }
 
             if (data.last || content.length < TASK_PAGE_SIZE) {
