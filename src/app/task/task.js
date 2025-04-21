@@ -68,7 +68,8 @@ export default function Task({ projectId }) {
             }
 
         } catch (error) {
-            console.error("태스크 로딩 실패:", error.message);
+            console.log("태스크 로딩 실패:", error.message);
+            showAlert("태스크를 불러올 수 없습니다.")
             setHasMore(false);
         } finally {
             setIsFetching(false);

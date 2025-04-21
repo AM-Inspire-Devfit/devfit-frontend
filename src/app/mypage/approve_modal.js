@@ -117,7 +117,7 @@ export default function ApproveModal({ isOpen, onClose, projectId }) {
             console.log("프로젝트 개별 정보 조회:", res.data);
             return res.data.data;
         } catch (error) {
-            showAlert("error", error.response.data.data.message);
+            showAlert("error", "프로젝트 정보를 불러올 수 없습니다.");
             console.log(error.response.data);
         }
     };
@@ -136,7 +136,7 @@ export default function ApproveModal({ isOpen, onClose, projectId }) {
           console.log("프로젝트 가입 신청 목록 조회:", res.data);
           return res.data.data.content || []; 
         } catch (error) {
-          showAlert("error", error.response.data.data.message);
+          showAlert("error","가입 신청자가 없습니다.");
           console.log(error.response.data);
           return []; 
         }

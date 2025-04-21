@@ -93,7 +93,7 @@ export default function My({ projectId }) {
             setSprintLast(response.last);
     
         } catch (error) {
-            console.error("스프린트 불러오기 실패:", error.message);
+            console.log("스프린트 불러오기 실패:", error.message);
         }
     };
 
@@ -135,7 +135,7 @@ export default function My({ projectId }) {
                 setCurrentSprint(updatedSprints[currentSprintIndex]);
             }
         } catch (error) {
-            console.error("현재 스프린트 갱신 실패:", error.message);
+            console.log("현재 스프린트 갱신 실패:", error.message);
         }
     };
 

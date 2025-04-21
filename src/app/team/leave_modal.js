@@ -17,7 +17,7 @@ export default function LeaveModal({ selectedProject, onClose }) {
       showAlert("success", "프로젝트 나가기가 완료되었습니다.");
       onClose(); // 모달 닫기 후 추가 작업(예: 페이지 리디렉션) 필요 시 추가
     } catch (error) {
-      console.error(error);
+      console.log(error);
       showAlert("error", error.response?.data?.message || "프로젝트 나가기 실패");
     }
   };
