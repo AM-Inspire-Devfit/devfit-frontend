@@ -327,4 +327,10 @@ export const FeedbackButton = styled.button`
     &:hover {
         background-color: #3b2ea3;
     }
+
+    &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        color: #888;
+    }
 `;

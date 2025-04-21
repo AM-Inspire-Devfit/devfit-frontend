@@ -98,3 +98,22 @@ export const fetchSprintIdTitle = async (projectId) => {
         throw new Error(message);
     }
 };
+
+// 스프린트별 참여자 목록 & 피드백 여부 조회
+export const fetchSprintParticipantsFeedback = async (projectId, sprintId) => {
+    try {
+        const res = await axiosWithAuthorization.get(`/feedbacks/${sprintId}/participants`, {
+            params: {
+                projectId: projectId, 
+                lastProjectParticipantId: null,
+                size: 10
+            }
+        });
+        console.log("스프린트별 참여자 목록 & 피드백 여부 조회:", res.data);
+        return res.data.data;
+    } catch (error) {
+        const message = error?.response?.data?.data?.message ?? "스프린트별 참여자 목록 & 피드백 여부를 조회할 수 없습니다.";
+        throw new Error(message);
+    }
+};
+
